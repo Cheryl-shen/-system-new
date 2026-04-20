@@ -1,6 +1,6 @@
 // AI 与云商动态
 // 数据参考：https://ai.hubtoday.app/（AI 大事件） + 各云厂商官方博客/媒体报道
-// 更新周期：每周至少更新一次
+// 更新周期：每日更新
 
 export interface NewsItem {
   id: number

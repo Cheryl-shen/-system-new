@@ -5,7 +5,7 @@
         <a @click="router.push('/')">首页</a> / AI 与云商动态
       </div>
       <h2>AI 与云商动态</h2>
-      <p>定期更新 AI 领域大事件与阿里云/火山/华为云/AWS/谷歌云等行业动态</p>
+      <p>每日更新 AI 领域大事件与阿里云/火山/华为云/AWS/谷歌云等行业动态</p>
     </div>
 
     <!-- 顶部 Tab 切换 -->
@@ -72,7 +72,7 @@
       <div class="news-source-tip">
         <span class="tip-icon">💡</span>
         AI 大事件参考来源：<a href="https://ai.hubtoday.app/" target="_blank" rel="noopener">ai.hubtoday.app</a>
-        + 各 AI 厂商官方博客 · 数据每周至少更新一次
+        + 各 AI 厂商官方博客 · <strong>每日更新</strong>
       </div>
 
       <div class="news-list">
@@ -143,7 +143,7 @@
 
       <div class="news-source-tip">
         <span class="tip-icon">💡</span>
-        云商动态来源：阿里云/火山引擎/华为云/AWS/谷歌云/腾讯云等官方博客及主流科技媒体 · 每周更新
+        云商动态来源：阿里云/火山引擎/华为云/AWS/谷歌云/腾讯云等官方博客及主流科技媒体 · <strong>每日更新</strong>
       </div>
 
       <div class="news-list">
@@ -202,9 +202,9 @@
 
     <!-- 更新时间 -->
     <div class="page-footer">
-      📅 最后更新：{{ lastUpdate }} | 数据参考：
+      📅 最后更新：{{ lastUpdate }} <span class="update-badge">每日更新</span> | 数据参考：
       <a href="https://ai.hubtoday.app/" target="_blank" rel="noopener">ai.hubtoday.app</a>
-      + 各云厂商官方博客 · 每周至少更新一次
+      + 各云厂商官方博客
     </div>
   </div>
 </template>
@@ -217,7 +217,14 @@ import { aiNews, cloudNews, vendorConfig, importanceConfig } from '@/data/newsDa
 
 const router = useRouter()
 
-const lastUpdate = ref('2026-04-19')
+// 最后更新时间 = 构建当天（每日自动构建即可保持"今天"）
+const lastUpdate = ref(
+  new Date().toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).replace(/\//g, '-')
+)
 const mainTab = ref<'ai' | 'cloud'>('ai')
 
 // AI 筛选
@@ -605,6 +612,18 @@ const filteredCloudNews = computed(() => {
 }
 
 .page-footer a:hover { text-decoration: underline; }
+
+.update-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
 
 @media (max-width: 768px) {
   .main-tabs { grid-template-columns: 1fr; }
