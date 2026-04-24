@@ -25,8 +25,53 @@ export interface WeeklyUpdate {
 // 本周 + 往期数据
 export const weeklyUpdates: WeeklyUpdate[] = [
   {
+    weekKey: '2026-W17',
+    weekLabel: '本周 · 4月20日 – 4月26日',
+    startDate: '2026-04-20',
+    endDate: '2026-04-26',
+    summary: '本周腾讯云聚焦"音视频AI增强 + 全球加速节点扩展"：云点播上线AIGC大模型能力，GA 2.0新增亚太/中东/南非节点，全球化布局加速。',
+    products: [
+      {
+        id: 201,
+        name: '云点播 VOD · AIGC 大模型能力',
+        category: '音视频',
+        updateType: '新功能',
+        date: '2026-04-21',
+        summary: '云点播新增大模型视频增强、GLM生文、MiniMax生文 AIGC 大模型能力',
+        description: '腾讯云点播（VOD）新增大模型视频增强能力，并接入 GLM、MiniMax 等第三方 AIGC 大模型，支持智能文生文、视频内容增强等场景，进一步丰富音视频 AI 处理能力。',
+        highlights: [
+          '新增大模型视频增强能力',
+          '接入 GLM 生文大模型',
+          '接入 MiniMax 生文 AIGC 能力',
+          '详情参考官方文档 cloud.tencent.com/document/product/266'
+        ],
+        officialUrl: 'https://cloud.tencent.com/document/product/266',
+        isHot: true,
+        tags: ['AIGC', '音视频AI', '重点推荐']
+      },
+      {
+        id: 202,
+        name: '全球应用加速 GA 2.0',
+        category: '网络',
+        updateType: '新功能',
+        date: '2026-04-24',
+        summary: 'GA 2.0 新增亚太、中东、南非加速节点，全面提升全球加速效果',
+        description: '腾讯云全球应用加速（GA）2.0 版本新增亚太、中东、南非等多个海外加速节点，进一步拓展全球覆盖半径，为出海业务提供更优质的网络加速体验。',
+        highlights: [
+          '新增亚太地区加速节点',
+          '新增中东地区加速节点',
+          '新增南非地区加速节点',
+          '全面提升全球加速效果'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/ga',
+        isHot: false,
+        tags: ['全球加速', '出海', '节点扩展']
+      }
+    ]
+  },
+  {
     weekKey: '2026-W16',
-    weekLabel: '本周 · 4月13日 – 4月19日',
+    weekLabel: '往期 · 4月13日 – 4月19日',
     startDate: '2026-04-13',
     endDate: '2026-04-19',
     summary: '本周腾讯云以"大模型生态扩展 + 成本优化"为主线：混元3D世界模型2.0开源、联网搜索API大幅降价，利好AI应用开发者。',
