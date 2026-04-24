@@ -1,5 +1,9 @@
 <template>
-  <div class="app-container">
+  <!-- 空白布局（登录页等）：整页直出路由 -->
+  <router-view v-if="isBlankLayout" />
+
+  <!-- 默认布局：Topbar + Sidebar + 主区 -->
+  <div v-else class="app-container">
     <Topbar />
     <Sidebar />
     <MainArea>
@@ -10,10 +14,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, provide } from 'vue'
+import { ref, provide, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import Topbar from '@/components/layout/Topbar.vue'
 import Sidebar from '@/components/layout/Sidebar.vue'
 import MainArea from '@/components/layout/MainArea.vue'
+
+const route = useRoute()
+const isBlankLayout = computed(() => route.meta?.layout === 'blank')
 
 const sidebarOpen = ref(false)
 

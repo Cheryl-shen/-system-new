@@ -35,3 +35,9 @@ dist-ssr
 
 # Codebuddy
 .codebuddy
+
+# Tencent Cloud EdgeOne
+.env
+.edgeone/*
+.tef_dist/*
+  

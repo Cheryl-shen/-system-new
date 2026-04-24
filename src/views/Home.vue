@@ -97,32 +97,22 @@ const currentPeriod = computed(() => {
 
 // 动态统计数据（模拟从API获取）
 const stats = ref({
-  categoryCount: 8,
-  totalRecords: 26,
-  lastUpdate: '2026-04-19 18:30'
+  categoryCount: 7,
+  totalRecords: 28,
+  lastUpdate: '2026-04-20 18:00'
 })
 
 // 导航卡片
 const cards = [
   {
     path: '/sales-guide',
-    title: '售卖弹药',
-    description: '重点产品售卖弹药库：核心卖点、目标客户、话术模板、竞品对比、典型案例、销售FAQ',
+    title: '售卖弹药 · AI 报价知识库',
+    description: '整合 AI 全线产品（大模型 / MaaS / AI SaaS / 智能体平台）的官方介绍、产品定义、售卖策略、内部报价资料（腾讯文档入口）',
     icon: '&#127919;',
     iconBg: '#fef2f2',
     iconColor: '#dc2626',
-    badge: '1款',
+    badge: 'AI',
     badgeClass: 'info'
-  },
-  {
-    path: '/discount',
-    title: '报价折扣',
-    description: '五档折扣体系、高价值客户折扣、普通客户折扣策略及审批流程',
-    icon: '&#127991;',
-    iconBg: '#f0fdf4',
-    iconColor: '#16a34a',
-    badge: '8条',
-    badgeClass: 'success'
   },
   {
     path: '/cost',
@@ -178,6 +168,42 @@ const cards = [
 
 // 最近更新列表（模拟从API获取）
 const recentItems = [
+  {
+    id: 101,
+    path: '/sales-guide',
+    title: '售卖弹药新增：腾讯云 GPU 云服务器（H20/L40S/L20/A100 全系 + 企微文档《GPU 报价五档折扣》入口）',
+    tag: 'AI 弹药',
+    tagBg: '#fef2f2',
+    tagColor: '#dc2626',
+    date: '2026-04-20',
+    icon: '&#127918;',
+    iconBg: '#fef2f2',
+    iconColor: '#dc2626'
+  },
+  {
+    id: 100,
+    path: '/sales-guide',
+    title: '售卖弹药升级为「AI 产品报价知识库」：已开设 混元大模型 / TokenHub / ClawPro',
+    tag: 'AI 弹药',
+    tagBg: '#fef2f2',
+    tagColor: '#dc2626',
+    date: '2026-04-20',
+    icon: '&#127919;',
+    iconBg: '#fef2f2',
+    iconColor: '#dc2626'
+  },
+  {
+    id: 97,
+    path: '/sales-guide',
+    title: '售卖弹药新增：腾讯混元大模型（官方介绍 + 产品定义 + 售卖策略 + 6 份内部报价文档）',
+    tag: '弹药',
+    tagBg: '#f3e8ff',
+    tagColor: '#7c3aed',
+    date: '2026-04-20',
+    icon: '&#129504;',
+    iconBg: '#f3e8ff',
+    iconColor: '#7c3aed'
+  },
   {
     id: 98,
     path: '/sales-guide',
@@ -275,30 +301,6 @@ const recentItems = [
     iconColor: '#ef4444'
   },
   {
-    id: 5,
-    path: '/discount',
-    title: '折扣Discount：五档+高价值客户+普通客户',
-    tag: '参考',
-    tagBg: '#eef2ff',
-    tagColor: '#2b5aed',
-    date: '2026-04-15',
-    icon: '&#127991;',
-    iconBg: '#f0fdf4',
-    iconColor: '#16a34a'
-  },
-  {
-    id: 6,
-    path: '/sales-guide',
-    title: 'Q2 销售目标拆解及跟进指引',
-    tag: '更新',
-    tagBg: '#f0fdf4',
-    tagColor: '#16a34a',
-    date: '2026-04-12',
-    icon: '&#128218;',
-    iconBg: '#eef2ff',
-    iconColor: '#2b5aed'
-  },
-  {
     id: 7,
     path: '/product-guide',
     title: '腾讯云AI产品售卖指引 2026年版',
@@ -317,8 +319,8 @@ const loadStats = async () => {
   // TODO: 替换为实际API调用
   setTimeout(() => {
     stats.value = {
-      categoryCount: 8,
-      totalRecords: 26,
+      categoryCount: 7,
+      totalRecords: 29,
       lastUpdate: new Date().toISOString().slice(0, 16).replace('T', ' ')
     }
   }, 500)

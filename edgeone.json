@@ -1,0 +1,22 @@
+{
+  "$schema": "https://cli.edgeone.com/edgeone.schema.json",
+  "name": "strategic-platform",
+  "build": {
+    "command": "npm run build",
+    "output": "dist"
+  },
+  "functions": {
+    "directory": "functions"
+  },
+  "kv": [
+    {
+      "binding": "REPORTS_KV",
+      "namespace": "strategic-platform-kv"
+    }
+  ],
+  "env": [
+    { "key": "JWT_SECRET", "type": "secret" },
+    { "key": "AUTH_MODE", "value": "auto" },
+    { "key": "TOF_TOKEN", "type": "secret" }
+  ]
+}

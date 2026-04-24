@@ -302,7 +302,7 @@ const stats = computed(() => ({
   reports: strategyData.reduce((sum, c) => sum + c.reports.length, 0)
 }))
 
-const industries = ['全部', '电商', '社交', '音视频']
+const industries = ['全部', '电商', '社交', '音视频', '物流']
 
 const filteredCustomers = computed(() => {
   let data = [...strategyData]

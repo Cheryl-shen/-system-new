@@ -478,7 +478,7 @@ export const strategyData: CustomerStrategy[] = [
   {
     id: 6,
     name: '顺丰控股',
-    industry: '综合物流（快递 / 供应链 / 国际 / 同城 / 科技）',
+    industry: '物流',
     avatar: '📦',
     stock: 'SZ 002352（A 股）/ HK 06936（港股）',
     website: 'https://www.sf-express.com',
@@ -617,7 +617,7 @@ export const strategyData: CustomerStrategy[] = [
   {
     id: 7,
     name: '腾讯音乐娱乐集团（TME）',
-    industry: '在线音乐与音频娱乐',
+    industry: '音视频',
     avatar: '🎵',
     stock: 'NYSE: TME / HKEX: 1698',
     website: 'https://www.tencentmusic.com',

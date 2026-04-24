@@ -33,8 +33,7 @@ const closeSidebar = inject<() => void>('closeSidebar')!
 
 const menuItems = [
   { path: '/', label: '首页概览', icon: '&#127968;' },
-  { path: '/sales-guide', label: '售卖弹药', icon: '&#127919;', badge: '1', badgeClass: 'info' },
-  { path: '/discount', label: '报价折扣', icon: '&#127991;' },
+  { path: '/sales-guide', label: '售卖弹药', icon: '&#127919;', badge: 'AI', badgeClass: 'info' },
   { path: '/cost', label: '成本变化', icon: '&#128200;', badge: 'NEW' },
   { path: '/product-guide', label: '产品售卖指引', icon: '&#128230;' },
   { path: '/strategy', label: '客户战略分析', icon: '&#127919;' },
