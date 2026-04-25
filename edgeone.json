@@ -1,6 +1,6 @@
 {
   "$schema": "https://cli.edgeone.com/edgeone.schema.json",
-  "name": "strategic-platform",
+  "name": "strategic",
   "build": {
     "command": "npm run build",
     "output": "dist"

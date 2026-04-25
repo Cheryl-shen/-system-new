@@ -28,34 +28,34 @@ strategic-platform/
 ├── src/                         # 前端源码
 │   ├── api/                     # API 接口封装
 │   │   ├── auth.ts              # 认证相关接口
-│   │   └── http.ts              # HTTP 请求封装（axios 风格）
-│   ├── assets/                  # 资源文件
-│   │   └── styles/              # 样式文件
-│   │       ├── variables.css    # CSS 变量（颜色/间距/阴影）
+│   │   └── http.ts              # HTTP 请求封装
+│   ├── assets/                  # 样式文件
+│   │   └── styles/
+│   │       ├── variables.css    # CSS 变量
 │   │       ├── base.css         # 基础样式重置
 │   │       ├── components.css   # 通用组件样式
 │   │       └── main.css         # 样式入口
 │   ├── components/              # 组件
 │   │   ├── layout/              # 布局组件
-│   │   │   ├── Topbar.vue       # 顶部栏（含用户信息）
-│   │   │   ├── Sidebar.vue      # 侧边栏（导航菜单）
-│   │   │   └── MainArea.vue     # 主内容区
-│   │   ├── common/              # 通用组件
-│   │   └── home/                # 首页组件
+│   │   │   ├── Topbar.vue       # 顶部栏（用户信息）
+│   │   │   └── Sidebar.vue      # 侧边栏（导航菜单）
+│   │   └── common/              # 通用组件
 │   ├── stores/                  # Pinia 状态管理
 │   │   └── auth.ts              # 认证状态（用户/Token/角色）
 │   ├── views/                   # 页面组件
 │   │   ├── Home.vue             # 首页
-│   │   ├── SalesGuide.vue       # 销售指引
-│   │   ├── News.vue             # 行业资讯
+│   │   ├── SalesGuide.vue       # 售卖弹药
+│   │   ├── News.vue             # AI 与云商动态
 │   │   ├── Cost.vue             # 成本变化
 │   │   ├── ProductGuide.vue     # 产品售卖指引
+│   │   ├── NewProducts.vue      # 官网上新
 │   │   ├── Strategy.vue         # 客户战略分析
 │   │   └── Login.vue            # 登录页
 │   ├── data/                    # 静态数据
 │   │   ├── costData.ts          # 成本数据
 │   │   ├── newsData.ts          # 行业资讯数据
 │   │   ├── salesGuideData.ts    # 销售指引数据
+│   │   ├── newProductsData.ts   # 官网上新数据
 │   │   └── strategyData.ts      # 战略分析数据
 │   ├── router/                  # 路由
 │   │   └── index.ts             # 路由配置 + 守卫
@@ -88,7 +88,8 @@ strategic-platform/
 ├── scripts/                     # 脚本工具
 │   └── init-kv.ts               # 初始化 KV 数据
 ├── docs/                        # 文档
-│   └── ioa-auth.md              # IOA 认证方案
+│   ├── 内容更新SOP.md           # 内容更新标准操作流程
+│   └── ioa-auth.md             # IOA 认证方案
 ├── edgeone.json                 # EdgeOne Pages 部署配置
 ├── index.html                   # HTML 模板
 ├── package.json                 # 项目依赖
@@ -332,34 +333,40 @@ curl -X POST https://tencentsouth.top/api/auth/login \
 - 快速导航卡片
 - 最近更新列表
 
-### 2. 销售指引 (SalesGuide) `/sales-guide`
+### 2. 售卖弹药 (SalesGuide) `/sales-guide`
 - 销售流程规范
 - 客户沟通话术
 - 商务谈判指引
 
-### 3. 行业资讯 (News) `/news`
-- 行业动态更新
-- 产品发布信息
-- 市场分析报告
-
-### 4. 成本变化 (Cost) `/cost`
+### 3. 成本变化 (Cost) `/cost`
 - 单价涨幅明细
 - 行业成本汇总
 - 对接人一览
 - 支持搜索和筛选
 
-### 5. 产品售卖指引 (ProductGuide) `/product-guide`
+### 4. 产品售卖指引 (ProductGuide) `/product-guide`
 - 大背景分析
 - 行业宏观分析
 - 腾讯云 AI 产品全景
 - 售卖案例
 
-### 6. 客户战略分析 (Strategy) `/strategy`
+### 5. 客户战略分析 (Strategy) `/strategy`
 - 重点客户画像
 - 行业趋势分析
 - 竞对策略研判
 
-### 7. 登录页 (Login) `/login`
+### 6. AI 与云商动态 (News) `/news`
+- 行业动态更新
+- 产品发布信息
+- 市场分析报告
+
+### 7. 官网上新 (NewProducts) `/new-products`
+- 按周次切换查看
+- 卡片/列表双视图
+- 支持关键词搜索和分类筛选
+- 数据来源：腾讯云官网产品动态
+
+### 8. 登录页 (Login) `/login`
 - TOF 模式：自动跳转，用户无感知
 - JWT 模式：显示"IOA 登录"按钮
 
@@ -561,6 +568,40 @@ edgeone whoami
 ---
 
 ## 📅 更新日志
+
+### v1.2.1 (2026-04-24)
+
+**新增**
+- ✨ 官网上新（NewProducts）：新增 W17 数据（4月20-26日）
+- ✨ 云点播 VOD AIGC 大模型能力（GLM/MiniMax 接入）
+- ✨ 全球应用加速 GA 2.0 新增加速节点（亚太/中东/南非）
+
+**优化**
+- ⚡ 更新 SOP 文档（`docs/内容更新SOP.md`）
+
+---
+
+### v1.2.0 (2026-04-24)
+
+**新增**
+- ✨ 成本变化页面（Cost）：单价涨幅明细、行业成本汇总、对接人一览
+- ✨ 产品售卖指引页面（ProductGuide）：大背景、行业分析、产品全景、售卖案例
+- ✨ 官网上新页面（NewProducts）：周次切换、卡片/列表双视图
+- ✨ 统一认证系统：TOF + JWT 双模式
+- ✨ Pinia 状态管理（auth store）
+- ✨ EdgeOne Functions 后端 API
+- ✨ EdgeOne KV 数据存储
+
+**优化**
+- ⚡ 路由守卫：未登录用户自动跳转登录页
+- ⚡ Sidebar 导航：从 4 项扩展为 7 项
+- ⚡ Vite 配置：路径别名、端口 3000
+
+**移除**
+- ❌ 折扣信息页面（Discount.vue）
+- ❌ 折扣数据（discountData.ts）
+
+---
 
 ### v1.1.0 (2026-04-21)
 

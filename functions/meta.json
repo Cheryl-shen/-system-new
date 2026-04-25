@@ -1,0 +1,39 @@
+{
+  "functions": [
+    {
+      "path": "/api/auth/login",
+      "method": ["POST"],
+      "description": "用户登录"
+    },
+    {
+      "path": "/api/auth/logout",
+      "method": ["POST"],
+      "description": "用户登出"
+    },
+    {
+      "path": "/api/auth/me",
+      "method": ["GET"],
+      "description": "获取当前登录用户信息"
+    },
+    {
+      "path": "/api/auth/tof/check",
+      "method": ["GET"],
+      "description": "检查 TOF 登录状态"
+    },
+    {
+      "path": "/api/auth/ioa/login",
+      "method": ["POST"],
+      "description": "IOA 认证登录"
+    },
+    {
+      "path": "/api/auth/ioa/callback",
+      "method": ["GET"],
+      "description": "IOA 认证回调"
+    },
+    {
+      "path": "/api/admin/init",
+      "method": ["POST"],
+      "description": "初始化管理员账号"
+    }
+  ]
+}
