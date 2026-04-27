@@ -49,6 +49,7 @@ strategic-platform/
 │   │   ├── Cost.vue             # 成本变化
 │   │   ├── ProductGuide.vue     # 产品售卖指引
 │   │   ├── NewProducts.vue      # 官网上新
+│   │   ├── ModelPrice.vue       # 模型商价格动态
 │   │   ├── Strategy.vue         # 客户战略分析
 │   │   └── Login.vue            # 登录页
 │   ├── data/                    # 静态数据
@@ -56,6 +57,7 @@ strategic-platform/
 │   │   ├── newsData.ts          # 行业资讯数据
 │   │   ├── salesGuideData.ts    # 销售指引数据
 │   │   ├── newProductsData.ts   # 官网上新数据
+│   │   ├── modelPriceData.ts    # 模型商价格动态数据
 │   │   └── strategyData.ts      # 战略分析数据
 │   ├── router/                  # 路由
 │   │   └── index.ts             # 路由配置 + 守卫
@@ -366,7 +368,14 @@ curl -X POST https://tencentsouth.top/api/auth/login \
 - 支持关键词搜索和分类筛选
 - 数据来源：腾讯云官网产品动态
 
-### 8. 登录页 (Login) `/login`
+### 8. 模型商价格动态 (ModelPrice) `/model-price`
+- 覆盖 DeepSeek、Kimi、MiniMax、GLM 四家厂商
+- 厂商切换查看各模型定价（输入/输出/缓存命中）
+- 价格变更高亮提醒
+- 近期厂商公告汇总
+- 跨厂商主力模型价格对比表
+
+### 9. 登录页 (Login) `/login`
 - TOF 模式：自动跳转，用户无感知
 - JWT 模式：显示"IOA 登录"按钮
 
@@ -568,6 +577,24 @@ edgeone whoami
 ---
 
 ## 📅 更新日志
+
+### v1.3.0 (2026-04-27)
+
+**新增**
+- ✨ 模型商价格动态页面（ModelPrice）：覆盖 DeepSeek、Kimi、MiniMax、GLM 四家厂商
+- ✨ 厂商切换 Tabs + 定价表格（输入/输出/缓存命中价格）
+- ✨ 价格变更高亮提醒
+- ✨ 近期厂商公告汇总
+- ✨ 跨厂商主力模型价格对比表
+- ✨ 数据文件 `modelPriceData.ts`，含四家厂商完整定价数据
+
+**数据来源**
+- DeepSeek：官方 API 定价页（2026-04-27 抓取）
+- Kimi：官方定价页（K2.6 于 2026-04-20 发布）
+- MiniMax：开放平台按量计费页（2026-04-27 抓取）
+- GLM（智谱 AI）：开放平台定价页（2026-04-27 抓取）
+
+---
 
 ### v1.2.1 (2026-04-24)
 
