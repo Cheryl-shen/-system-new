@@ -57,6 +57,11 @@ const routes: RouteRecordRaw[] = [
     name: 'NewProducts',
     component: () => import('@/views/NewProducts.vue')
   },
+  {
+    path: '/model-price',
+    name: 'ModelPrice',
+    component: () => import('@/views/ModelPrice.vue')
+  },
   // 兜底：任何未匹配路径回首页
   {
     path: '/:pathMatch(.*)*',
