@@ -9,6 +9,76 @@
       <p>持续跟踪 DeepSeek、Kimi（月之暗面）、MiniMax、GLM（智谱AI）四家模型厂商的定价变化与产品动态</p>
     </div>
 
+    <!-- 概览结论卡片 -->
+    <div class="overview-cards">
+      <div class="oc-card oc-highlight">
+        <div class="oc-icon">💡</div>
+        <div class="oc-body">
+          <div class="oc-title">核心洞察</div>
+          <ul class="oc-list">
+            <li>
+              <span class="oc-tag up">涨价</span>
+              DeepSeek V3.2 于 4/20 大幅涨价，输出价格达 <strong>¥40/百万tokens</strong>，成为四家中最贵
+            </li>
+            <li>
+              <span class="oc-tag down">性价比</span>
+              MiniMax M2.5 / M2.7 定价最低，输入低至 <strong>¥1/百万tokens</strong>，适合高并发场景
+            </li>
+            <li>
+              <span class="oc-tag new">新发布</span>
+              Kimi K2.6（4/20 发布）定价高于 K2.5，旗舰竞争持续加剧
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="oc-card oc-price-range">
+        <div class="oc-icon">📊</div>
+        <div class="oc-body">
+          <div class="oc-title">主力模型价格区间（元/百万 tokens）</div>
+          <div class="oc-range-grid">
+            <div class="oc-range-item">
+              <div class="oc-range-label">💰 最低输入价</div>
+              <div class="oc-range-value green">¥1.00</div>
+              <div class="oc-range-vendor">MiniMax M2.5 / M2.7</div>
+            </div>
+            <div class="oc-range-item">
+              <div class="oc-range-label">💰 最低输出价</div>
+              <div class="oc-range-value green">¥2.00</div>
+              <div class="oc-range-vendor">MiniMax M2.5 / M2.7</div>
+            </div>
+            <div class="oc-range-item">
+              <div class="oc-range-label">🔺 最高输入价</div>
+              <div class="oc-range-value red">¥8.00</div>
+              <div class="oc-range-vendor">DeepSeek V3.2</div>
+            </div>
+            <div class="oc-range-item">
+              <div class="oc-range-label">🔺 最高输出价</div>
+              <div class="oc-range-value red">¥40.00</div>
+              <div class="oc-range-vendor">DeepSeek V3.2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="oc-card oc-timeline">
+        <div class="oc-icon">📅</div>
+        <div class="oc-body">
+          <div class="oc-title">近期重要动态</div>
+          <div class="oc-tl">
+            <div class="oc-tl-item" v-for="evt in timelineEvents" :key="evt.date + evt.title">
+              <div class="oc-tl-date">{{ evt.date }}</div>
+              <div class="oc-tl-dot" :class="'dot-' + evt.type"></div>
+              <div class="oc-tl-content">
+                <span class="oc-tl-vendor">{{ evt.vendor }}</span>
+                <span>{{ evt.title }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 厂商切换 Tabs -->
     <div class="vendor-tabs">
       <div
@@ -181,6 +251,15 @@ import { vendorData, type VendorPriceData, type PriceChange } from '@/data/model
 
 const router = useRouter()
 const activeVendor = ref<string>(vendorData[0].vendorKey)
+
+/** 概览区时间线事件 */
+const timelineEvents = [
+  { date: '2026-04-20', vendor: 'DeepSeek', title: 'V3.2 发布并大幅涨价（输入¥8、输出¥40）', type: 'price-up' },
+  { date: '2026-04-20', vendor: 'Kimi', title: 'K2.6 旗舰模型发布，定价高于 K2.5', type: 'new-model' },
+  { date: '2026-04-10', vendor: 'MiniMax', title: 'M2.5 按量计费价格更新，输入¥1、输出¥2', type: 'price-down' },
+  { date: '2026-03-31', vendor: 'GLM', title: 'GLM-5 系列发布，旗舰定价¥100/¥100', type: 'new-model' },
+  { date: '2026-03-11', vendor: 'MiniMax', title: 'M2.1 降价，输入¥1、输出¥8', type: 'price-down' },
+]
 
 const currentVendor = computed(() =>
   vendorData.find(v => v.vendorKey === activeVendor.value)
@@ -477,6 +556,124 @@ function trendLabel(t: string) {
 }
 .source-note a { color: var(--primary); text-decoration: none; }
 .source-note a:hover { text-decoration: underline; }
+
+/* ===== 概览卡片 ===== */
+.overview-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.oc-card {
+  display: flex;
+  gap: 14px;
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  align-items: flex-start;
+}
+.oc-icon { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+.oc-body { flex: 1; min-width: 0; }
+.oc-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+/* 核心洞察 */
+.oc-highlight { border-left: 4px solid var(--primary); }
+.oc-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.oc-list li {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.oc-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.oc-tag.up { background: #fee2e2; color: #dc2626; }
+.oc-tag.down { background: #dcfce7; color: #16a34a; }
+.oc-tag.new { background: #dbeafe; color: #2563eb; }
+.oc-tag.best { background: #fef3c7; color: #92400e; }
+
+/* 价格区间 */
+.oc-price-range { border-left: 4px solid #f59e0b; }
+.oc-range-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.oc-range-item {
+  text-align: center;
+  padding: 10px 6px;
+  background: var(--bg);
+  border-radius: var(--radius);
+}
+.oc-range-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.oc-range-value {
+  font-size: 20px;
+  font-weight: 800;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.oc-range-value.green { color: #16a34a; }
+.oc-range-value.red { color: #dc2626; }
+.oc-range-vendor {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* 时间线 */
+.oc-timeline { border-left: 4px solid #8b5cf6; }
+.oc-tl { display: flex; flex-direction: column; gap: 8px; }
+.oc-tl-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.oc-tl-date {
+  font-size: 11px;
+  color: var(--text-light);
+  width: 80px;
+  flex-shrink: 0;
+}
+.oc-tl-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-price-up { background: #dc2626; }
+.dot-new-model { background: #2563eb; }
+.dot-price-down { background: #16a34a; }
+.oc-tl-content { color: var(--text); line-height: 1.5; }
+.oc-tl-vendor {
+  font-weight: 700;
+  margin-right: 6px;
+}
 
 @media (max-width: 768px) {
   .vendor-hero { flex-direction: column; align-items: flex-start; }
