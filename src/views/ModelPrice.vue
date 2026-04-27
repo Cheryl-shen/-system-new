@@ -14,19 +14,23 @@
       <div class="oc-card oc-highlight">
         <div class="oc-icon">💡</div>
         <div class="oc-body">
-          <div class="oc-title">核心洞察</div>
+          <div class="oc-title">核心洞察（数据截至 2026-04-27）</div>
           <ul class="oc-list">
             <li>
               <span class="oc-tag up">涨价</span>
-              DeepSeek V3.2 于 4/20 大幅涨价，输出价格达 <strong>¥40/百万tokens</strong>，成为四家中最贵
+              Kimi K2.6 于 4/20 发布，定价较 K2.5 上涨 <strong>58~60%</strong>（输入 $0.60→$0.95，输出 $3→$4）
             </li>
             <li>
-              <span class="oc-tag down">性价比</span>
-              MiniMax M2.5 / M2.7 定价最低，输入低至 <strong>¥1/百万tokens</strong>，适合高并发场景
+              <span class="oc-tag up">涨价</span>
+              GLM-5.1 于 4/8 发布并全线涨价 <strong>10%</strong>，输入 ¥5.5→¥6，输出 ¥22→¥24
             </li>
             <li>
-              <span class="oc-tag new">新发布</span>
-              Kimi K2.6（4/20 发布）定价高于 K2.5，旗舰竞争持续加剧
+              <span class="oc-tag down">优惠</span>
+              DeepSeek V4-Pro 限时 <strong>2.5 折</strong>（至 5/5），V4 全系缓存命中价降至首发价 1/10
+            </li>
+            <li>
+              <span class="oc-tag best">性价比</span>
+              MiniMax M2.7 / M2.5 定价最低，输入 <strong>¥2.1/百万tokens</strong>，适合高并发场景
             </li>
           </ul>
         </div>
@@ -35,27 +39,27 @@
       <div class="oc-card oc-price-range">
         <div class="oc-icon">📊</div>
         <div class="oc-body">
-          <div class="oc-title">主力模型价格区间（元/百万 tokens）</div>
+          <div class="oc-title">主力模型价格区间（元/百万 tokens，缓存未命中输入）</div>
           <div class="oc-range-grid">
             <div class="oc-range-item">
               <div class="oc-range-label">💰 最低输入价</div>
-              <div class="oc-range-value green">¥1.00</div>
-              <div class="oc-range-vendor">MiniMax M2.5 / M2.7</div>
+              <div class="oc-range-value green">¥1</div>
+              <div class="oc-range-vendor">DeepSeek V4-Flash</div>
             </div>
             <div class="oc-range-item">
               <div class="oc-range-label">💰 最低输出价</div>
-              <div class="oc-range-value green">¥2.00</div>
-              <div class="oc-range-vendor">MiniMax M2.5 / M2.7</div>
+              <div class="oc-range-value green">¥2</div>
+              <div class="oc-range-vendor">DeepSeek V4-Flash</div>
             </div>
             <div class="oc-range-item">
               <div class="oc-range-label">🔺 最高输入价</div>
-              <div class="oc-range-value red">¥8.00</div>
-              <div class="oc-range-vendor">DeepSeek V3.2</div>
+              <div class="oc-range-value red">¥7</div>
+              <div class="oc-range-vendor">Kimi K2.6（涨 58%）</div>
             </div>
             <div class="oc-range-item">
               <div class="oc-range-label">🔺 最高输出价</div>
-              <div class="oc-range-value red">¥40.00</div>
-              <div class="oc-range-vendor">DeepSeek V3.2</div>
+              <div class="oc-range-value red">¥29</div>
+              <div class="oc-range-vendor">Kimi K2.6（涨 32%）</div>
             </div>
           </div>
         </div>
@@ -254,11 +258,11 @@ const activeVendor = ref<string>(vendorData[0].vendorKey)
 
 /** 概览区时间线事件 */
 const timelineEvents = [
-  { date: '2026-04-20', vendor: 'DeepSeek', title: 'V3.2 发布并大幅涨价（输入¥8、输出¥40）', type: 'price-up' },
-  { date: '2026-04-20', vendor: 'Kimi', title: 'K2.6 旗舰模型发布，定价高于 K2.5', type: 'new-model' },
-  { date: '2026-04-10', vendor: 'MiniMax', title: 'M2.5 按量计费价格更新，输入¥1、输出¥2', type: 'price-down' },
-  { date: '2026-03-31', vendor: 'GLM', title: 'GLM-5 系列发布，旗舰定价¥100/¥100', type: 'new-model' },
-  { date: '2026-03-11', vendor: 'MiniMax', title: 'M2.1 降价，输入¥1、输出¥8', type: 'price-down' },
+  { date: '2026-04-25', vendor: 'DeepSeek', title: 'V4 正式发布，V4-Pro 限时2.5折（至5/5）', type: 'new-model' },
+  { date: '2026-04-20', vendor: 'Kimi', title: 'K2.6 发布并开源，定价上涨58~60%', type: 'price-up' },
+  { date: '2026-04-09', vendor: 'GLM', title: 'GLM-5.1 发布并开源，全线涨价10%', type: 'price-up' },
+  { date: '2026-03-18', vendor: 'MiniMax', title: 'M2.7 发布并开源（不可商用，需授权）', type: 'new-model' },
+  { date: '2026-03-16', vendor: 'GLM', title: 'GLM-5-Turbo 涨价20%，专为 Agent 场景优化', type: 'price-up' },
 ]
 
 const currentVendor = computed(() =>

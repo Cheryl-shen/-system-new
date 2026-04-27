@@ -123,7 +123,8 @@ export const vendorData: VendorPriceData[] = [
 
   // ----------------------------------------------------------
   // 2. Kimi（月之暗面）
-  // 注：K2.6 于 2026-04-20 发布并开源，定价参考官方基准
+  // K2.6 于 2026-04-20 发布，定价较 K2.5 上涨 58~60%
+  // 价格来源：官方定价页（美元），按汇率 ≈7.2 换算为人民币
   // ----------------------------------------------------------
   {
     vendorKey: 'kimi',
@@ -137,9 +138,9 @@ export const vendorData: VendorPriceData[] = [
       {
         modelName: 'kimi-k2.6',
         displayName: 'Kimi K2.6',
-        inputPrice: 4,
-        outputPrice: 21,
-        cacheHitPrice: undefined,   // 官网未公开具体数值，以平台为准
+        inputPrice: 7,          // $0.95 ≈ ¥6.84，取整 7
+        outputPrice: 29,         // $4.00 ≈ ¥28.8，取整 29
+        cacheHitPrice: 1.2,     // $0.16 ≈ ¥1.15，取整 1.2
         contextLength: '256K',
         capabilities: ['文本', '代码', '多模态', 'Agent', '长上下文'],
         lastUpdated: '2026-04-20',
@@ -148,20 +149,39 @@ export const vendorData: VendorPriceData[] = [
       {
         modelName: 'kimi-k2.5',
         displayName: 'Kimi K2.5',
-        inputPrice: 4,
-        outputPrice: 21,
-        cacheHitPrice: undefined,
-        contextLength: '128K',
+        inputPrice: 4,          // $0.60 ≈ ¥4.32，取整 4
+        outputPrice: 22,         // $3.00 ≈ ¥21.6，取整 22
+        cacheHitPrice: 0.7,     // $0.10 ≈ ¥0.72，取整 0.7
+        contextLength: '256K',
         capabilities: ['文本', '代码', '多模态', 'Agent'],
         lastUpdated: '2026-01-27',
         officialUrl: 'https://platform.kimi.com/docs/pricing/chat-k25'
       }
     ],
-    priceChanges: [],
+    priceChanges: [
+      {
+        modelName: 'kimi-k2.6',
+        field: 'input',
+        oldValue: 4,
+        newValue: 7,
+        direction: 'up',
+        changeDate: '2026-04-20',
+        note: 'K2.6 发布，缓存未命中输入涨价约58%，输出涨价约32%'
+      },
+      {
+        modelName: 'kimi-k2.6',
+        field: 'output',
+        oldValue: 22,
+        newValue: 29,
+        direction: 'up',
+        changeDate: '2026-04-20',
+        note: 'K2.6 输出价格较 K2.5 上涨约32%'
+      }
+    ],
     announcements: [
       {
         date: '2026-04-20',
-        title: 'Kimi K2.6 发布并开源，代码能力对标 GPT-5.4',
+        title: 'Kimi K2.6 发布并开源，代码能力对标 GPT-5.4，定价上涨 58~60%',
         url: 'https://news.qq.com/rain/a/20260421A05U7F00',
         type: '新模型'
       },
@@ -283,24 +303,33 @@ export const vendorData: VendorPriceData[] = [
       {
         modelName: 'glm-5.1',
         field: 'input',
-        oldValue: 4,        // GLM-5 入门档参考
+        oldValue: 5.5,       // 涨价10%前原价（≈6 ÷ 1.1）
         newValue: 6,
         direction: 'up',
         changeDate: '2026-04-09',
-        note: 'GLM-5.1 为新旗舰，定价高于 GLM-5'
+        note: 'GLM-5.1 发布，全线涨价10%'
+      },
+      {
+        modelName: 'glm-5.1',
+        field: 'output',
+        oldValue: 22,        // 涨价10%前原价（≈24 ÷ 1.1）
+        newValue: 24,
+        direction: 'up',
+        changeDate: '2026-04-09',
+        note: 'GLM-5.1 发布，全线涨价10%'
       }
     ],
     announcements: [
       {
         date: '2026-04-09',
-        title: 'GLM-5.1 发布，支持长程 8 小时连续任务',
+        title: 'GLM-5.1 发布并开源，支持长程8小时连续任务，全线涨价10%',
         url: 'https://wallstreetcn.com/articles/3769464',
         type: '新模型'
       },
       {
-        date: '2026-02-12',
-        title: 'GLM Coding Plan 涨价，Lite ¥40→¥49，取消首购优惠',
-        url: 'https://www.aitntnews.com/newDetail.html?newId=23643',
+        date: '2026-03-16',
+        title: 'GLM-5-Turbo 涨价20%，专为 Agent 场景优化',
+        url: 'https://www.thepaper.cn/newsDetail_forward_33056587',
         type: '价格调整'
       }
     ]
