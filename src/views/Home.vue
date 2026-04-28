@@ -163,11 +163,33 @@ const cards = [
     iconColor: '#0891b2',
     badge: 'NEW',
     badgeClass: 'new'
+  },
+  {
+    path: '/model-ranking',
+    title: '全球模型能力排名',
+    description: '基于 OpenRouter 全球 API 实际调用量排名，覆盖 Kimi、Claude、DeepSeek、GPT 等主流模型',
+    icon: '&#127942;',
+    iconBg: '#fefce8',
+    iconColor: '#ca8a04',
+    badge: 'NEW',
+    badgeClass: 'new'
   }
 ]
 
 // 最近更新列表（模拟从API获取）
 const recentItems = [
+  {
+    id: 102,
+    path: '/model-ranking',
+    title: '新增板块：全球模型能力排名 — Kimi K2.6 暴涨 7683% 登顶全球，中国模型占据 Top 10 四席',
+    tag: '排名',
+    tagBg: '#fefce8',
+    tagColor: '#ca8a04',
+    date: '2026-04-28',
+    icon: '&#127942;',
+    iconBg: '#fefce8',
+    iconColor: '#ca8a04'
+  },
   {
     id: 101,
     path: '/sales-guide',
@@ -319,8 +341,8 @@ const loadStats = async () => {
   // TODO: 替换为实际API调用
   setTimeout(() => {
     stats.value = {
-      categoryCount: 7,
-      totalRecords: 29,
+      categoryCount: 8,
+      totalRecords: 30,
       lastUpdate: new Date().toISOString().slice(0, 16).replace('T', ' ')
     }
   }, 500)

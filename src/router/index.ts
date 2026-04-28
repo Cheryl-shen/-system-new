@@ -62,6 +62,11 @@ const routes: RouteRecordRaw[] = [
     name: 'ModelPrice',
     component: () => import('@/views/ModelPrice.vue')
   },
+  {
+    path: '/model-ranking',
+    name: 'ModelRanking',
+    component: () => import('@/views/ModelRanking.vue')
+  },
   // 兜底：任何未匹配路径回首页
   {
     path: '/:pathMatch(.*)*',
@@ -99,7 +104,7 @@ router.beforeEach(async (to) => {
     return true;
   }
 
-  // TODO(IOA): 总开关关闭时，直接放行所有路由
+  // 总开关关闭时，直接放行所有路由
   // 同时，如果用户主动进了 /login 页，也把他送回首页，避免看到登录界面
   if (!AUTH_ENABLED) {
     if (to.name === 'Login') return '/';
