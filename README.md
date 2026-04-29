@@ -67,20 +67,15 @@ strategic-platform/
 │   ├── api/                     # API 路由
 │   │   ├── auth/                # 认证接口
 │   │   │   ├── me.ts            # 获取当前用户信息
-│   │   │   ├── login.ts         # 本地账密登录
 │   │   │   ├── logout.ts        # 登出
-│   │   │   ├── wecom/           # 企业微信 OAuth2
-│   │   │   │   ├── login.ts     # 发起企业微信授权
-│   │   │   │   └── callback.ts  # 企业微信回调
 │   │   │   └── tof/             # TOF 认证
 │   │   │       └── check.ts     # 检查 TOF 状态
 │   │   └── admin/               # 管理接口
 │   │       └── init.ts          # 初始化管理员
 │   └── _lib/                    # 后端工具库
-│       ├── auth.ts              # JWT 认证工具
-│       ├── auth-unified.ts      # 统一认证入口（TOF + JWT）
+│       ├── auth.ts              # 认证工具
+│       ├── auth-unified.ts      # 统一认证入口（TOF）
 │       ├── tof.ts               # TOF 认证工具
-│       ├── wecom.ts             # 企业微信 OAuth2 工具
 │       ├── kv.ts                # EdgeOne KV 封装
 │       ├── password.ts          # bcrypt 密码工具
 │       ├── audit.ts             # 审计日志
@@ -197,19 +192,18 @@ npm run init-kv
 | Node.js Express | 当前生产后端：替代 EdgeOne Functions，运行在服务器 `3000` 端口 |
 | EdgeOne Pages | 备份部署：迁移完全验证前不要删除或下线 |
 | 太湖/TOF | 公司统一身份认证 |
-| 企业微信 | 企业微信扫码登录 |
 
 ---
 
 ## 🔐 认证方式
 
-本项目支持**自动检测**的双模式认证，统一入口位于 `functions/_lib/auth-unified.ts`。
+本项目当前**只保留太湖/TOF 登录方式**，统一认证入口位于 `functions/_lib/auth-unified.ts`。
 
-### 模式 1：太湖(TOF)认证（生产环境）
+### 太湖(TOF)认证（生产环境）
 
 **流程**：
 ```
-用户 → 浏览器 → 站点域名
+用户 → 浏览器 → strategicsouth.woa.com
              ↓
           太湖智能网关
         （TOF 认证插件）
@@ -247,97 +241,41 @@ npm run init-kv
 - 留空则允许所有通过 TOF 认证的用户登录
 - 用户 ID 为员工的英文名（如 `cherylzshen`）
 
-### 模式 2：企业微信扫码登录
-
-
-**流程**：
-```
-用户 → 登录页 → 点击"企业微信扫码登录"
-             ↓
-        /api/auth/wecom/login
-             ↓
-      企业微信扫码授权页
-             ↓
-        /api/auth/wecom/callback
-             ↓
-   验证用户组织架构权限
-             ↓
-       签发 JWT Token
-             ↓
-      前端存 localStorage
-             ↓
-  后续请求：Authorization: Bearer <token>
-```
-
-**特点**：
-- ✅ 无需记忆密码，扫码即可登录
-- ✅ 支持组织架构权限控制（仅限指定部门/用户登录）
-- ✅ 自动获取企业微信用户信息（姓名等）
-
-**权限控制（两种方式，同时生效）**：
-1. **部门白名单**：在环境变量 `WECOM_ALLOWED_DEPARTMENTS` 中配置允许登录的部门 ID（逗号分隔）
-2. **用户白名单**：在环境变量 `WECOM_ALLOWED_USERS` 中配置允许登录的用户 ID（逗号分隔）
-
-- 两个白名单都为空 → 允许所有企业成员登录
-- 部门白名单非空 → 用户部门必须命中其中之一
-- 用户白名单非空 → 用户 ID 必须在白名单中（优先级高于部门）
-- 两个白名单都非空 → 满足其中之一即可
-
-### 自动检测逻辑
-
-`functions/_lib/auth-unified.ts` 会依次尝试：
-
-1. 检查请求 Header 中是否有 `StaffName`（TOF 已认证）
-2. 没有则检查 `Authorization: Bearer <token>`（JWT）
-3. 都没有则返回 401
+**认证判定逻辑**：
+1. 检查请求 Header 中是否有太湖注入的 `x-tai-identity` 或 `StaffName`。
+2. 使用 `TAI_APP_TOKEN` 解密/校验用户身份。
+3. 检查用户是否在 `TOF_ALLOWED_USERS` 白名单内（为空则不限制）。
+4. 首次登录需要确认，确认后创建 8 小时会话。
 
 ---
 
 ## ⚙️ 环境变量
 
-在 `edgeone.json` 中声明，部署时在 EdgeOne 控制台配置实际值：
+内网服务器部署时在 `/opt/strategic-platform/server/.env` 中配置；EdgeOne 备份部署时在 EdgeOne Pages 控制台配置同名变量。
 
-| 变量 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `JWT_SECRET` | secret | ✅ | JWT 签名密钥（至少 32 字符） |
-| `AUTH_MODE` | text | ❌ | 认证模式：`auto`(默认) / `tof` / `jwt` |
-| `TOF_TOKEN` | secret | ⚠️ | 太湖兼容模式 Token（明文 Header） |
-| `TAI_APP_TOKEN` | secret | ⚠️ | 太湖安全模式 Token，用于 JWE 解密（推荐） |
-| `TOF_ALLOWED_USERS` | text | ❌ | 允许登录的用户 ID 列表（逗号分隔，留空则不限制） |
-| `WECOM_CORPID` | text | ❌ | 企业微信企业 ID（企业微信登录需要） |
-| `WECOM_AGENTID` | text | ❌ | 企业微信应用 ID（企业微信登录需要） |
-| `WECOM_SECRET` | secret | ❌ | 企业微信应用密钥（企业微信登录需要） |
-| `WECOM_OAUTH_TYPE` | text | ❌ | 授权类型：`qr`(扫码，默认) / `base`(静默) |
-| `WECOM_ALLOWED_DEPARTMENTS` | text | ❌ | 允许登录的部门 ID 列表（逗号分隔，留空则不限制） |
-| `WECOM_ALLOWED_USERS` | text | ❌ | 允许登录的用户 ID 列表（逗号分隔，留空则不限制；优先级高于部门） |
-| `WECOM_REDIRECT_URI` | text | ❌ | 企业微信回调地址（一般无需设置，自动推断） |
+| 变量 | 必填 | 说明 |
+|------|------|------|
+| `TAI_APP_TOKEN` | ✅ | 太湖安全模式 Token，用于解密 `x-tai-identity` |
+| `JWT_SECRET` | ✅ | 会话/JWT 签名密钥（至少 32 字符，后续部署不要随意更换） |
+| `AUTH_MODE` | ❌ | 固定建议：`auto` 或 `tof` |
+| `TOF_TOKEN` | ⚠️ | 太湖兼容模式 Token，仅在明文 Header 模式下使用 |
+| `TOF_ALLOWED_USERS` | ❌ | 允许登录的用户 ID 列表（逗号分隔，留空则不限制） |
+| `PORT` | ❌ | Node.js 后端端口，默认 `3000` |
+| `DB_PATH` | ❌ | SQLite 数据库路径，默认 `/opt/strategic-platform/server/data/strategic.db` |
 
 ### 太湖认证配置示例
 
 ```bash
 # 太湖安全模式（推荐）- 使用 JWE 解密
-AUTH_MODE=tof
+AUTH_MODE=auto
 TAI_APP_TOKEN=你的太湖应用Token（32位字符串）
+JWT_SECRET=32位以上随机字符串
 
-# 太湖兼容模式 - 使用明文 Header
-# AUTH_MODE=tof
-# TOF_TOKEN=你的NGate应用Token
-
-# 白名单：仅允许以下用户登录
+# 白名单：仅允许以下用户登录；留空表示不限制
 TOF_ALLOWED_USERS=anniexzhang,adamyide,blackyzhang,cherylzshen,dinghaoyang,ethanmhua,mercuryyan,shixu,wayynewang,zyfeizhang
-```
 
-### 企业微信白名单配置示例
-
-```bash
-# 企业微信认证模式
-AUTH_MODE=jwt
-
-# 白名单：仅允许以下用户登录（优先级高于部门）
-WECOM_ALLOWED_USERS=anniexzhang,adamyide,blackyzhang,cherylzshen,dinghaoyang,ethanmhua,mercuryyan,shixu,wayynewang,zyfeizhang
-
-# 或者按部门限制
-# WECOM_ALLOWED_DEPARTMENTS=12345,67890
+PORT=3000
+DB_PATH=/opt/strategic-platform/server/data/strategic.db
 ```
 
 ### KV 绑定
@@ -357,12 +295,9 @@ WECOM_ALLOWED_USERS=anniexzhang,adamyide,blackyzhang,cherylzshen,dinghaoyang,eth
 | 方法 | 路径 | 说明 | 认证 |
 |------|------|------|------|
 | GET | `/api/auth/me` | 获取当前用户信息 | 必需 |
-| POST | `/api/auth/login` | 本地账密登录 | 无 |
 | POST | `/api/auth/logout` | 登出 | 必需 |
-| GET | `/api/auth/check` | 检查认证状态和登录确认状态 | 无 |
-| POST | `/api/auth/confirm` | 确认登录 | 必需 |
-| GET | `/api/auth/wecom/login` | 发起企业微信授权 | 无 |
-| GET | `/api/auth/wecom/callback` | 企业微信回调 | 无 |
+| GET | `/api/auth/check` | 检查 TOF 认证状态和登录确认状态 | 无 |
+| POST | `/api/auth/confirm` | 确认首次登录 | TOF |
 | GET | `/api/auth/tof/check` | 检查 TOF 认证状态 | 无 |
 
 ### 用户管理（仅管理员）
@@ -390,26 +325,6 @@ curl https://tencentsouth.top/api/auth/me \
   "role": "admin",
   "customerIds": ["customer-001", "customer-002"],
   "authMode": "tof"
-}
-```
-
-**本地登录**
-```bash
-curl -X POST https://tencentsouth.top/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"xxx"}'
-```
-
-响应：
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIs...",
-  "user": {
-    "username": "admin",
-    "displayName": "管理员",
-    "role": "admin",
-    "customerIds": []
-  }
 }
 ```
 
@@ -469,8 +384,7 @@ curl -X POST https://tencentsouth.top/api/auth/login \
 - 跨厂商主力模型价格对比表
 
 ### 9. 登录页 (Login) `/login`
-- TOF 模式：自动跳转，用户无感知
-- 企业微信模式：显示"企业微信扫码登录"按钮
+- 太湖/TOF 模式：通过太湖注入身份信息，首次访问显示登录确认页，确认后进入系统
 
 ---
 
@@ -552,6 +466,40 @@ curl -X POST https://tencentsouth.top/api/auth/login \
 ```
 
 > 迁移完成前：**不要删除 EdgeOne Pages 项目、环境变量、KV、历史部署和回滚入口**。旧 EdgeOne 方案保留在下方「EdgeOne 备份部署方案」。
+
+### 截至目前进展（2026-04-29）
+
+**已完成**：
+
+- ✅ 内网服务器已申请，IP：`21.214.41.205`。
+- ✅ `strategicsouth.woa.com` 已在 UDNS 解析到服务器内网 IP。
+- ✅ 太湖平台站点已创建，TOF 登录已配置。
+- ✅ 本地已新增并提交内网服务器部署文件：`deploy/`、`deploy/server/`、`deploy/nginx.conf`。
+- ✅ 本地代码已推送到 GitHub `main` 分支，最新提交包含内网部署文件。
+- ✅ 服务器曾成功执行 `git clone`，项目目录为 `/opt/src/strategic-platform-src`。
+- ✅ 服务器上已成功构建前端 `dist/`，并曾将前端静态文件复制到 `/opt/strategic-platform/dist/`。
+
+**未完成**：
+
+- ⏳ 服务器尚未成功 `git pull` 到包含 `deploy/` 的最新代码。
+- ⏳ 尚未复制 `deploy/server/*` 到 `/opt/strategic-platform/server/`。
+- ⏳ 尚未配置 `/opt/strategic-platform/server/.env` 中的 `TAI_APP_TOKEN`、`JWT_SECRET` 等生产环境变量。
+- ⏳ 尚未执行后端依赖安装：`cd /opt/strategic-platform/server && npm install --production`。
+- ⏳ 尚未配置并启动 `systemd` 服务：`strategic-platform`。
+- ⏳ 尚未写入并重载 Nginx 配置：`/etc/nginx/conf.d/strategic-platform.conf`。
+- ⏳ 尚未完成服务器本地验证和域名访问验证。
+
+**当前阻塞点**：
+
+- 服务器 SSH 实际监听端口为 `30000`，但从 Mac 直连会在握手阶段被关闭，无法远程自动部署。
+- 服务器控制台存在输入异常：命令会自动变成大写，导致 `cd`、`git`、`read` 等 Linux 命令执行失败。
+- GitHub Token 曾在控制台尝试过程中输入/暴露过，建议吊销旧 Token，重新生成只读 Token 后再继续。
+
+**下次继续建议**：
+
+1. 先解决服务器控制台自动大写问题，或改用 WebShell/浏览器 SSH/云终端。
+2. 在服务器执行：`cd /opt/src/strategic-platform-src && git pull origin main`。
+3. 确认 `deploy/server/package.json` 存在后，继续执行下方「手动部署」。
 
 ### 迁移安全策略（确保迁移成功前旧站仍可用）
 
@@ -962,7 +910,6 @@ on:
 
 **新增**
 - ✨ TOF 认证支持（NGate + TOF 免登录）
-- ✨ 企业微信扫码登录支持
 - ✨ 统一认证入口 `auth-unified.ts`，自动检测认证模式
 - ✨ 行业资讯页面（News）
 - ✨ 登录页面（Login）
