@@ -17,6 +17,8 @@
   "env": [
     { "key": "JWT_SECRET", "type": "secret" },
     { "key": "AUTH_MODE", "value": "auto" },
-    { "key": "TOF_TOKEN", "type": "secret" }
+    { "key": "TOF_TOKEN", "type": "secret" },
+    { "key": "TAI_APP_TOKEN", "type": "secret", "description": "太湖 APP_TOKEN，用于解密 x-tai-identity JWE" },
+    { "key": "TOF_ALLOWED_USERS", "value": "", "description": "用户白名单，逗号分隔，为空表示不限制" }
   ]
 }

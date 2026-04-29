@@ -48,11 +48,17 @@ async function main() {
   } catch {
     console.log(body);
   }
-  console.log('\n🔑 占位账号（请上线后替换）：');
-  console.log('   admin     / Admin@2026     （管理员，所有客户）');
-  console.log('   manager1  / Manager@2026   （唯品会, 小红书）');
-  console.log('   manager2  / Manager@2026   （拼多多, TME）');
-  console.log('   manager3  / Manager@2026   （虎牙, 酷狗, 顺丰控股）');
+  console.log('\n🔑 白名单用户（默认密码：Tencent2026，首次登录后请立即修改密码）：');
+  console.log('   anniexzhang  / Tencent2026   （张小攀）');
+  console.log('   adamyide     / Tencent2026   （伊德日温）');
+  console.log('   blackyzhang  / Tencent2026   （张乐）');
+  console.log('   cherylzshen  / Tencent2026   （沈智越，管理员）');
+  console.log('   dinghaoyang  / Tencent2026   （杨丁昊）');
+  console.log('   ethanmhua    / Tencent2026   （花明）');
+  console.log('   mercuryyan   / Tencent2026   （严梦蕊）');
+  console.log('   shixu        / Tencent2026   （许适）');
+  console.log('   wayynewang   / Tencent2026   （王阳）');
+  console.log('   zyfeizhang   / Tencent2026   （张彦飞）');
 }
 
 main().catch((err) => {

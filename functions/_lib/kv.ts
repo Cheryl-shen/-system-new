@@ -27,7 +27,13 @@ export const KEYS = {
   customerListIndex: () => `index:customers`,
   report: (cid: string, rid: string) => `report:${cid}:${rid}`,
   reportIndex: (cid: string) => `index:reports:${cid}`,
-  audit: (rid: string) => `audit:${rid}`
+  audit: (rid: string) => `audit:${rid}`,
+  // 登录会话
+  session: (username: string) => `session:${username}`,
+  // 登录日志索引
+  loginLogIndex: () => `index:login_logs`,
+  // 登录日志
+  loginLog: (id: string) => `login_log:${id}`
 } as const;
 
 /** 从 KV 读 JSON，读不到返回 null */
@@ -51,6 +57,18 @@ export async function kvPutJson<T>(
   value: T
 ): Promise<void> {
   await kv.put(key, JSON.stringify(value));
+}
+
+/** 往 KV 写 JSON（带过期时间，TTL 单位秒） */
+export async function kvPut<T>(
+  kv: KVNamespace,
+  key: string,
+  value: T,
+  ttlSeconds?: number
+): Promise<void> {
+  await kv.put(key, JSON.stringify(value), {
+    expirationTtl: ttlSeconds
+  });
 }
 
 export async function kvDelete(kv: KVNamespace, key: string): Promise<void> {

@@ -1,14 +1,15 @@
 /**
- * GET /api/auth/ioa/login?redirect=/target
- * 生成 state -> 存 KV -> 302 跳转到 IOA authorize 页面。
+ * GET /api/auth/wecom/login?redirect=/target
+ * 生成 state -> 存 KV -> 302 跳转到企业微信扫码登录页面。
  */
 
 import {
-  loadIoaConfig,
+  loadWecomConfig,
   buildRedirectUri,
   randomState,
-  saveState
-} from '../../../_lib/ioa';
+  saveState,
+  buildAuthorizeUrl
+} from '../../../_lib/wecom';
 import { errors } from '../../../_lib/response';
 import type { EdgeEnv } from '../../../_lib/kv';
 
@@ -17,16 +18,23 @@ export async function onRequestGet(context: {
   env: EdgeEnv & Record<string, any>;
 }): Promise<Response> {
   const { request, env } = context;
-  const cfg = loadIoaConfig(env);
+
+  const cfg = loadWecomConfig(env);
   if (!cfg) {
     return errors.serverError(
-      'IOA 登录未配置：请在环境变量里设置 IOA_CLIENT_ID / IOA_CLIENT_SECRET'
+      '企业微信登录未配置：请在环境变量里设置 WECOM_CORPID / WECOM_AGENTID / WECOM_SECRET'
+    );
+  }
+
+  // 确保 REPORTS_KV 可用（state 需要存储）
+  if (!env.REPORTS_KV) {
+    return errors.serverError(
+      '企业微信登录需要 KV 存储支持：请绑定 REPORTS_KV 命名空间'
     );
   }
 
   const url = new URL(request.url);
   const rawRedirect = url.searchParams.get('redirect') || '/';
-  // 只允许站内相对路径，避免开放重定向
   const redirectAfter = rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')
     ? rawRedirect
     : '/';
@@ -35,13 +43,7 @@ export async function onRequestGet(context: {
   await saveState(env.REPORTS_KV, state, redirectAfter);
 
   const redirectUri = buildRedirectUri(request, cfg);
-
-  const authorizeUrl = new URL(cfg.authorizeUrl);
-  authorizeUrl.searchParams.set('response_type', 'code');
-  authorizeUrl.searchParams.set('client_id', cfg.clientId);
-  authorizeUrl.searchParams.set('redirect_uri', redirectUri);
-  authorizeUrl.searchParams.set('scope', cfg.scope);
-  authorizeUrl.searchParams.set('state', state);
+  const authorizeUrl = buildAuthorizeUrl(cfg, redirectUri, state);
 
   return new Response(null, {
     status: 302,

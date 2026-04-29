@@ -1,14 +1,25 @@
 /**
  * POST /api/auth/logout
- * 无状态 JWT，服务端仅返回 ok，前端清 token 即可
+ * 登出，清除登录会话
  */
 
 import { ok } from '../../_lib/response';
+import { loadTofConfig, getTofUser, clearLoginSession } from '../../_lib/tof';
 import type { EdgeEnv } from '../../_lib/kv';
 
-export async function onRequestPost(_context: {
+export async function onRequestPost(context: {
   request: Request;
   env: EdgeEnv;
 }): Promise<Response> {
-  return ok({ ok: true });
+  const { request, env } = context;
+  const config = loadTofConfig(env);
+  
+  if (config.enabled) {
+    const user = await getTofUser(request, config);
+    if (user) {
+      await clearLoginSession(env, user.staffName);
+    }
+  }
+  
+  return ok({ success: true, message: '已登出' });
 }

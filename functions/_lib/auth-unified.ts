@@ -1,10 +1,10 @@
 /**
  * 统一认证入口
- * 
+ *
  * 支持两种认证模式：
  * 1. TOF 模式（推荐）：通过 NGate 网关，自动从 Header 读取用户信息
- * 2. JWT 模式：本地 OAuth2 登录，从 Cookie/Authorization Header 读取 Token
- * 
+ * 2. JWT 模式：企业微信扫码登录，从 Authorization Header 读取 Token
+ *
  * 环境变量：
  * - AUTH_MODE: 'tof' | 'jwt' | 'auto'（默认 auto，自动检测）
  */
@@ -52,8 +52,8 @@ export async function requireUnifiedAuth(
   if (mode === 'tof') {
     // 强制 TOF 模式
     const tofUser = getTofUser(request);
-    if (!tofUser) {
-      throw errors.unauthorized('未通过 TOF 认证，请通过 IOA 登录');
+    if (!tofUser || !tofUser.staffName || tofUser.staffName === 'anonymous') {
+      throw errors.unauthorized('未通过 TOF 认证，请通过公司内网访问');
     }
     user = tofUser;
   } else if (mode === 'jwt') {
@@ -72,7 +72,7 @@ export async function requireUnifiedAuth(
     // 自动检测模式
     if (detectTofMode(request)) {
       const tofUser = getTofUser(request);
-      if (tofUser) {
+      if (tofUser && tofUser.staffName && tofUser.staffName !== 'anonymous') {
         user = tofUser;
       } else {
         // 尝试 JWT
@@ -85,7 +85,7 @@ export async function requireUnifiedAuth(
             throw errors.unauthorized('登录凭证无效或已过期');
           }
         } else {
-          throw errors.unauthorized('未登录，请通过 IOA 登录或本地登录');
+          throw errors.unauthorized('未登录，请通过企业微信扫码登录或本地登录');
         }
       }
     } else {
@@ -99,7 +99,7 @@ export async function requireUnifiedAuth(
           throw errors.unauthorized('登录凭证无效或已过期');
         }
       } else {
-        throw errors.unauthorized('未登录，请通过 IOA 登录或本地登录');
+        throw errors.unauthorized('未登录，请通过企业微信扫码登录或本地登录');
       }
     }
   }

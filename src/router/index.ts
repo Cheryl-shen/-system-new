@@ -23,6 +23,12 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: 'blank', public: true }
   },
   {
+    path: '/login/confirm',
+    name: 'LoginConfirm',
+    component: () => import('@/views/LoginConfirm.vue'),
+    meta: { layout: 'blank', public: true }
+  },
+  {
     path: '/',
     name: 'Home',
     component: () => import('@/views/Home.vue')

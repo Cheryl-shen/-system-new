@@ -1,29 +1,25 @@
 /**
- * GET /api/auth/ioa/callback?code=xxx&state=yyy
- * IOA 授权回调：
+ * GET /api/auth/wecom/callback?code=xxx&state=yyy
+ * 企业微信扫码登录回调：
  *   1. 校验 state（防 CSRF）
- *   2. code 换 access_token
- *   3. access_token 换 userinfo
- *   4. 取出 rtx/LoginName 作为 username
+ *   2. code 换 userid
+ *   3. 获取用户详情（含部门信息）
+ *   4. 校验组织架构权限
  *   5. 生成站内 JWT
- *   6. 302 回 /login?ioa_token=xxx&ioa_user=base64 让前端完成落地
+ *   6. 302 回 /login?wecom_token=xxx&wecom_user=base64 让前端完成落地
  *
- * 注：
- *   - 用户选择 "方案C：IOA 员工均可看全部客户"，所以登录成功后站内一律给 role=admin、customerIds=[]，
- *     不再去 KV 白名单里查，避免首次使用就卡登录。
- *   - 前端 Login.vue 会识别 query 上的 ioa_token/ioa_user，落盘到 auth store 再 replace 到目标页。
+ * 前端 Login.vue 会识别 query 上的 wecom_token/wecom_user，落盘到 auth store。
  */
 
 import {
-  loadIoaConfig,
+  loadWecomConfig,
   buildRedirectUri,
   consumeState,
-  exchangeCodeForToken,
+  exchangeCodeForUser,
   fetchUserInfo,
-  pickUsername,
-  pickDisplayName,
-  IoaError
-} from '../../../_lib/ioa';
+  checkDepartmentAccess,
+  checkUserAccess
+} from '../../../_lib/wecom';
 import { signToken } from '../../../_lib/auth';
 import type { EdgeEnv } from '../../../_lib/kv';
 
@@ -32,29 +28,31 @@ export async function onRequestGet(context: {
   env: EdgeEnv & Record<string, any>;
 }): Promise<Response> {
   const { request, env } = context;
-
   const url = new URL(request.url);
+
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
-  const iamError = url.searchParams.get('error');
 
-  if (iamError) {
+  // 用户取消授权
+  const wwErrorCode = url.searchParams.get('errcode');
+  if (wwErrorCode && wwErrorCode !== '0') {
     return redirectToLogin(
       url.origin,
       '/',
-      `IOA 授权被拒绝：${iamError}`
+      `企业微信授权被拒绝：错误码 ${wwErrorCode}`
     );
   }
+
   if (!code || !state) {
-    return redirectToLogin(url.origin, '/', 'IOA 回调缺少 code/state');
+    return redirectToLogin(url.origin, '/', '企业微信回调缺少 code/state');
   }
 
-  const cfg = loadIoaConfig(env);
+  const cfg = loadWecomConfig(env);
   if (!cfg) {
     return redirectToLogin(
       url.origin,
       '/',
-      'IOA 未配置，请联系管理员设置环境变量'
+      '企业微信未配置，请联系管理员设置环境变量'
     );
   }
 
@@ -64,37 +62,46 @@ export async function onRequestGet(context: {
     return redirectToLogin(
       url.origin,
       '/',
-      'IOA 登录 state 已过期或无效，请重试'
+      '企业微信登录 state 已过期或无效，请重试'
     );
   }
 
-  const redirectUri = buildRedirectUri(request, cfg);
-
   try {
-    // 2. code -> token
-    const tokenResp = await exchangeCodeForToken(cfg, code, redirectUri);
+    // 2. code -> userid
+    const userid = await exchangeCodeForUser(cfg, code);
 
-    // 3. token -> userinfo
-    const info = await fetchUserInfo(cfg, tokenResp.access_token);
+    // 3. 获取用户详情（含部门）
+    const userInfo = await fetchUserInfo(cfg, userid);
 
-    // 4. 取 username / displayName
-    const username = pickUsername(info);
-    if (!username) {
+    // 4. 校验组织架构权限
+    const deptCheck = checkDepartmentAccess(userInfo, cfg.allowedDepartments);
+    if (!deptCheck.ok) {
       return redirectToLogin(
         url.origin,
         stateInfo.redirectAfter,
-        'IOA 返回的用户信息中缺少用户名（rtx/LoginName）'
+        deptCheck.reason || '无权限访问本平台'
       );
     }
-    const displayName = pickDisplayName(info, username);
+
+    // 5. 校验用户白名单（如果配置了）
+    const userCheck = checkUserAccess(userid, cfg.allowedUsers);
+    if (!userCheck.ok) {
+      return redirectToLogin(
+        url.origin,
+        stateInfo.redirectAfter,
+        userCheck.reason || '无权限访问本平台'
+      );
+    }
 
     // 5. 签发站内 JWT
-    //    方案C：不做白名单，IOA 员工一律给 admin，customerIds 为空（admin 全通）
+    //    企业微信用户统一给 admin 权限（可按需调整为 manager）
     const role = 'admin' as const;
     const customerIds: string[] = [];
+    const displayName = userInfo.name || userid;
+
     const token = await signToken(
       {
-        sub: username,
+        sub: userid,
         role,
         customerIds,
         displayName
@@ -102,10 +109,10 @@ export async function onRequestGet(context: {
       env.JWT_SECRET
     );
 
-    // 6. 回到前端，通过 hash 传递 token，避免被中间日志系统记录
-    //    前端 Login.vue 识别后会立即清理 hash。
+    // 6. 回到前端，通过 URL 参数传递 token
+    //    敏感数据放 hash，不进日志、不进 referer
     const userJson = JSON.stringify({
-      username,
+      username: userid,
       displayName,
       role,
       customerIds
@@ -113,12 +120,11 @@ export async function onRequestGet(context: {
     const userB64 = base64UrlEncode(userJson);
 
     const target = new URL(url.origin + '/login');
-    target.searchParams.set('ioa', '1');
+    target.searchParams.set('wecom', '1');
     target.searchParams.set('next', stateInfo.redirectAfter || '/');
-    // 敏感数据放 hash，不进日志、不进 referer
-    const hash = `#ioa_token=${encodeURIComponent(
+    const hash = `#wecom_token=${encodeURIComponent(
       token
-    )}&ioa_user=${encodeURIComponent(userB64)}`;
+    )}&wecom_user=${encodeURIComponent(userB64)}`;
 
     return new Response(null, {
       status: 302,
@@ -127,13 +133,9 @@ export async function onRequestGet(context: {
         'Cache-Control': 'no-store'
       }
     });
-  } catch (e) {
+  } catch (e: any) {
     const msg =
-      e instanceof IoaError
-        ? e.message
-        : e instanceof Error
-        ? e.message
-        : 'IOA 登录失败';
+      e instanceof Error ? e.message : '企业微信登录失败';
     return redirectToLogin(url.origin, stateInfo.redirectAfter, msg);
   }
 }
@@ -144,7 +146,7 @@ function redirectToLogin(
   errorMsg: string
 ): Response {
   const loginUrl = new URL(origin + '/login');
-  loginUrl.searchParams.set('ioa_error', errorMsg);
+  loginUrl.searchParams.set('wecom_error', errorMsg);
   if (next && next !== '/') loginUrl.searchParams.set('next', next);
   return new Response(null, {
     status: 302,
@@ -155,7 +157,7 @@ function redirectToLogin(
   });
 }
 
-/** URL-safe base64，避免 +/= 引起 URL 转义问题 */
+/** URL-safe base64 */
 function base64UrlEncode(str: string): string {
   const b64 = btoa(unescape(encodeURIComponent(str)));
   return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');

@@ -3,7 +3,7 @@
     {
       "path": "/api/auth/login",
       "method": ["POST"],
-      "description": "用户登录"
+      "description": "用户登录（账密）"
     },
     {
       "path": "/api/auth/logout",
@@ -16,19 +16,39 @@
       "description": "获取当前登录用户信息"
     },
     {
+      "path": "/api/auth/check",
+      "method": ["GET"],
+      "description": "检查认证状态和登录确认状态"
+    },
+    {
+      "path": "/api/auth/confirm",
+      "method": ["POST"],
+      "description": "确认登录"
+    },
+    {
       "path": "/api/auth/tof/check",
       "method": ["GET"],
       "description": "检查 TOF 登录状态"
     },
     {
-      "path": "/api/auth/ioa/login",
-      "method": ["POST"],
-      "description": "IOA 认证登录"
+      "path": "/api/admin/users",
+      "method": ["GET"],
+      "description": "用户列表（仅管理员）"
     },
     {
-      "path": "/api/auth/ioa/callback",
+      "path": "/api/admin/users/:username/role",
+      "method": ["PUT"],
+      "description": "修改用户角色（仅管理员）"
+    },
+    {
+      "path": "/api/admin/users/:username/status",
+      "method": ["PUT"],
+      "description": "启用/禁用用户（仅管理员）"
+    },
+    {
+      "path": "/api/admin/login-logs",
       "method": ["GET"],
-      "description": "IOA 认证回调"
+      "description": "登录日志（仅管理员）"
     },
     {
       "path": "/api/admin/init",

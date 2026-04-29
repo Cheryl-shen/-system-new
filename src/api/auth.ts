@@ -12,7 +12,7 @@
 
 import { http } from './http';
 
-export type UserRole = 'admin' | 'manager';
+export type UserRole = 'admin' | 'manager' | 'viewer';
 
 export interface AuthUser {
   username: string;
@@ -30,6 +30,28 @@ export interface LoginResponse {
 
 export interface TofCheckResponse {
   authenticated: boolean;
+}
+
+/**
+ * 登录确认相关接口响应
+ */
+export interface CheckResponse {
+  tofEnabled: boolean;
+  authenticated: boolean;
+  sessionValid: boolean;
+  user: {
+    loginName: string;
+    staffId: string;
+    displayName: string;
+    chineseName?: string;
+  } | null;
+  message: string;
+}
+
+export interface ConfirmResponse {
+  success: boolean;
+  message: string;
+  user?: AuthUser;
 }
 
 // ============================================================
@@ -105,10 +127,10 @@ export const authApi = {
   },
 
   /**
-   * 跳转到 IOA 授权页（JWT 模式使用）
+   * 跳转到企业微信扫码授权页
    */
-  redirectToIoa(redirectAfter?: string): void {
-    const url = new URL('/api/auth/ioa/login', window.location.origin);
+  redirectToWecom(redirectAfter?: string): void {
+    const url = new URL('/api/auth/wecom/login', window.location.origin);
     if (redirectAfter && redirectAfter.startsWith('/') && !redirectAfter.startsWith('//')) {
       url.searchParams.set('redirect', redirectAfter);
     }
@@ -125,5 +147,36 @@ export const authApi = {
       return Promise.resolve({ authenticated: false });
     }
     return http.get<TofCheckResponse>('/api/auth/tof/check');
+  },
+
+  /**
+   * 检查认证状态和登录确认状态
+   * 返回是否需要显示登录确认页面
+   */
+  checkAuthStatus(): Promise<CheckResponse> {
+    if (DEV_MODE) {
+      return Promise.resolve({
+        tofEnabled: false,
+        authenticated: false,
+        sessionValid: false,
+        user: null,
+        message: '开发模式'
+      });
+    }
+    return http.get<CheckResponse>('/api/auth/check');
+  },
+
+  /**
+   * 确认登录
+   */
+  confirmLogin(): Promise<ConfirmResponse> {
+    if (DEV_MODE) {
+      return Promise.resolve({
+        success: true,
+        message: '开发模式直接成功',
+        user: DEV_MOCK_USER
+      });
+    }
+    return http.post<ConfirmResponse>('/api/auth/confirm', {});
   }
 };

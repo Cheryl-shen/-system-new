@@ -62,6 +62,20 @@
           </button>
         </form>
 
+        <!-- 企业微信扫码登录 -->
+        <div class="login-divider">
+          <span>或</span>
+        </div>
+        <button
+          type="button"
+          class="login-btn login-btn-wecom"
+          :disabled="loading"
+          @click="onWecomLogin"
+        >
+          <span class="wecom-icon">微</span>
+          企业微信扫码登录
+        </button>
+
         <div class="login-footer">
           忘记密码请联系管理员 · 内部资料严禁外传
         </div>
@@ -113,11 +127,23 @@ async function checkTofAuth() {
   try {
     const result = await authApi.checkTofAuth();
     if (result.authenticated) {
-      // 已通过 TOF 认证，获取用户信息
-      const user = await authApi.me();
-      auth.updateUser(user, 'tof');
-      router.replace(safeNext());
-      return;
+      // 已通过 TOF 认证，检查是否需要登录确认
+      const authStatus = await authApi.checkAuthStatus();
+      
+      if (authStatus.authenticated) {
+        if (authStatus.sessionValid) {
+          // 已有有效会话，直接进入系统
+          const user = await authApi.me();
+          auth.updateUser(user, 'tof');
+          router.replace(safeNext());
+          return;
+        } else {
+          // 需要登录确认，跳转到确认页面
+          const returnUrl = encodeURIComponent(safeNext());
+          router.replace(`/login/confirm?return=${returnUrl}`);
+          return;
+        }
+      }
     }
   } catch (e) {
     console.error('TOF 认证检查失败:', e);
@@ -148,7 +174,63 @@ async function onSubmit() {
   }
 }
 
+/**
+ * 企业微信扫码登录
+ */
+function onWecomLogin(): void {
+  errorMsg.value = '';
+  authApi.redirectToWecom(safeNext());
+}
+
+/**
+ * 处理企业微信回调（从 URL hash 中读取 token）
+ * 类似企业微信回调的处理方式
+ */
+function handleWecomCallback(): void {
+  const hash = window.location.hash.startsWith('#')
+    ? window.location.hash.slice(1)
+    : window.location.hash;
+  if (!hash) return;
+
+  const params = new URLSearchParams(hash);
+  const isWecom = params.get('wecom') === '1';
+  if (!isWecom) return;
+
+  const token = params.get('wecom_token');
+  const userB64 = params.get('wecom_user');
+
+  if (!token || !userB64) {
+    errorMsg.value = '企业微信登录回调参数不完整，请重试';
+    // 清理 hash，避免重复处理
+    window.location.hash = '';
+    return;
+  }
+
+  try {
+    const userJson = decodeURIComponent(userB64);
+    const user = JSON.parse(userJson) as {
+      username: string;
+      displayName: string;
+      role: 'admin' | 'manager';
+      customerIds: string[];
+    };
+
+    // 落盘到 auth store
+    auth.setAuth(token, user, 'jwt');
+    // 清理 hash（敏感数据不再留在地址栏）
+    window.location.hash = '';
+    // 跳转到目标页
+    router.replace(safeNext());
+  } catch (e) {
+    errorMsg.value = '企业微信登录信息处理失败，请重试';
+    window.location.hash = '';
+  }
+}
+
 onMounted(() => {
+  // 先处理企业微信回调（如果有的话）
+  handleWecomCallback();
+  // 再检查 TOF 认证状态
   checkTofAuth();
 });
 </script>
@@ -352,6 +434,50 @@ onMounted(() => {
   font-size: 11.5px;
   color: #94a3b8;
   letter-spacing: 0.3px;
+}
+
+/* 分隔线 */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 16px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+/* 企业微信按钮 */
+.login-btn-wecom {
+  background: #07c160;
+  box-shadow: 0 8px 18px rgba(7, 193, 96, 0.28);
+  gap: 8px;
+}
+
+.login-btn-wecom:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(7, 193, 96, 0.4);
+}
+
+.wecom-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #fff;
+  color: #07c160;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 @media (max-width: 480px) {
