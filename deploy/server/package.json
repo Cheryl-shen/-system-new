@@ -1,0 +1,17 @@
+{
+  "name": "strategic-platform-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "init-db": "node init-db.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "better-sqlite3": "^11.0.0",
+    "jose": "^5.2.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5"
+  }
+}

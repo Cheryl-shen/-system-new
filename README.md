@@ -1,6 +1,6 @@
 # 战略客户部 · 华南拓展中心 · 数据&文档汇总平台
 
-基于 Vue 3 + TypeScript + Vite 构建的内部文档管理平台，部署于 EdgeOne Pages，支持 NGate + TOF 免登录认证，用于团队日常工作所需数据和文档的统一管理。
+基于 Vue 3 + TypeScript + Vite 构建的内部文档管理平台，当前迁移到内网服务器部署，并保留 EdgeOne Pages 作为备份方案；支持太湖/TOF 免登录认证，用于团队日常工作所需数据和文档的统一管理。
 
 ---
 
@@ -69,9 +69,9 @@ strategic-platform/
 │   │   │   ├── me.ts            # 获取当前用户信息
 │   │   │   ├── login.ts         # 本地账密登录
 │   │   │   ├── logout.ts        # 登出
-│   │   │   ├── ioa/             # IOA OAuth2
-│   │   │   │   ├── login.ts     # 发起 IOA 授权
-│   │   │   │   └── callback.ts  # IOA 回调
+│   │   │   ├── wecom/           # 企业微信 OAuth2
+│   │   │   │   ├── login.ts     # 发起企业微信授权
+│   │   │   │   └── callback.ts  # 企业微信回调
 │   │   │   └── tof/             # TOF 认证
 │   │   │       └── check.ts     # 检查 TOF 状态
 │   │   └── admin/               # 管理接口
@@ -80,7 +80,7 @@ strategic-platform/
 │       ├── auth.ts              # JWT 认证工具
 │       ├── auth-unified.ts      # 统一认证入口（TOF + JWT）
 │       ├── tof.ts               # TOF 认证工具
-│       ├── ioa.ts               # IOA OAuth2 工具
+│       ├── wecom.ts             # 企业微信 OAuth2 工具
 │       ├── kv.ts                # EdgeOne KV 封装
 │       ├── password.ts          # bcrypt 密码工具
 │       ├── audit.ts             # 审计日志
@@ -90,8 +90,7 @@ strategic-platform/
 ├── scripts/                     # 脚本工具
 │   └── init-kv.ts               # 初始化 KV 数据
 ├── docs/                        # 文档
-│   ├── 内容更新SOP.md           # 内容更新标准操作流程
-│   └── ioa-auth.md             # IOA 认证方案
+│   └── 内容更新SOP.md           # 内容更新标准操作流程
 ├── edgeone.json                 # EdgeOne Pages 部署配置
 ├── index.html                   # HTML 模板
 ├── package.json                 # 项目依赖
@@ -119,12 +118,20 @@ npm install
 ### 本地开发
 
 ```bash
+# 1. 配置环境变量（可选，使用默认值也能运行）
+cp .env.example .env
+# 编辑 .env，设置 JWT_SECRET 和 TOF_ALLOWED_USERS
+
+# 2. 启动开发服务器
 npm run dev
 ```
 
 访问 http://localhost:3000
 
-> **提示**：本地开发默认使用 JWT 认证模式。TOF 模式需要在 NGate 网关后才能生效。
+> **提示**：
+> - 本地开发默认使用 JWT 认证模式
+> - 使用内置账号登录：`cherylzshen` / `Tencent2026`
+> - TOF 模式需要在 NGate 网关后才能生效
 
 ### 构建生产版本
 
@@ -143,8 +150,19 @@ npm run preview
 ### 初始化 KV 数据
 
 ```bash
+# 1. 设置环境变量
+export BASE_URL=https://your-site.edgeone.app
+export JWT_SECRET=你的JWT密钥
+
+# 2. 初始化白名单用户
 npm run init-kv
 ```
+
+> **说明**：
+> - 初始化会创建白名单用户（见 `functions/api/admin/init.ts`）
+> - 默认密码：`Tencent2026`（首次登录后请立即修改）
+> - 幂等设计：重复运行不会覆盖已有数据
+> - 强制覆盖：添加 `--force` 参数
 
 ---
 
@@ -175,10 +193,11 @@ npm run init-kv
 
 | 技术 | 说明 |
 |------|------|
-| EdgeOne Pages | 静态托管 + 边缘函数 |
-| NGate | 内部接入网关 |
-| TOF | 公司统一身份认证 |
-| IOA | 公司办公认证 |
+| 内网服务器 + Nginx | 当前生产部署：托管 Vue 静态文件并反代 `/api/*` |
+| Node.js Express | 当前生产后端：替代 EdgeOne Functions，运行在服务器 `3000` 端口 |
+| EdgeOne Pages | 备份部署：迁移完全验证前不要删除或下线 |
+| 太湖/TOF | 公司统一身份认证 |
+| 企业微信 | 企业微信扫码登录 |
 
 ---
 
@@ -186,42 +205,62 @@ npm run init-kv
 
 本项目支持**自动检测**的双模式认证，统一入口位于 `functions/_lib/auth-unified.ts`。
 
-### 模式 1：TOF 认证（生产环境）
+### 模式 1：太湖(TOF)认证（生产环境）
 
 **流程**：
 ```
-用户 → 浏览器 → tencentsouth.top
+用户 → 浏览器 → 站点域名
              ↓
-          NGate 网关
+          太湖智能网关
         （TOF 认证插件）
              ↓
-     注入 Header：
-     - StaffName: 员工英文名
-     - StaffID: 员工 ID
-     - X-Tof-Token: 签名
+     注入 Header（安全模式）：
+     - x-tai-identity: JWE 加密身份信息
+     - TIMESTAMP: 时间戳
+     - SIGNATURE: 网关签名
              ↓
-       EdgeOne Pages
+       内网服务器（Nginx + Node.js）
              ↓
-    functions/api/auth/me
-    （从 Header 读取用户）
+       /api/auth/check
+    （解密 x-tai-identity 获取用户）
 ```
+
+**安全模式（推荐）**：
+- ✅ 使用 JWE 解密 `x-tai-identity` 获取用户信息
+- ✅ 校验网关签名，防止伪造请求
+- ✅ 配置 `TAI_APP_TOKEN` 启用安全模式
+- ✅ 解密后包含：LoginName, StaffId, ChineseName, Expiration
+
+**兼容模式**：
+- 从明文 Header 读取用户信息（StaffName, StaffId）
+- 需要配置 `TOF_TOKEN`
 
 **特点**：
 - ✅ 免登录，用户无感知
 - ✅ 基于公司统一认证，安全可靠
 - ✅ 自动续期，无需管理 Token
+- ✅ 支持用户白名单控制（仅限指定用户访问）
+- ✅ 登录确认机制（首次登录需手动确认）
 
-### 模式 2：JWT 认证（开发/降级）
+**白名单控制**：
+- 在环境变量 `TOF_ALLOWED_USERS` 中配置允许登录的用户 ID（逗号分隔）
+- 留空则允许所有通过 TOF 认证的用户登录
+- 用户 ID 为员工的英文名（如 `cherylzshen`）
+
+### 模式 2：企业微信扫码登录
+
 
 **流程**：
 ```
-用户 → 登录页 → 点击"IOA 登录"
+用户 → 登录页 → 点击"企业微信扫码登录"
              ↓
-        /api/auth/ioa/login
+        /api/auth/wecom/login
              ↓
-      IOA 授权页（输入账号）
+      企业微信扫码授权页
              ↓
-        /api/auth/ioa/callback
+        /api/auth/wecom/callback
+             ↓
+   验证用户组织架构权限
              ↓
        签发 JWT Token
              ↓
@@ -231,9 +270,18 @@ npm run init-kv
 ```
 
 **特点**：
-- ✅ 支持本地开发调试
-- ✅ Token 存 localStorage，刷新不丢
-- ✅ 作为 TOF 模式的降级方案
+- ✅ 无需记忆密码，扫码即可登录
+- ✅ 支持组织架构权限控制（仅限指定部门/用户登录）
+- ✅ 自动获取企业微信用户信息（姓名等）
+
+**权限控制（两种方式，同时生效）**：
+1. **部门白名单**：在环境变量 `WECOM_ALLOWED_DEPARTMENTS` 中配置允许登录的部门 ID（逗号分隔）
+2. **用户白名单**：在环境变量 `WECOM_ALLOWED_USERS` 中配置允许登录的用户 ID（逗号分隔）
+
+- 两个白名单都为空 → 允许所有企业成员登录
+- 部门白名单非空 → 用户部门必须命中其中之一
+- 用户白名单非空 → 用户 ID 必须在白名单中（优先级高于部门）
+- 两个白名单都非空 → 满足其中之一即可
 
 ### 自动检测逻辑
 
@@ -253,10 +301,44 @@ npm run init-kv
 |------|------|------|------|
 | `JWT_SECRET` | secret | ✅ | JWT 签名密钥（至少 32 字符） |
 | `AUTH_MODE` | text | ❌ | 认证模式：`auto`(默认) / `tof` / `jwt` |
-| `TOF_TOKEN` | secret | ⚠️ | 太湖应用 Token，TOF 模式必填 |
-| `IOA_CLIENT_ID` | text | ❌ | IOA 应用 ID（JWT 模式需要） |
-| `IOA_CLIENT_SECRET` | secret | ❌ | IOA 应用密钥（JWT 模式需要） |
-| `IOA_REDIRECT_URI` | text | ❌ | IOA 回调地址 |
+| `TOF_TOKEN` | secret | ⚠️ | 太湖兼容模式 Token（明文 Header） |
+| `TAI_APP_TOKEN` | secret | ⚠️ | 太湖安全模式 Token，用于 JWE 解密（推荐） |
+| `TOF_ALLOWED_USERS` | text | ❌ | 允许登录的用户 ID 列表（逗号分隔，留空则不限制） |
+| `WECOM_CORPID` | text | ❌ | 企业微信企业 ID（企业微信登录需要） |
+| `WECOM_AGENTID` | text | ❌ | 企业微信应用 ID（企业微信登录需要） |
+| `WECOM_SECRET` | secret | ❌ | 企业微信应用密钥（企业微信登录需要） |
+| `WECOM_OAUTH_TYPE` | text | ❌ | 授权类型：`qr`(扫码，默认) / `base`(静默) |
+| `WECOM_ALLOWED_DEPARTMENTS` | text | ❌ | 允许登录的部门 ID 列表（逗号分隔，留空则不限制） |
+| `WECOM_ALLOWED_USERS` | text | ❌ | 允许登录的用户 ID 列表（逗号分隔，留空则不限制；优先级高于部门） |
+| `WECOM_REDIRECT_URI` | text | ❌ | 企业微信回调地址（一般无需设置，自动推断） |
+
+### 太湖认证配置示例
+
+```bash
+# 太湖安全模式（推荐）- 使用 JWE 解密
+AUTH_MODE=tof
+TAI_APP_TOKEN=你的太湖应用Token（32位字符串）
+
+# 太湖兼容模式 - 使用明文 Header
+# AUTH_MODE=tof
+# TOF_TOKEN=你的NGate应用Token
+
+# 白名单：仅允许以下用户登录
+TOF_ALLOWED_USERS=anniexzhang,adamyide,blackyzhang,cherylzshen,dinghaoyang,ethanmhua,mercuryyan,shixu,wayynewang,zyfeizhang
+```
+
+### 企业微信白名单配置示例
+
+```bash
+# 企业微信认证模式
+AUTH_MODE=jwt
+
+# 白名单：仅允许以下用户登录（优先级高于部门）
+WECOM_ALLOWED_USERS=anniexzhang,adamyide,blackyzhang,cherylzshen,dinghaoyang,ethanmhua,mercuryyan,shixu,wayynewang,zyfeizhang
+
+# 或者按部门限制
+# WECOM_ALLOWED_DEPARTMENTS=12345,67890
+```
 
 ### KV 绑定
 
@@ -277,9 +359,20 @@ npm run init-kv
 | GET | `/api/auth/me` | 获取当前用户信息 | 必需 |
 | POST | `/api/auth/login` | 本地账密登录 | 无 |
 | POST | `/api/auth/logout` | 登出 | 必需 |
-| GET | `/api/auth/ioa/login` | 发起 IOA 授权 | 无 |
-| GET | `/api/auth/ioa/callback` | IOA 回调 | 无 |
+| GET | `/api/auth/check` | 检查认证状态和登录确认状态 | 无 |
+| POST | `/api/auth/confirm` | 确认登录 | 必需 |
+| GET | `/api/auth/wecom/login` | 发起企业微信授权 | 无 |
+| GET | `/api/auth/wecom/callback` | 企业微信回调 | 无 |
 | GET | `/api/auth/tof/check` | 检查 TOF 认证状态 | 无 |
+
+### 用户管理（仅管理员）
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| GET | `/api/admin/users` | 用户列表 | admin |
+| PUT | `/api/admin/users/:username/role` | 修改用户角色 | admin |
+| PUT | `/api/admin/users/:username/status` | 启用/禁用用户 | admin |
+| GET | `/api/admin/login-logs` | 登录日志 | admin |
 
 ### 请求示例
 
@@ -377,7 +470,7 @@ curl -X POST https://tencentsouth.top/api/auth/login \
 
 ### 9. 登录页 (Login) `/login`
 - TOF 模式：自动跳转，用户无感知
-- JWT 模式：显示"IOA 登录"按钮
+- 企业微信模式：显示"企业微信扫码登录"按钮
 
 ---
 
@@ -438,7 +531,187 @@ curl -X POST https://tencentsouth.top/api/auth/login \
 
 ## 🌐 部署指南
 
-### 首次部署
+### 当前目标架构：内网服务器部署（主方案）
+
+你已完成前置条件：
+
+- ✅ 内网服务器已申请
+- ✅ `strategicsouth.woa.com` 已解析到服务器内网 IP
+- ✅ 太湖平台站点已创建
+- ✅ TOF 登录已配置
+
+当前部署链路：
+
+```text
+用户浏览器
+  → strategicsouth.woa.com
+  → 太湖/TOF 鉴权并注入身份 Header
+  → 内网服务器 Nginx:80
+      ├─ /              → /opt/strategic-platform/dist/（Vue 静态文件）
+      └─ /api/*         → 127.0.0.1:3000（Node.js Express 后端）
+```
+
+> 迁移完成前：**不要删除 EdgeOne Pages 项目、环境变量、KV、历史部署和回滚入口**。旧 EdgeOne 方案保留在下方「EdgeOne 备份部署方案」。
+
+### 迁移安全策略（确保迁移成功前旧站仍可用）
+
+1. **保留 EdgeOne Pages 最新成功部署**：不要删除 `edgeone.json`、`functions/`、EdgeOne Pages 项目和控制台配置。
+2. **先本机和服务器本地验证，再切正式入口**：服务器上先通过 `curl http://localhost/api/health`、`curl http://localhost/` 验证。
+3. **保留回滚路径**：如果新服务器异常，回滚到 EdgeOne 的方式是把入口重新切回原 EdgeOne/网关配置，并继续使用 EdgeOne Pages 控制台里的最新成功部署。
+4. **Nginx 配置先备份再覆盖**：`deploy/deploy.sh` 会备份 `/etc/nginx/conf.d/strategic-platform.conf` 到 `/etc/nginx/backup/`。
+5. **服务器 `.env` 不要随部署覆盖**：首次部署写入真实环境变量；后续更新代码时保留原 `.env`。
+
+### 一键部署到内网服务器（推荐）
+
+在本地项目目录执行：
+
+```bash
+cd /Users/cherylshen/CodeBuddy/战略客户部\ ·\ 华南拓展中心\ ·\ 数据\&文档汇总平台
+
+# 必填：从太湖平台应用概览获取 APP_TOKEN；JWT_SECRET 使用 32 位以上随机字符串
+export TAI_APP_TOKEN='你的太湖APP_TOKEN'
+export JWT_SECRET='请替换为32位以上随机字符串'
+
+# 可选：限制可访问用户，留空表示不限制
+export TOF_ALLOWED_USERS='anniexzhang,adamyide,blackyzhang,cherylzshen,dinghaoyang,ethanmhua,mercuryyan,shixu,wayynewang,zyfeizhang'
+
+# 将 root@内网IP 替换为你的服务器 SSH 地址
+bash deploy/deploy.sh root@你的服务器内网IP
+```
+
+脚本会完成：
+
+1. 在服务器安装/检查 `Nginx`、`Node.js 18+`、编译依赖。
+2. 本地执行 `npm run build` 生成 `dist/`。
+3. 上传 `dist/` 到 `/opt/strategic-platform/dist/`。
+4. 上传 `deploy/server/` 下的 Express 后端到 `/opt/strategic-platform/server/`。
+5. 配置 `systemd` 服务 `strategic-platform`。
+6. 配置 Nginx：静态资源走 `dist/`，`/api/*` 反代到 `127.0.0.1:3000`。
+7. 执行健康检查。
+
+### 首次部署后在服务器确认配置
+
+登录服务器：
+
+```bash
+ssh root@你的服务器内网IP
+cd /opt/strategic-platform/server
+cat .env
+```
+
+确认 `.env` 至少包含：
+
+```bash
+TAI_APP_TOKEN=你的太湖APP_TOKEN
+AUTH_MODE=auto
+TOF_ALLOWED_USERS=允许访问的英文名列表，或留空
+JWT_SECRET=32位以上随机字符串
+PORT=3000
+DB_PATH=/opt/strategic-platform/server/data/strategic.db
+```
+
+如果需要手动修改：
+
+```bash
+vim /opt/strategic-platform/server/.env
+systemctl restart strategic-platform
+```
+
+### 服务器验证命令
+
+```bash
+# 1. 后端健康检查
+curl -s http://localhost/api/health
+
+# 2. TOF 检查：本地直连不会有太湖 Header，authenticated=false 属于正常现象
+curl -s http://localhost/api/auth/check
+
+# 3. 首页静态资源
+curl -I http://localhost/
+
+# 4. 服务状态
+systemctl status strategic-platform --no-pager
+systemctl status nginx --no-pager
+
+# 5. 实时日志
+journalctl -u strategic-platform -f
+```
+
+浏览器访问：
+
+```text
+http://strategicsouth.woa.com
+```
+
+预期现象：
+
+- ✅ 能打开页面：Vue 静态资源部署成功。
+- ✅ 首次访问出现登录确认页：太湖 Header 已注入，等待用户确认。
+- ✅ 确认后进入首页：TOF + 会话生效。
+- ⚠️ 一直显示普通登录页：检查太湖站点是否正确回源到服务器，以及 Header 是否透传。
+- ⚠️ `/api/*` 404 或 502：检查 `strategic-platform` 服务和 Nginx 反代。
+
+### 后续增量部署到内网服务器
+
+仅更新前端和后端代码时：
+
+```bash
+export TAI_APP_TOKEN='你的太湖APP_TOKEN'
+export JWT_SECRET='当前服务器正在使用的JWT_SECRET'
+bash deploy/deploy.sh root@你的服务器内网IP
+```
+
+> 注意：后续部署不要随意更换 `JWT_SECRET`，否则已有 JWT 登录态会失效。
+
+### 手动部署（脚本失败时使用）
+
+```bash
+# 本地构建
+npm install
+npm run build
+
+# 服务器创建目录
+ssh root@你的服务器内网IP 'mkdir -p /opt/strategic-platform/{dist,server/data,logs}'
+
+# 上传前端和后端
+scp -r dist/* root@你的服务器内网IP:/opt/strategic-platform/dist/
+scp deploy/server/package.json deploy/server/server.js deploy/server/db.js deploy/server/tof.js root@你的服务器内网IP:/opt/strategic-platform/server/
+scp deploy/nginx.conf root@你的服务器内网IP:/etc/nginx/conf.d/strategic-platform.conf
+
+# 服务器安装依赖并启动
+ssh root@你的服务器内网IP
+cd /opt/strategic-platform/server
+npm install --production
+vim .env
+systemctl restart strategic-platform
+nginx -t && systemctl reload nginx
+```
+
+### 常用运维命令
+
+```bash
+# 重启应用
+systemctl restart strategic-platform
+
+# 查看应用日志
+journalctl -u strategic-platform -n 100 --no-pager
+journalctl -u strategic-platform -f
+
+# 查看 Nginx 配置和日志
+nginx -t
+systemctl reload nginx
+tail -f /var/log/nginx/access.log
+tail -f /var/log/nginx/error.log
+
+# 查看部署目录
+ls -lah /opt/strategic-platform
+ls -lah /opt/strategic-platform/dist
+ls -lah /opt/strategic-platform/server
+```
+
+### EdgeOne 备份部署方案（保留，不作为当前主方案）
+
+迁移完全验证前，EdgeOne 方案作为备份保留：
 
 ```bash
 # 1. 安装 EdgeOne CLI
@@ -454,46 +727,17 @@ npm run build
 edgeone pages deploy
 ```
 
-### 增量部署
+增量部署到 EdgeOne：
 
-每次代码更新后：
 ```bash
 npm run build && edgeone pages deploy
 ```
 
-### 配置 NGate + TOF
+EdgeOne 环境变量仍按原配置保留：
 
-#### 步骤 1：UDNS 域名解析
-
-- 访问 http://udns.woa.com
-- 申请域名 `tencentsouth.top`
-- 解析类型：CNAME
-- 解析内容：`gz.ngate.woa.com`
-- 域名类型：其他
-- 归属 BG：CSIG 云与智慧产业事业群
-
-#### 步骤 2：NGate 接入
-
-- 访问 https://ngate.woa.com
-- 创建系统 → 创建应用
-- 绑定域名：`tencentsouth.top`
-- 创建路由：
-  - 路径：`/*`
-  - 后端地址：EdgeOne Pages 域名（`xxx.pages.edgeone.woa.com`）
-- 启用 **TOF 认证插件**
-- 获取 **太湖应用 Token**
-
-#### 步骤 3：环境变量配置
-
-在 EdgeOne Pages 控制台 → 项目设置 → 环境变量：
-- `TOF_TOKEN` = 太湖应用 Token
+- `TAI_APP_TOKEN` = 太湖应用 Token（32位，JWE 解密用）
 - `JWT_SECRET` = 自定义强密钥（至少 32 字符）
-
-#### 步骤 4：验证
-
-访问 `https://tencentsouth.top`：
-- ✅ 自动跳转且无需登录 → TOF 模式生效
-- ⚠️ 显示登录页 → 检查 NGate 路由和 TOF 插件
+- `TOF_ALLOWED_USERS` = 允许的用户列表（逗号分隔，留空则不限制）
 
 ---
 
@@ -511,8 +755,26 @@ npm run build && edgeone pages deploy
 ### Q4：EdgeOne KV 如何查看数据？
 **A**：在 EdgeOne 控制台 → 边缘函数 → KV 命名空间中查看。
 
-### Q5：TOF Header 包含哪些字段？
-**A**：
+### Q5：太湖网关 Header 包含哪些字段？
+**A**（安全模式）：
+```
+x-tai-identity:  JWE 加密身份信息（需 APP_TOKEN 解密）
+TIMESTAMP:      Unix 时间戳（秒）
+SIGNATURE:      网关签名（SHA256 校验）
+X-Rio-Seq:      请求序列号
+```
+
+解密后 payload 示例：
+```json
+{
+  "LoginName": "cherylshen",
+  "StaffId": 12345,
+  "ChineseName": "沈晨曦",
+  "Expiration": "2026-04-28T12:00:00+08:00"
+}
+```
+
+**A**（兼容模式 - 旧版）：
 ```
 StaffName:    员工英文名（如 cherylshen）
 StaffID:      员工 ID
@@ -563,7 +825,6 @@ edgeone whoami
 - [EdgeOne Functions 文档](https://pages.edgeone.ai/document/edgeone-functions)
 - [NGate 接入指引](https://ngate.woa.com/)
 - [TOF 认证文档](https://iwiki.woa.com/) (搜索 "TOF 认证")
-- [IOA 认证方案](./docs/ioa-auth.md)
 
 ---
 
@@ -576,7 +837,74 @@ edgeone whoami
 
 ---
 
+## 📝 待办事项
+
+### 🔄 数据自动更新（按优先级排序）
+
+| 优先级 | 模块 | 自动化内容 | 实现方式 | 状态 |
+|--------|------|------------|----------|------|
+| ⭐⭐⭐ | 模型商价格动态 | 爬取 4 家厂商官方定价页，自动对比并更新 `modelPriceData.ts` | GitHub Actions + TypeScript 爬取脚本 | 📋 待开发 |
+| ⭐⭐ | AI 与云商动态 | 爬取 ai.hubtoday.app + 官方博客，AI 生成摘要并插入 `newsData.ts` | Puppeteer + CodeBuddy SDK | 📋 待开发 |
+| ⭐⭐ | 官网上新 | 爬取腾讯云新品发布页，自动分类插入 `newProductsData.ts` | GitHub Actions + 爬取脚本 | 📋 待开发 |
+| ⭐ | 成本变化 | RSS 订阅 + 关键词监控厂商涨价公告 | RSS Parser + 关键词匹配 | 📋 待开发 |
+| ⭐ | 客户战略分析 | AI 搜索财报/新闻，生成摘要待人工审核 | CodeBuddy SDK + 人工审核流程 | 💡 规划中 |
+
+### 🛠️ 实现步骤（参考）
+
+#### 第一步：创建爬取脚本
+```bash
+mkdir -p scripts/data-sync
+touch scripts/data-sync/fetch-ai-news.ts
+touch scripts/data-sync/fetch-model-prices.ts
+touch scripts/data-sync/fetch-new-products.ts
+```
+
+#### 第二步：配置 GitHub Actions
+```yaml
+# .github/workflows/data-sync.yml
+name: 数据同步（自动爬取）
+on:
+  schedule:
+    - cron: '0 1 * * 1'   # 每周一 09:00 北京时间（模型价格）
+    - cron: '0 0 * * *'   # 每天 08:00 北京时间（AI 动态）
+  workflow_dispatch:
+```
+
+#### 第三步：参考文档
+- 自动化方案详见：「AI与云商动态板块」skill 文档
+- 数据更新 SOP：`docs/内容更新SOP.md`
+- 模型商定价页清单：`src/data/modelPriceData.ts` 头部注释
+
+---
+
 ## 📅 更新日志
+
+### v1.4.0 (2026-04-28)
+
+**新增 - 太湖鉴权安全模式**
+- ✨ JWE 解密支持：使用 `x-tai-identity` 获取加密用户信息
+- ✨ 登录确认机制：首次登录需手动确认（返回 449 状态码）
+- ✨ 登录确认页面（`LoginConfirm.vue`）
+- ✨ 用户管理 API：
+  - `GET /api/admin/users` - 用户列表
+  - `PUT /api/admin/users/:username/role` - 修改角色
+  - `PUT /api/admin/users/:username/status` - 启用/禁用
+  - `GET /api/admin/login-logs` - 登录日志
+- ✨ 用户管理模块（`functions/_lib/users.ts`）
+- ✨ 管理员权限中间件（`functions/_lib/admin.ts`）
+- ✨ 登录会话管理（8小时有效期）
+
+**环境变量更新**
+- 新增 `TAI_APP_TOKEN`：太湖安全模式 Token（JWE 解密用）
+- 优先使用 `TAI_APP_TOKEN`，回退到 `TOF_TOKEN`
+
+**优化**
+- ⚡ `functions/_lib/tof.ts` 重构：添加 JWE 解密、登录会话管理
+- ⚡ `functions/_lib/kv.ts` 增强：添加 session 和 loginLog Key
+- ⚡ `src/api/auth.ts` 更新：添加 checkAuthStatus、confirmLogin
+- ⚡ README 更新：太湖安全模式配置说明
+
+---
 
 ### v1.3.0 (2026-04-27)
 
@@ -634,7 +962,7 @@ edgeone whoami
 
 **新增**
 - ✨ TOF 认证支持（NGate + TOF 免登录）
-- ✨ JWT 认证支持（IOA OAuth2 登录）
+- ✨ 企业微信扫码登录支持
 - ✨ 统一认证入口 `auth-unified.ts`，自动检测认证模式
 - ✨ 行业资讯页面（News）
 - ✨ 登录页面（Login）
