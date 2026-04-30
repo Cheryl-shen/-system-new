@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 import { authApi } from '@/api/auth';
 
 interface TofUser {
@@ -53,15 +54,8 @@ interface TofUser {
   chineseName?: string;
 }
 
-interface CheckResponse {
-  tofEnabled: boolean;
-  authenticated: boolean;
-  sessionValid: boolean;
-  user: TofUser | null;
-  message: string;
-}
-
 const router = useRouter();
+const auth = useAuthStore();
 const loading = ref(false);
 const user = ref<TofUser | null>(null);
 const statusMessage = ref('');
@@ -75,23 +69,17 @@ const displayName = computed(() => {
 /** 获取认证状态 */
 async function checkAuth() {
   try {
-    const res = await fetch('/api/auth/check', { credentials: 'same-origin' });
-    const data: CheckResponse = await res.json();
+    const result = await authApi.checkAuthStatus();
     
-    if (data.authenticated && data.user) {
-      user.value = data.user;
+    if (result.authenticated && result.user) {
+      user.value = result.user;
       
       // 如果已有有效会话，直接跳转
-      if (data.sessionValid) {
-        handleLoginSuccess(data.user);
+      if (result.sessionValid) {
+        handleLoginSuccess(result.user);
         return;
       }
-      
-      // 检查是否需要确认登录
-      if (res.status === 449 || data.message === '需要确认登录') {
-        // 显示确认页面
-        return;
-      }
+      // 否则显示确认页面，等待用户点击确认
     } else {
       // 未认证，跳转到登录页
       router.replace('/login');
@@ -109,29 +97,27 @@ async function onConfirm() {
   statusMessage.value = '';
   
   try {
-    const res = await fetch('/api/auth/confirm', {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json' }
-    });
+    const result = await authApi.confirmLogin();
     
-    const data = await res.json();
-    
-    if (data.success) {
+    if (result.success) {
       statusMessage.value = '✓ 登录成功，正在跳转...';
       statusType.value = 'success';
       
       // 延迟跳转
       setTimeout(() => {
-        handleLoginSuccess(data.user);
+        if (result.user) {
+          handleLoginSuccess(result.user);
+        } else {
+          router.replace('/');
+        }
       }, 800);
     } else {
-      statusMessage.value = data.error || '登录失败';
+      statusMessage.value = result.message || '登录失败';
       statusType.value = 'error';
       loading.value = false;
     }
-  } catch (e) {
-    statusMessage.value = '网络错误，请重试';
+  } catch (e: any) {
+    statusMessage.value = e?.message || '网络错误，请重试';
     statusType.value = 'error';
     loading.value = false;
   }
@@ -140,9 +126,24 @@ async function onConfirm() {
 /** 处理登录成功 */
 function handleLoginSuccess(userData: any) {
   // 更新 auth store
-  const auth = window.__AUTH_STORE__;
-  if (auth) {
-    auth.updateUser(userData, 'tof');
+  if (userData) {
+    auth.updateUser({
+      username: userData.loginName || userData.username,
+      displayName: userData.displayName || userData.chineseName || userData.loginName,
+      role: userData.role || 'manager',
+      customerIds: userData.customerIds || [],
+      authMode: 'tof'
+    }, 'tof');
+    // 设置一个 token 标记（TOF 模式不需要真正的 JWT token，但 store 需要 token 存在来判断 isLoggedIn）
+    if (!auth.token) {
+      auth.setAuth('tof-session-active', {
+        username: userData.loginName || userData.username,
+        displayName: userData.displayName || userData.chineseName || userData.loginName,
+        role: userData.role || 'manager',
+        customerIds: userData.customerIds || [],
+        authMode: 'tof'
+      }, 'tof');
+    }
   }
   
   // 跳转

@@ -4,7 +4,7 @@
 import express from 'express';
 import { SignJWT, jwtVerify } from 'jose';
 import bcrypt from 'bcryptjs';
-import { getTofUser, isTofAuthenticated, loadTofConfig } from './tof.js';
+import { getTofUser, isTofAuthenticated, verifyGatewaySignature, loadTofConfig } from './tof.js';
 import * as db from './db.js';
 
 const app = express();
@@ -198,6 +198,14 @@ app.get('/api/auth/check', async (req, res) => {
     return res.json({ ok: true, data: { tofEnabled: false, authenticated: false, sessionValid: false, user: null, message: 'TOF 未启用' } });
   }
 
+  // 安全模式下校验网关签名
+  if (tofConfig.safeMode && isTofAuthenticated(req)) {
+    const signatureValid = verifyGatewaySignature(req, tofConfig);
+    if (!signatureValid) {
+      return res.json({ ok: true, data: { tofEnabled: true, authenticated: false, sessionValid: false, user: null, message: '网关签名校验失败，请确认通过内网域名访问' } });
+    }
+  }
+
   const tofUser = await getTofUser(req, tofConfig);
   if (!tofUser) {
     return res.json({ ok: true, data: { tofEnabled: true, authenticated: false, sessionValid: false, user: null, message: '未检测到 TOF 认证信息' } });
@@ -217,6 +225,14 @@ app.get('/api/auth/check', async (req, res) => {
 app.post('/api/auth/confirm', async (req, res) => {
   if (!tofConfig.enabled) {
     return res.status(403).json({ ok: false, error: { code: 'FORBIDDEN', message: 'TOF 未启用' } });
+  }
+
+  // 安全模式下校验网关签名
+  if (tofConfig.safeMode) {
+    const signatureValid = verifyGatewaySignature(req, tofConfig);
+    if (!signatureValid) {
+      return res.status(403).json({ ok: false, error: { code: 'FORBIDDEN', message: '网关签名校验失败，请通过内网域名访问' } });
+    }
   }
 
   const tofUser = await getTofUser(req, tofConfig);
@@ -280,7 +296,23 @@ function formatUser(dbUser) {
 // TOF 检查路由
 // ============================================================
 app.get('/api/auth/tof/check', (req, res) => {
-  res.json({ ok: true, data: { authenticated: isTofAuthenticated(req) } });
+  if (!tofConfig.enabled) {
+    return res.json({ ok: true, data: { authenticated: false } });
+  }
+  // 检查是否有太湖网关注入的 Header
+  const hasTofHeaders = isTofAuthenticated(req);
+  if (!hasTofHeaders) {
+    return res.json({ ok: true, data: { authenticated: false } });
+  }
+  // 校验网关签名（安全模式下必须通过签名校验才算 authenticated）
+  if (tofConfig.safeMode) {
+    const signatureValid = verifyGatewaySignature(req, tofConfig);
+    if (!signatureValid) {
+      console.warn('[TOF] 网关签名校验失败，可能是直接伪造请求');
+      return res.json({ ok: true, data: { authenticated: false, reason: 'signature_failed' } });
+    }
+  }
+  return res.json({ ok: true, data: { authenticated: true } });
 });
 
 // ============================================================
