@@ -269,6 +269,20 @@ export const salesGuideData: AmmoProduct[] = [
         updatedAt: '2026-04'
       },
       {
+        name: '【腾讯文档】TokenHub 国内模型报价表',
+        url: 'https://doc.weixin.qq.com/sheet/e3_AdIA9wZkAMYCNPO700K5YSe04Wn4d?scode=AJEAIQdfAAojjF5R4nAaoAsgb_ADs&tab=BB08J2',
+        type: '报价表',
+        owner: 'TokenHub BD',
+        updatedAt: '2026-05'
+      },
+      {
+        name: '【腾讯文档】TokenHub 国外模型报价表',
+        url: 'https://doc.weixin.qq.com/sheet/e3_AcwAMAbJAPECNG3jounAtT8mDkziO?scode=AJEAIQdfAAoJfJxwaFAaoAsgb_ADs&tab=78ric9',
+        type: '报价表',
+        owner: 'TokenHub BD',
+        updatedAt: '2026-05'
+      },
+      {
         name: '【待补充】TokenHub 报价总表（2026 Q2）',
         url: '',
         type: '报价表',

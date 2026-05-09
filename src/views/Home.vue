@@ -96,7 +96,7 @@ const currentPeriod = computed(() => {
 
 // 动态统计数据（模拟从API获取）
 const stats = ref({
-  categoryCount: 7,
+  categoryCount: 9,
   totalRecords: 28,
   lastUpdate: '2026-04-20 18:00'
 })
@@ -340,7 +340,7 @@ const loadStats = async () => {
   // TODO: 替换为实际API调用
   setTimeout(() => {
     stats.value = {
-      categoryCount: 8,
+      categoryCount: 9,
       totalRecords: 30,
       lastUpdate: new Date().toISOString().slice(0, 16).replace('T', ' ')
     }

@@ -220,74 +220,82 @@ reason: '涨价原因说明'
 
 ---
 
-## 四、更新发布流程
+## 四、更新发布流程（标准 SOP）
 
-### 方式一：一键部署脚本（推荐）
+> ⚠️ **重要**：以下是唯一标准的部署流程，每次更新必须严格按此步骤执行，不可跳步。
+
+### Step 1：本地提交代码
 
 ```bash
-# 1. 拉取最新代码
 cd /Users/cherylshen/Desktop/platform
-git pull origin main
-
-# 2. 修改对应的数据文件（按第三章指引）
-
-# 3. 提交代码
 git add -A
-git commit -m "更新：描述本次更新内容"
+git commit -m "release: vX.X.X - 描述本次更新内容"
+```
+
+> 💡 commit message 使用 `release: vX.X.X - 简要描述` 格式，版本号递增。
+
+### Step 2：推送到远程仓库
+
+```bash
 git push origin main
-
-# 4. 执行一键部署脚本
-bash deploy/deploy.sh root@21.214.41.205
 ```
 
-> 部署脚本会自动完成：本地构建 → 上传文件 → 安装依赖 → 重启服务
-
-### 方式二：仅前端更新（数据修改后快速部署）
+### Step 3：本地构建确认
 
 ```bash
-# 1. 本地构建
-cd /Users/cherylshen/Desktop/platform
 npm run build
-
-# 2. 打包并上传
-tar -czf dist-update.tar.gz dist/
-scp dist-update.tar.gz root@21.214.41.205:/tmp/
-
-# 3. SSH 到服务器解压部署
-ssh root@21.214.41.205
-cd /tmp && tar -xzf dist-update.tar.gz
-cp -r dist/* /opt/strategic-platform/dist/
-systemctl reload nginx
 ```
 
-### 方式三：Git 拉取更新（服务器已克隆仓库）
+> 确认构建成功无报错后再进行下一步。
+
+### Step 4：生成服务器端一键部署命令
+
+由于无法直接 SSH 到服务器，需要通过 **WebShell**（堡垒机）执行以下一键命令：
+
+#### 仅前端更新（最常用，数据/页面修改）
 
 ```bash
-ssh root@21.214.41.205
-cd /opt/strategic-platform-src
-git pull origin main
-npm run build
-cp -r dist/* /opt/strategic-platform/dist/
-cp deploy/server/*.js /opt/strategic-platform/server/
-cd /opt/strategic-platform/server && npm install --production
-systemctl restart strategic-platform && systemctl reload nginx
+cd /opt/strategic-platform-src && git pull origin main && npm run build && cp -r dist/* /opt/strategic-platform/dist/ && systemctl reload nginx && echo "✅ Frontend update completed"
 ```
 
-### 部署状态检查
+#### 前后端全量更新（涉及后端改动时）
 
-部署后，可通过以下方式验证：
 ```bash
-# 检查 API 服务状态
-curl -s http://strategicsouth.woa.com/api/health
-
-# 检查 systemd 服务状态
-ssh root@21.214.41.205 "systemctl status strategic-platform"
-
-# 查看实时日志
-ssh root@21.214.41.205 "journalctl -u strategic-platform -f --lines=20"
+cd /opt/strategic-platform-src && git pull origin main && npm run build && cp -r dist/* /opt/strategic-platform/dist/ && cp deploy/server/*.js /opt/strategic-platform/server/ && cd /opt/strategic-platform/server && npm install --production && systemctl restart strategic-platform && systemctl reload nginx && echo "✅ Full update completed"
 ```
 
-> 部署成功后，访问 `strategicsouth.woa.com` 即可看到更新内容。
+### Step 5：验证部署结果
+
+在 WebShell 中执行：
+
+```bash
+echo "=== Health Check ===" && curl -s http://localhost/api/health && echo "" && echo "=== Service Status ===" && systemctl is-active strategic-platform && systemctl is-active nginx && echo "=== Port Listening ===" && ss -tlnp | grep -E ':(80|3000)\s' && echo "" && echo "✅ Update verified! Visit https://strategicsouth.woa.com"
+```
+
+---
+
+### 📌 流程速记（5 步走）
+
+| 步骤 | 操作 | 环境 |
+|------|------|------|
+| 1 | `git add -A` + `git commit` | 本地 |
+| 2 | `git push origin main` | 本地 |
+| 3 | `npm run build`（确认构建成功） | 本地 |
+| 4 | WebShell 执行一键部署命令 | 服务器 |
+| 5 | WebShell 执行验证命令 | 服务器 |
+
+---
+
+### ⚡ AI 助手执行规范
+
+当用户说「部署」「更新」「发布」时，AI 助手必须：
+1. 严格按 Step 1 → Step 5 顺序执行
+2. 每一步完成后确认结果再进行下一步
+3. Step 4 生成一键命令供用户在 WebShell 中粘贴执行
+4. Step 5 提供验证命令确保服务正常
+5. 不跳步、不遗漏、不合并步骤
+
+> 部署成功后，访问 `https://strategicsouth.woa.com` 即可看到更新内容。
 
 ---
 
