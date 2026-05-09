@@ -216,57 +216,288 @@
 
     <!-- 全球云厂商涨价动态 -->
     <div v-if="mainTab === 'price'" class="content-section">
-      <!-- 【本周新增涨价公告】 -->
-      <div class="weekly-alert-section">
-        <div class="weekly-alert-head">
-          <span class="wa-icon">🔔</span>
-          <h3 class="wa-title">云厂商涨价动态 | 本周新增（4月19-25日）</h3>
+      <!-- 三个并列入口卡片 -->
+      <div class="alert-entry-grid">
+        <div 
+          class="alert-entry-card price-entry"
+          :class="{ active: activeAlertModal === 'price' }"
+          @click="toggleAlertModal('price')"
+        >
+          <div class="aec-icon">📈</div>
+          <div class="aec-content">
+            <h4 class="aec-title">云厂商涨价动态</h4>
+            <p class="aec-desc">{{ priceChangeNews.length }} 条涨价 · 15 家云商策略对比</p>
+            <div class="aec-highlights">
+              <span class="aec-tag hot">🔥 最高 +463%</span>
+              <span class="aec-tag new">本周新增 7 条</span>
+            </div>
+          </div>
+          <span class="aec-arrow">{{ activeAlertModal === 'price' ? '收起 ▲' : '展开 ▼' }}</span>
         </div>
-        <p class="wa-intro">本周数据已同步更新，重点关注以下新增动态：</p>
-        <div class="wa-body">
-          <div class="wa-vendor-block">
-            <div class="wa-vendor-title">
-              <span class="wa-vt-icon" style="background:#fff7ed;color:#ff6a00">🟠</span>
-              <strong>阿里云 HappyHorse 视频 API（新增重磅）</strong>
+
+        <div 
+          class="alert-entry-card deprecated-entry"
+          :class="{ active: activeAlertModal === 'deprecated' }"
+          @click="toggleAlertModal('deprecated')"
+        >
+          <div class="aec-icon">🚨</div>
+          <div class="aec-content">
+            <h4 class="aec-title">产品下线 / 停服告警</h4>
+            <p class="aec-desc">{{ deprecatedProducts.length }} 条告警 · {{ deprecatedVendorsCount }} 家云商</p>
+            <div class="aec-highlights">
+              <span class="aec-tag critical">🔴 {{ shutdownCount }} 项停服</span>
+              <span class="aec-tag warning">🟠 {{ eolCount }} 项 EOL</span>
             </div>
-            <ul class="wa-list">
-              <li><strong>4月20日官宣</strong>：HappyHorse-1.0 视频模型将于 <strong>4月27日</strong>通过百炼平台开放企业级 API 邀测，<strong>5月推出商用版</strong>。登顶 Artificial Analysis 视频榜第一，直接对标字节 Seedance 2.0</li>
-              <li><strong>7月15日生效</strong>：此前公告 DDoS 高防（中国内地）弹性95费用上调 <strong>50%</strong>（100元→150元/兆瓦月）</li>
-            </ul>
           </div>
-          <div class="wa-vendor-block">
-            <div class="wa-vendor-title">
-              <span class="wa-vt-icon" style="background:#fef2f2;color:#dc2626">🌋</span>
-              <strong>火山引擎 Seedance 2.0（新增升级）</strong>
+          <span class="aec-arrow">{{ activeAlertModal === 'deprecated' ? '收起 ▲' : '展开 ▼' }}</span>
+        </div>
+
+        <div 
+          class="alert-entry-card compare-entry"
+          :class="{ active: activeAlertModal === 'compare' }"
+          @click="toggleAlertModal('compare')"
+        >
+          <div class="aec-icon">📊</div>
+          <div class="aec-content">
+            <h4 class="aec-title">云商横向对比表</h4>
+            <p class="aec-desc">15 家头部云商涨价策略一览</p>
+            <div class="aec-highlights">
+              <span class="aec-tag overseas">🌍 海外 {{ overseasCount }} 条</span>
+              <span class="aec-tag domestic">🇨🇳 国内 {{ domesticCount }} 条</span>
             </div>
-            <ul class="wa-list">
-              <li><strong>4月21日</strong>：Seedance 2.0 API <strong>原生 1080P</strong>全高清视频生成能力正式上线，单 Token 消耗较 720P 提升约 1.8 倍，企业 AI 视频成本结构随即调整</li>
-            </ul>
           </div>
-          <div class="wa-vendor-block">
-            <div class="wa-vendor-title">
-              <span class="wa-vt-icon" style="background:#fffbeb;color:#f59e0b">🟡</span>
-              <strong>AWS × Anthropic（千亿长约）</strong>
-            </div>
-            <ul class="wa-list">
-              <li><strong>4月21日</strong>：AWS 追加投资 Anthropic 最高 <strong>250 亿美元</strong>，Anthropic 承诺未来十年在 AWS 投入超 <strong>1,000 亿美元</strong>算力，以 Trainium 为主。H100/H200 对外放量节奏将进一步收紧，预计推动 AWS 二季度 GPU 实例再现 5%-10% 微调</li>
-            </ul>
+          <span class="aec-arrow">{{ activeAlertModal === 'compare' ? '收起 ▲' : '展开 ▼' }}</span>
+        </div>
+      </div>
+
+      <!-- 弹窗内容区：云厂商涨价动态 -->
+      <div v-if="activeAlertModal === 'price'" class="alert-modal-content">
+        <div class="modal-close-bar" @click="activeAlertModal = null">
+          <span>收起云厂商涨价动态</span>
+          <span class="close-icon">✕</span>
+        </div>
+        <!-- 【本周新增涨价公告】 -->
+        <div class="weekly-alert-section">
+          <div class="weekly-alert-head">
+            <span class="wa-icon">🔔</span>
+            <h3 class="wa-title">云厂商涨价动态 | 本周新增（4月29日-5月9日）</h3>
           </div>
-          <div class="wa-vendor-block">
-            <div class="wa-vendor-title">
-              <span class="wa-vt-icon" style="background:#e0f2fe;color:#00a4ff">🐧</span>
-              <strong>腾讯云 & 混元（本周持续）</strong>
+          <p class="wa-intro">本周数据已同步更新，重点关注以下新增动态：</p>
+          <div class="wa-body">
+            <div class="wa-vendor-block">
+              <div class="wa-vendor-title">
+                <span class="wa-vt-icon" style="background:#ecfdf5;color:#10a37f">🤖</span>
+                <strong>OpenAI GPT-Realtime 语音 API（新增重磅）</strong>
+              </div>
+              <ul class="wa-list">
+                <li><strong>5月8日</strong>：GPT-Realtime-2 音频输入 $32/百万 token、输出 $64/百万 token；实时翻译 $0.034/分钟；流式转录 $0.017/分钟</li>
+                <li><strong>5月8日分析</strong>：GPT-5.5 隐性涨价 —— 短 Prompt 实际涨幅高达 <strong>92%</strong>，长 Prompt 约 <strong>49%</strong></li>
+              </ul>
             </div>
-            <ul class="wa-list">
-              <li><strong>4月16日</strong>：开源 3D 世界模型 HY-World 2.0，腾讯云 TI 平台同步上线训练/推理镜像</li>
-              <li><strong>5月9日生效（4月9日公告）</strong>：AI 算力、容器服务 TKE 原生节点、弹性 MapReduce（EMR）三类产品统一上调 <strong>5%</strong></li>
-            </ul>
+            <div class="wa-vendor-block">
+              <div class="wa-vendor-title">
+                <span class="wa-vt-icon" style="background:#f3e8ff;color:#8b5cf6">💜</span>
+                <strong>Claude Opus 4.7 隐性涨价（新增重磅）</strong>
+              </div>
+              <ul class="wa-list">
+                <li><strong>5月8日分析</strong>：标价不变但分词器改变导致 Token 数增加 <strong>32%-45%</strong>，实际成本上涨 <strong>12%-27%</strong></li>
+              </ul>
+            </div>
+            <div class="wa-vendor-block">
+              <div class="wa-vendor-title">
+                <span class="wa-vt-icon" style="background:#fef2f2;color:#dc2626">🌋</span>
+                <strong>字节豆包付费订阅（新增重磅）</strong>
+              </div>
+              <ul class="wa-list">
+                <li><strong>5月4日</strong>：豆包 App 测试付费订阅 <strong>68/200/500 元/月</strong> 三档，3.45 亿月活迈向商业化</li>
+              </ul>
+            </div>
+            <div class="wa-vendor-block">
+              <div class="wa-vendor-title">
+                <span class="wa-vt-icon" style="background:#e0f2fe;color:#00a4ff">🐧</span>
+                <strong>腾讯云涨价生效 + DeepSeek 逆势降价</strong>
+              </div>
+              <ul class="wa-list">
+                <li><strong>5月9日生效</strong>：AI 算力、TKE 原生节点、EMR 三类产品统一上调 <strong>5%</strong></li>
+                <li><strong>4月28日</strong>：DeepSeek V4 Pro <strong>2.5 折优惠延长至5月31日</strong>，输入缓存再降至 <strong>1/10</strong></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 【本轮涨价全景】 -->
-      <div class="panorama-section">
+      <!-- 弹窗内容区：产品下线/停服告警 -->
+      <div v-if="activeAlertModal === 'deprecated'" class="alert-modal-content">
+        <div class="modal-close-bar" @click="activeAlertModal = null">
+          <span>收起产品下线 / 停服告警</span>
+          <span class="close-icon">✕</span>
+        </div>
+        <!-- 【新】产品下线与收缩告警 - 异常情况汇总 -->
+        <div class="deprecated-section">
+          <div class="deprecated-head">
+            <div class="dp-title-wrap">
+              <span class="dp-icon-big">🚨</span>
+              <div>
+                <h3 class="dp-title">
+                  产品下线 / 停服 / 收缩告警
+                  <span class="dp-alert-badge">⚠️ 异常情况</span>
+                </h3>
+                <p class="dp-sub">
+                  除涨价外，近期云厂商同步宣布
+                  <strong class="dp-strong">{{ deprecatedProducts.length }}</strong>
+                  项产品停运/下线/收缩，涉及
+                  <strong class="dp-strong">{{ deprecatedVendorsCount }}</strong>
+                  家云商 · <strong>务必排查是否影响现网业务</strong>
+                </p>
+              </div>
+            </div>
+            <div class="dp-stat-row">
+              <div class="dp-stat dp-stat-shutdown">
+                <div class="dp-stat-num">{{ shutdownCount }}</div>
+                <div class="dp-stat-label">🔴 完全停服</div>
+              </div>
+              <div class="dp-stat dp-stat-eol">
+                <div class="dp-stat-num">{{ eolCount }}</div>
+                <div class="dp-stat-label">🟠 产品停售/EOL</div>
+              </div>
+              <div class="dp-stat dp-stat-shrink">
+                <div class="dp-stat-num">{{ shrinkCount }}</div>
+                <div class="dp-stat-label">🟡 功能/地域收缩</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 筛选 -->
+          <div class="dp-filter">
+            <button
+              class="dp-filter-btn"
+              :class="{ active: deprecatedFilter === '全部' }"
+              @click="deprecatedFilter = '全部'"
+            >全部 <span class="dp-fc">{{ deprecatedProducts.length }}</span></button>
+            <button
+              v-for="type in deprecatedTypes"
+              :key="type"
+              class="dp-filter-btn"
+              :class="{ active: deprecatedFilter === type }"
+              @click="deprecatedFilter = type"
+            >
+              {{ deprecatedTypeConfig[type].icon }} {{ type }}
+              <span class="dp-fc">{{ deprecatedTypeCount[type] || 0 }}</span>
+            </button>
+          </div>
+
+          <!-- 告警卡片列表 -->
+          <div class="deprecated-list">
+            <div
+              v-for="item in filteredDeprecated"
+              :key="item.id"
+              class="deprecated-card"
+              :class="'severity-' + item.severity"
+            >
+              <!-- 左侧竖条 -->
+              <div class="dp-side-bar" :style="{ background: deprecatedTypeConfig[item.type].color }"></div>
+
+              <div class="dp-card-body">
+                <div class="dp-card-top">
+                  <span
+                    class="dp-vendor-chip"
+                    :style="{
+                      background: vendorConfig[item.vendor]?.bg || '#f3f4f6',
+                      color: vendorConfig[item.vendor]?.color || '#374151'
+                    }"
+                  >
+                    <span>{{ vendorConfig[item.vendor]?.icon || '☁️' }}</span>
+                    {{ item.vendor }}
+                  </span>
+                  <span
+                    class="dp-type-chip"
+                    :style="{
+                      background: deprecatedTypeConfig[item.type].bg,
+                      color: deprecatedTypeConfig[item.type].color
+                    }"
+                  >
+                    {{ deprecatedTypeConfig[item.type].icon }} {{ item.type }}
+                  </span>
+                  <span class="dp-severity-chip" :class="'sev-' + item.severity">
+                    {{ severityLabel(item.severity) }}
+                  </span>
+                  <span class="dp-announce-date">📅 公告：{{ item.announceDate }}</span>
+                </div>
+
+                <h4 class="dp-product-name">
+                  <span class="dp-prod-icon">📦</span>
+                  {{ item.product }}
+                </h4>
+                <p class="dp-reason">{{ item.reason }}</p>
+
+                <!-- 时间节点 -->
+                <div class="dp-timeline">
+                  <div class="dp-tl-item dp-tl-stop">
+                    <div class="dp-tl-label">⛔ 停止新购</div>
+                    <div class="dp-tl-date">{{ item.stopSellDate || '已停止' }}</div>
+                  </div>
+                  <div class="dp-tl-arrow">→</div>
+                  <div class="dp-tl-item dp-tl-eol">
+                    <div class="dp-tl-label">🚫 {{ item.type === '功能收缩' || item.type === '地域收缩' ? '功能下线' : '彻底停服' }}</div>
+                    <div class="dp-tl-date dp-tl-date-end">{{ item.endOfLifeDate }}</div>
+                  </div>
+                  <div class="dp-tl-arrow">→</div>
+                  <div class="dp-tl-item dp-tl-migrate">
+                    <div class="dp-tl-label">✅ 建议迁移方案</div>
+                    <div class="dp-tl-date dp-tl-migrate-text">{{ item.migration }}</div>
+                  </div>
+                </div>
+
+                <!-- 影响范围 -->
+                <div class="dp-impact-row">
+                  <span class="dp-impact-label">💥 影响客户：</span>
+                  <span class="dp-impact-text">{{ item.affectedCustomers }}</span>
+                </div>
+
+                <div class="dp-footer">
+                  <div class="dp-tags">
+                    <span v-for="(t, i) in item.tags" :key="i" class="dp-tag">#{{ t }}</span>
+                  </div>
+                  <a
+                    v-if="item.sourceUrl"
+                    class="dp-source"
+                    :href="item.sourceUrl"
+                    target="_blank"
+                    rel="noopener"
+                  >查看官方公告 →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <EmptyState
+            v-if="filteredDeprecated.length === 0"
+            title="该类型暂无异常告警"
+            description="请切换筛选条件查看"
+          />
+
+          <!-- 行动指引 -->
+          <div class="dp-action-tip">
+            <span class="dp-at-icon">💡</span>
+            <div class="dp-at-content">
+              <strong>销售行动指引：</strong>
+              立即排查客户现网是否使用上述产品，
+              <strong style="color:#dc2626;">🔴 完全停服</strong> 类需在 30 天内给出迁移方案；
+              <strong style="color:#ea580c;">🟠 产品停售/EOL</strong> 类可借机推腾讯云同类产品替代；
+              <strong style="color:#d97706;">🟡 功能/地域收缩</strong> 需提前沟通避免业务中断。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 弹窗内容区：云商横向对比表 -->
+      <div v-if="activeAlertModal === 'compare'" class="alert-modal-content">
+        <div class="modal-close-bar" @click="activeAlertModal = null">
+          <span>收起云商横向对比表</span>
+          <span class="close-icon">✕</span>
+        </div>
+        <!-- 【本轮涨价全景】 -->
+        <div class="panorama-section">
         <div class="panorama-head">
           <span class="pa-icon">📊</span>
           <h3 class="pa-title">各家云厂商涨价策略一览表</h3>
@@ -523,162 +754,6 @@
           <span class="fn-item"><strong>策略定位</strong>：基于涨价幅度、产品范围、配套政策综合判定</span>
           <span class="fn-item"><strong>新增厂商</strong>：智谱AI、MiniMax、Kimi、商汤、科大讯飞已纳入本轮汇总</span>
         </div>
-      </div>
-
-      <!-- 【新】产品下线与收缩告警 - 异常情况汇总 -->
-      <div class="deprecated-section">
-        <div class="deprecated-head">
-          <div class="dp-title-wrap">
-            <span class="dp-icon-big">🚨</span>
-            <div>
-              <h3 class="dp-title">
-                产品下线 / 停服 / 收缩告警
-                <span class="dp-alert-badge">⚠️ 异常情况</span>
-              </h3>
-              <p class="dp-sub">
-                除涨价外，近期云厂商同步宣布
-                <strong class="dp-strong">{{ deprecatedProducts.length }}</strong>
-                项产品停运/下线/收缩，涉及
-                <strong class="dp-strong">{{ deprecatedVendorsCount }}</strong>
-                家云商 · <strong>务必排查是否影响现网业务</strong>
-              </p>
-            </div>
-          </div>
-          <div class="dp-stat-row">
-            <div class="dp-stat dp-stat-shutdown">
-              <div class="dp-stat-num">{{ shutdownCount }}</div>
-              <div class="dp-stat-label">🔴 完全停服</div>
-            </div>
-            <div class="dp-stat dp-stat-eol">
-              <div class="dp-stat-num">{{ eolCount }}</div>
-              <div class="dp-stat-label">🟠 产品停售/EOL</div>
-            </div>
-            <div class="dp-stat dp-stat-shrink">
-              <div class="dp-stat-num">{{ shrinkCount }}</div>
-              <div class="dp-stat-label">🟡 功能/地域收缩</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 筛选 -->
-        <div class="dp-filter">
-          <button
-            class="dp-filter-btn"
-            :class="{ active: deprecatedFilter === '全部' }"
-            @click="deprecatedFilter = '全部'"
-          >全部 <span class="dp-fc">{{ deprecatedProducts.length }}</span></button>
-          <button
-            v-for="type in deprecatedTypes"
-            :key="type"
-            class="dp-filter-btn"
-            :class="{ active: deprecatedFilter === type }"
-            @click="deprecatedFilter = type"
-          >
-            {{ deprecatedTypeConfig[type].icon }} {{ type }}
-            <span class="dp-fc">{{ deprecatedTypeCount[type] || 0 }}</span>
-          </button>
-        </div>
-
-        <!-- 告警卡片列表 -->
-        <div class="deprecated-list">
-          <div
-            v-for="item in filteredDeprecated"
-            :key="item.id"
-            class="deprecated-card"
-            :class="'severity-' + item.severity"
-          >
-            <!-- 左侧竖条 -->
-            <div class="dp-side-bar" :style="{ background: deprecatedTypeConfig[item.type].color }"></div>
-
-            <div class="dp-card-body">
-              <div class="dp-card-top">
-                <span
-                  class="dp-vendor-chip"
-                  :style="{
-                    background: vendorConfig[item.vendor]?.bg || '#f3f4f6',
-                    color: vendorConfig[item.vendor]?.color || '#374151'
-                  }"
-                >
-                  <span>{{ vendorConfig[item.vendor]?.icon || '☁️' }}</span>
-                  {{ item.vendor }}
-                </span>
-                <span
-                  class="dp-type-chip"
-                  :style="{
-                    background: deprecatedTypeConfig[item.type].bg,
-                    color: deprecatedTypeConfig[item.type].color
-                  }"
-                >
-                  {{ deprecatedTypeConfig[item.type].icon }} {{ item.type }}
-                </span>
-                <span class="dp-severity-chip" :class="'sev-' + item.severity">
-                  {{ severityLabel(item.severity) }}
-                </span>
-                <span class="dp-announce-date">📅 公告：{{ item.announceDate }}</span>
-              </div>
-
-              <h4 class="dp-product-name">
-                <span class="dp-prod-icon">📦</span>
-                {{ item.product }}
-              </h4>
-              <p class="dp-reason">{{ item.reason }}</p>
-
-              <!-- 时间节点 -->
-              <div class="dp-timeline">
-                <div class="dp-tl-item dp-tl-stop">
-                  <div class="dp-tl-label">⛔ 停止新购</div>
-                  <div class="dp-tl-date">{{ item.stopSellDate || '已停止' }}</div>
-                </div>
-                <div class="dp-tl-arrow">→</div>
-                <div class="dp-tl-item dp-tl-eol">
-                  <div class="dp-tl-label">🚫 {{ item.type === '功能收缩' || item.type === '地域收缩' ? '功能下线' : '彻底停服' }}</div>
-                  <div class="dp-tl-date dp-tl-date-end">{{ item.endOfLifeDate }}</div>
-                </div>
-                <div class="dp-tl-arrow">→</div>
-                <div class="dp-tl-item dp-tl-migrate">
-                  <div class="dp-tl-label">✅ 建议迁移方案</div>
-                  <div class="dp-tl-date dp-tl-migrate-text">{{ item.migration }}</div>
-                </div>
-              </div>
-
-              <!-- 影响范围 -->
-              <div class="dp-impact-row">
-                <span class="dp-impact-label">💥 影响客户：</span>
-                <span class="dp-impact-text">{{ item.affectedCustomers }}</span>
-              </div>
-
-              <div class="dp-footer">
-                <div class="dp-tags">
-                  <span v-for="(t, i) in item.tags" :key="i" class="dp-tag">#{{ t }}</span>
-                </div>
-                <a
-                  v-if="item.sourceUrl"
-                  class="dp-source"
-                  :href="item.sourceUrl"
-                  target="_blank"
-                  rel="noopener"
-                >查看官方公告 →</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <EmptyState
-          v-if="filteredDeprecated.length === 0"
-          title="该类型暂无异常告警"
-          description="请切换筛选条件查看"
-        />
-
-        <!-- 行动指引 -->
-        <div class="dp-action-tip">
-          <span class="dp-at-icon">💡</span>
-          <div class="dp-at-content">
-            <strong>销售行动指引：</strong>
-            立即排查客户现网是否使用上述产品，
-            <strong style="color:#dc2626;">🔴 完全停服</strong> 类需在 30 天内给出迁移方案；
-            <strong style="color:#ea580c;">🟠 产品停售/EOL</strong> 类可借机推腾讯云同类产品替代；
-            <strong style="color:#d97706;">🟡 功能/地域收缩</strong> 需提前沟通避免业务中断。
-          </div>
         </div>
       </div>
 
@@ -886,6 +961,17 @@ const lastUpdate = ref(
   }).replace(/\//g, '-')
 )
 const mainTab = ref<'ai' | 'cloud' | 'price'>('ai')
+
+// 云商异动预警弹窗控制
+const activeAlertModal = ref<'price' | 'deprecated' | 'compare' | null>(null)
+
+function toggleAlertModal(type: 'price' | 'deprecated' | 'compare') {
+  if (activeAlertModal.value === type) {
+    activeAlertModal.value = null
+  } else {
+    activeAlertModal.value = type
+  }
+}
 
 // AI 筛选
 const aiCategories = ['全部', '模型发布', '国产模型', 'Agent 生态', '行业投资']
@@ -1758,6 +1844,200 @@ function severityLabel(s: Severity): string {
 /* 涨价 Tab 特殊强调 */
 .main-tab.price-tab .mt-icon.price-icon {
   background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+/* ========== 三个入口卡片 ========== */
+.alert-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.alert-entry-card {
+  background: var(--bg-white);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.alert-entry-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ef4444, #f97316);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.alert-entry-card:hover::before,
+.alert-entry-card.active::before {
+  opacity: 1;
+}
+
+.alert-entry-card:hover {
+  border-color: #f97316;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.12);
+  transform: translateY(-3px);
+}
+
+.alert-entry-card.active {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #fef2f2, #fff7ed);
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.15);
+}
+
+.price-entry::before { background: linear-gradient(90deg, #ef4444, #f97316); }
+.deprecated-entry::before { background: linear-gradient(90deg, #dc2626, #ea580c); }
+.compare-entry::before { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+
+.aec-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+.price-entry .aec-icon { background: linear-gradient(135deg, #fef2f2, #fff7ed); }
+.deprecated-entry .aec-icon { background: linear-gradient(135deg, #fee2e2, #fef3c7); }
+.compare-entry .aec-icon { background: linear-gradient(135deg, #eef2ff, #f5f3ff); }
+
+.aec-content {
+  flex: 1;
+}
+
+.aec-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.aec-desc {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+}
+
+.aec-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.aec-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.aec-tag.hot { background: #fee2e2; color: #dc2626; }
+.aec-tag.new { background: #dcfce7; color: #16a34a; }
+.aec-tag.critical { background: #fee2e2; color: #b91c1c; }
+.aec-tag.warning { background: #ffedd5; color: #c2410c; }
+.aec-tag.overseas { background: #dbeafe; color: #1d4ed8; }
+.aec-tag.domestic { background: #fee2e2; color: #b91c1c; }
+
+.aec-arrow {
+  display: block;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #ef4444;
+  font-weight: 600;
+  text-align: right;
+}
+
+.alert-entry-card.active .aec-arrow {
+  color: #dc2626;
+}
+
+/* 弹窗内容区 */
+.alert-modal-content {
+  background: var(--bg-white);
+  border: 2px solid #fed7aa;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #fef2f2, #fff7ed);
+  padding: 12px 18px;
+  cursor: pointer;
+  border-bottom: 1px solid #fed7aa;
+  transition: background 0.2s;
+}
+
+.modal-close-bar:hover {
+  background: linear-gradient(135deg, #fee2e2, #fef3c7);
+}
+
+.modal-close-bar span:first-child {
+  font-size: 13px;
+  font-weight: 600;
+  color: #b45309;
+}
+
+.close-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(185, 28, 28, 0.1);
+  color: #b91c1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.modal-close-bar:hover .close-icon {
+  background: #dc2626;
+  color: #fff;
+}
+
+.alert-modal-content .weekly-alert-section,
+.alert-modal-content .deprecated-section,
+.alert-modal-content .panorama-section {
+  border: none;
+  border-radius: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .alert-entry-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ========== 各家云厂商涨价策略对比表 ========== */

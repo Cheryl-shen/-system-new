@@ -25,8 +25,161 @@ export interface WeeklyUpdate {
 // 本周 + 往期数据
 export const weeklyUpdates: WeeklyUpdate[] = [
   {
+    weekKey: '2026-W19',
+    weekLabel: '本周 · 4月27日 – 5月9日',
+    startDate: '2026-04-27',
+    endDate: '2026-05-09',
+    summary: '本周腾讯云重磅升级全栈企业级Agent产品能力：首发ClawPro专有云版、ADP智能工作台、Agent Memory/Storage；混元Hy3 preview正式上线官网，天御Token防刷与AI Agent安全中心能力升级。',
+    products: [
+      {
+        id: 301,
+        name: 'ClawPro 专有云版',
+        category: 'AI大模型',
+        updateType: '新品发布',
+        date: '2026-04-28',
+        summary: '国内首个经百万级用户验证的企业级AI智能体管控平台，面向私有云首发',
+        description: 'ClawPro专有云版是腾讯云首发的企业级AI智能体管控平台，依托轻量云Lighthouse大规模生产实践打磨，原生支持OpenClaw、Hermes等多类型Agent框架，兼容企业自有镜像接入。面向金融、政务、能源等对数据安全、合规管控有高要求的行业，与ADP共同打造"智能体工厂+应用商店"闭环。',
+        highlights: [
+          '国内首个百万级用户验证的企业级Agent管控平台',
+          '原生支持 OpenClaw、Hermes 等多类型 Agent 框架',
+          '面向私有云，满足金融/政务/能源等行业合规需求',
+          '与 ADP 形成"智能体工厂+应用商店"闭环'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/adp',
+        isHot: true,
+        tags: ['Agent', '私有云', '首发', '重点推荐']
+      },
+      {
+        id: 302,
+        name: 'ADP 智能工作台',
+        category: 'AI大模型',
+        updateType: '新功能',
+        date: '2026-04-28',
+        summary: '自然语言一句话生成企业级智能体应用，无需编写代码和复杂流程图',
+        description: '腾讯云智能体开发平台（ADP）全新上线"智能工作台"，企业员工无需画复杂流程图、无需编写代码，只需用自然语言输入需求指令，平台即可自动解析并生成完整的工作流和可运行的企业级智能体应用。几分钟内即可完成从需求到应用的全流程。',
+        highlights: [
+          '自然语言输入需求，自动生成工作流',
+          '无需编码，几分钟生成可运行应用',
+          '面向企业员工，降低智能体开发门槛',
+          '支持复杂业务场景的智能体构建'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/adp',
+        isHot: true,
+        tags: ['Agent', '低代码', '企业级', '重点推荐']
+      },
+      {
+        id: 303,
+        name: 'ADP Agent Portal',
+        category: 'AI大模型',
+        updateType: '新功能',
+        date: '2026-04-28',
+        summary: '跨平台智能体门户，提供统一入口、智能路由及可观测治理能力',
+        description: 'ADP Agent Portal是腾讯云推出的企业级AI智能体管理平台，为企业内部分散在ADP、Dify、自研系统、第三方平台的智能体提供统一管理入口。员工只需讲出需求即可快速定位想要的智能体，同时实现跨智能体协作、智能路由与可观测治理。',
+        highlights: [
+          '统一智能体入口，支持跨平台管理',
+          '智能路由，按需求自动匹配最优Agent',
+          '可观测治理，效果评估与成本控制',
+          '跨智能体协作能力'
+        ],
+        officialUrl: 'https://adp.tencentcloud.com/zh/blog/adp-agent-portal',
+        isHot: false,
+        tags: ['Agent Portal', '企业治理']
+      },
+      {
+        id: 304,
+        name: 'Agent Memory 智能体记忆服务',
+        category: 'AI大模型',
+        updateType: '新品发布',
+        date: '2026-04-28',
+        summary: '腾讯云数据库团队自研的智能体长期记忆底座，重庆峰会正式首发',
+        description: 'TencentDB Agent Memory由腾讯云数据库团队完全自研，是一款独立的记忆管理底座。原生提供自动写入、分层沉淀（四层渐进式架构）、按需召回与治理增强能力，支撑智能体跨会话、长周期、多任务场景中业务知识的持续沉淀与精准调用。实测数据显示，接入后OpenClaw回答准确率提升至76.10%。',
+        highlights: [
+          '四层渐进式记忆架构，结构化与分层管理',
+          '跨会话长期记忆，业务知识持续沉淀',
+          '回答准确率提升至 76.10%（原生 OpenClaw 显著提升）',
+          '以插件形态无缝集成，免费一键开启'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/agm',
+        isHot: true,
+        tags: ['Agent', '记忆服务', '数据库', '重点推荐']
+      },
+      {
+        id: 305,
+        name: 'Agent Storage 智能体存储服务',
+        category: '存储',
+        updateType: '新品发布',
+        date: '2026-04-28',
+        summary: '面向AI智能体的专用存储服务，重庆峰会首发',
+        description: 'Agent Storage是腾讯云面向AI智能体场景推出的专用存储服务，与Agent Memory形成记忆+存储的完整数据底座。为智能体提供高性能、低延迟的数据存取能力，支持大规模智能体应用的数据持久化需求。',
+        highlights: [
+          '面向 AI 智能体场景的专用存储服务',
+          '与 Agent Memory 形成完整数据底座',
+          '高性能、低延迟数据存取',
+          '支持大规模智能体应用数据持久化'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product',
+        isHot: false,
+        tags: ['Agent', '存储', '首发']
+      },
+      {
+        id: 306,
+        name: '混元 Hy3 preview 官网上线',
+        category: 'AI大模型',
+        updateType: '新品发布',
+        date: '2026-04-23',
+        summary: '混元重建后首个模型正式上线腾讯云，295B MoE + 256K上下文 + 开源',
+        description: '腾讯混元Hy3 preview是混元团队完成预训练与强化学习基础设施重建后的首个模型，由首席AI科学家姚顺雨带队。总参数295B，激活参数21B，支持256K上下文。在复杂推理、指令遵循、上下文学习、代码、智能体等能力上大幅提升，推理效率提升40%。已在腾讯云、元宝、ima、CodeBuddy等平台上线，同步开源。',
+        highlights: [
+          '295B 总参数，21B 激活参数，256K 上下文',
+          '推理效率提升 40%，Agent 能力大幅增强',
+          '同步开源模型权重',
+          '腾讯云提供定制 Token Plan 套餐，最低 28 元/月'
+        ],
+        officialUrl: 'https://hunyuan.tencent.com',
+        isHot: true,
+        tags: ['混元', 'Hy3', '开源', '重点推荐']
+      },
+      {
+        id: 307,
+        name: '天御 Token 防刷解决方案（升级）',
+        category: '安全',
+        updateType: '版本升级',
+        date: '2026-04-28',
+        summary: '重庆峰会发布升级版，新增流量沙箱和运行时防护能力',
+        description: '腾讯云天御Token防刷解决方案针对AI编程助手普及后黑产批量注册、低频高耗等滥用免费Token的问题进行全链路防控。重庆峰会发布升级版，新增流量沙箱和运行时防护能力，采用设备指纹识别、全链路行为追踪、账号体系治理等多维度风控能力，确保企业营销预算与算力资源安全可控。',
+        highlights: [
+          '新增流量沙箱与运行时防护能力',
+          '设备指纹识别 + 全链路行为追踪',
+          '精准拦截批量注册、低频高耗等异常消耗',
+          '极简接入，已开放体验'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/tcrsaf',
+        isHot: false,
+        tags: ['安全', 'Token防刷', '风控']
+      },
+      {
+        id: 308,
+        name: 'AI Agent 安全中心（升级）',
+        category: '安全',
+        updateType: '版本升级',
+        date: '2026-04-28',
+        summary: 'AI Agent安全网关能力升级，新增内容安全防护与治理增强',
+        description: 'AI Agent安全网关是腾讯云为企业AI智能体规模化落地打造的安全基座。作为连接Agent、模型、MCP与应用服务的安全中枢，提供从Token消耗治理、内容安全防护到运行时安全的全链路防护。重庆峰会发布升级版，安全能力进一步增强。',
+        highlights: [
+          'Agent/模型/MCP/应用服务的安全中枢',
+          'Token 消耗治理与内容安全防护',
+          '运行时安全与可观测能力',
+          '支撑企业智能体规模化落地'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/llmsgw',
+        isHot: false,
+        tags: ['Agent安全', '企业级']
+      }
+    ]
+  },
+  {
     weekKey: '2026-W17',
-    weekLabel: '本周 · 4月20日 – 4月26日',
+    weekLabel: '往期 · 4月20日 – 4月26日',
     startDate: '2026-04-20',
     endDate: '2026-04-26',
     summary: '本周腾讯云聚焦"音视频AI增强 + 全球加速节点扩展"：云点播上线AIGC大模型能力，GA 2.0新增亚太/中东/南非节点，全球化布局加速。',
@@ -74,7 +227,7 @@ export const weeklyUpdates: WeeklyUpdate[] = [
     weekLabel: '往期 · 4月13日 – 4月19日',
     startDate: '2026-04-13',
     endDate: '2026-04-19',
-    summary: '本周腾讯云以"大模型生态扩展 + 成本优化"为主线：混元3D世界模型2.0开源、联网搜索API大幅降价，利好AI应用开发者。',
+    summary: '腾讯云以"大模型生态扩展 + 成本优化"为主线：混元3D世界模型2.0开源、联网搜索API大幅降价，利好AI应用开发者。',
     products: [
       {
         id: 1,
@@ -187,7 +340,7 @@ export const weeklyUpdates: WeeklyUpdate[] = [
     weekLabel: '往期 · 4月6日 – 4月12日',
     startDate: '2026-04-06',
     endDate: '2026-04-12',
-    summary: '本周聚焦"AI算力成本调整与AI Agent生态"：腾讯云公示AI算力、TKE原生节点、EMR价格上调5%（5月9日生效）。',
+    summary: '聚焦"AI算力成本调整与AI Agent生态"：腾讯云公示AI算力、TKE原生节点、EMR价格上调5%（5月9日生效）。',
     products: [
       {
         id: 101,

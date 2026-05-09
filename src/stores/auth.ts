@@ -1,7 +1,6 @@
 /**
  * 认证状态管理（Pinia）
- * - 支持 TOF 模式（通过 NGate 网关自动认证）
- * - 支持 JWT 模式（本地 OAuth2 登录）
+ * - 支持 TOF 模式（通过 NGate 网关自动认证）+ 开发模式
  * - token 存 localStorage，页面刷新不丢
  * - user 信息在登录后 / 刷新时从 /api/auth/me 恢复
  */
@@ -17,8 +16,8 @@ interface State {
   user: AuthUser | null;
   /** 首次是否完成 me 校验，用于路由守卫的 loading 判断 */
   bootstrapped: boolean;
-  /** 认证模式：tof 或 jwt */
-  authMode: 'tof' | 'jwt' | null;
+  /** 认证模式 */
+  authMode: 'tof' | 'dev' | null;
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -44,14 +43,14 @@ export const useAuthStore = defineStore('auth', {
     accessibleCustomerIds: (s) => s.user?.customerIds ?? []
   },
   actions: {
-    setAuth(token: string, user: AuthUser, mode: 'tof' | 'jwt' = 'jwt') {
+    setAuth(token: string, user: AuthUser, mode: 'tof' | 'dev' = 'tof') {
       this.token = token;
       this.user = user;
       this.authMode = mode;
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem(USER_CACHE_KEY, JSON.stringify(user));
     },
-    updateUser(user: AuthUser, mode?: 'tof' | 'jwt') {
+    updateUser(user: AuthUser, mode?: 'tof' | 'dev') {
       this.user = user;
       if (mode) this.authMode = mode;
       localStorage.setItem(USER_CACHE_KEY, JSON.stringify(user));
@@ -65,26 +64,26 @@ export const useAuthStore = defineStore('auth', {
     },
     /**
      * 初始化认证状态
-     * 优先检查 TOF 认证，其次检查 JWT Token
+     * 检查 TOF 认证或开发模式
      */
     async bootstrap() {
       if (this.bootstrapped) return;
       
       try {
-        // 先尝试 TOF 认证
+        // 检查 TOF 认证
         const tofCheck = await authApi.checkTofAuth();
         if (tofCheck.authenticated) {
           // 已通过 TOF 认证，获取用户信息
           const user = await authApi.me();
           this.updateUser(user, 'tof');
-          this.bootstrapped = true;
-          return;
-        }
-        
-        // 再尝试 JWT 认证
-        if (this.token) {
-          const user = await authApi.me();
-          this.updateUser(user, 'jwt');
+        } else if (this.authMode === 'dev' && this.token) {
+          // 开发模式，尝试恢复会话
+          try {
+            const user = await authApi.me();
+            this.updateUser(user, 'dev');
+          } catch {
+            this.clear();
+          }
         } else {
           this.clear();
         }
@@ -93,6 +92,27 @@ export const useAuthStore = defineStore('auth', {
         this.clear();
       } finally {
         this.bootstrapped = true;
+      }
+    },
+
+    /**
+     * 开发模式登录
+     * 仅在开发环境可用
+     */
+    async devLogin() {
+      try {
+        const result = await authApi.devLogin();
+        if (result.success && result.user) {
+          // 生成模拟 token
+          const mockToken = 'dev-token-' + Date.now();
+          this.setAuth(mockToken, result.user, 'dev');
+          return { success: true };
+        } else {
+          return { success: false, message: result.message || '开发登录失败' };
+        }
+      } catch (e: any) {
+        console.error('开发登录失败:', e);
+        return { success: false, message: '开发登录失败，请重试' };
       }
     },
     canAccessCustomer(customerId: string): boolean {

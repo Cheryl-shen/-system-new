@@ -4,7 +4,7 @@
     <div class="topbar-brand">
       <div class="topbar-logo">战</div>
       <div class="topbar-title">
-        战略客户部<span>·</span>华南拓展中心
+        华南智策
       </div>
     </div>
     <div class="topbar-right">

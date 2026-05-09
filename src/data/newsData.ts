@@ -1,7 +1,9 @@
 // AI 与云商动态
 // 数据参考：https://ai.hubtoday.app/（AI 大事件） + 各云厂商官方博客/媒体报道
 // 更新周期：每日更新
-// 最后更新：2026-04-24（本周新增 DeepSeek 百亿融资、腾讯阿里世界模型、阿里HappyHorse、Seedance 1080P、AWS×Anthropic 千亿算力长约等重磅动态 + 4.22-4.24 最新：GPT-5.5 3D游戏/可灵4K/混元SSL-R1/Wan-Image/TPU v8/Kimi智能体/GPT-Image-2/Moonshot万亿参数开源等）
+// 最后更新：2026-05-09
+// - AI大事件（4.25-5.9）：月之暗面20亿美元融资/大基金洽投DeepSeek 450亿估值/OpenAI GPT-Realtime-2语音三模型/微软-OpenAI结束独家协议/Mistral Medium 3.5开源128B/Google TPU 8+Gemini Enterprise Agent/Agent 365 GA/Gemini 3.1 Ultra 200万Token/工信部"模数共振"行动
+// - 价格动态（4.29-5.9）：OpenAI GPT-Realtime定价/GPT-5.5隐性涨价92%/Claude Opus 4.7分词器涨价/Mistral Medium 3.5定价/豆包付费订阅68-500元/腾讯云涨价生效/DeepSeek V4 Pro优惠延长
 
 export interface NewsItem {
   id: number
@@ -17,7 +19,115 @@ export interface NewsItem {
 
 // =============== AI 领域大事件 ===============
 export const aiNews: NewsItem[] = [
-  // ======= 本周新增（4.18-4.24） =======
+  // ======= 本周新增（4.25-5.9） =======
+  {
+    id: 31,
+    title: '月之暗面 Kimi 完成 20 亿美元 D 轮融资，估值突破 200 亿美元，国内大模型最大单笔融资',
+    summary:
+      '5 月 7 日华峰资本披露，月之暗面（Kimi）完成新一轮约 20 亿美元融资，投后估值突破 200 亿美元，为国内大模型创业公司迄今金额最高的私募融资。本轮由美团龙珠领投，水木资本、中国移动、CPE 源峰等参投。至此，月之暗面半年内累计融资超 39 亿美元，估值较去年 11 月翻四倍。',
+    source: '华峰资本 / 财新 / 智东西',
+    sourceUrl: 'https://finance.sina.com.cn/wm/2026-05-08/doc-inhxefhi2220676.shtml',
+    date: '2026-05-07',
+    tags: ['月之暗面', 'Kimi', '融资', '200亿美元'],
+    importance: '重磅',
+    category: '行业投资'
+  },
+  {
+    id: 32,
+    title: '大基金洽谈领投 DeepSeek 首轮外部融资，估值或达 450 亿美元',
+    summary:
+      '5 月 6 日英国《金融时报》等多家媒体报道，国家集成电路产业投资基金（大基金）正与 DeepSeek 洽谈领投其首轮外部融资，估值有望达到约 450 亿美元（约 3,067 亿人民币）。若完成，DeepSeek 将成为全球估值最高的 AI 初创之一，梁文锋持股约 89.5%。此举标志着国家级资本正式入局开源大模型赛道。',
+    source: 'Financial Times / 证券时报',
+    sourceUrl: 'https://finance.eastmoney.com/a/202605073729525463.html',
+    date: '2026-05-06',
+    tags: ['DeepSeek', '大基金', '融资', '450亿美元'],
+    importance: '重磅',
+    category: '行业投资'
+  },
+  {
+    id: 33,
+    title: 'OpenAI 发布三款实时语音模型：GPT-Realtime-2 / Translate / Whisper，语音 Agent 时代开启',
+    summary:
+      '5 月 7 日 OpenAI 在 Realtime API 中发布三款全新音频模型：GPT-Realtime-2 带来 GPT-5 级推理的实时语音对话；GPT-Realtime-Translate 支持跨语言实时翻译；GPT-Realtime-Whisper 提供流式转录。三款模型可分别按 Token/分钟计费，解锁语音 Agent、实时翻译器、智能客服等全新产品形态。',
+    source: 'OpenAI / TechCrunch',
+    sourceUrl: 'https://techcrunch.com/2026/05/07/openai-launches-new-voice-intelligence-features-in-its-api/',
+    date: '2026-05-07',
+    tags: ['OpenAI', 'GPT-Realtime-2', '语音AI', '实时翻译'],
+    importance: '重磅',
+    category: '模型发布'
+  },
+  {
+    id: 34,
+    title: '微软与 OpenAI 重组合作关系：结束独家协议，OpenAI 可登陆其他云平台',
+    summary:
+      '4 月 27 日微软与 OpenAI 联合宣布修订合作协议：微软不再拥有 OpenAI 技术的独家许可权，OpenAI 可将模型上架 AWS、谷歌云等竞争对手平台；收入分成设 2030 年到期日。微软仍持有 OpenAI 约 27% 股权，Azure 仍为首选云伙伴，但独占时代正式终结。该重构被视为 AI 云市场格局重塑的分水岭。',
+    source: 'Microsoft Blog / CNBC / Ars Technica',
+    sourceUrl: 'https://blogs.microsoft.com/blog/2026/04/27/the-next-phase-of-the-microsoft-openai-partnership/',
+    date: '2026-04-27',
+    tags: ['微软', 'OpenAI', '合作重组', '非独家'],
+    importance: '重磅',
+    category: '市场表现'
+  },
+  {
+    id: 35,
+    title: 'Mistral 发布 Medium 3.5（128B 稠密模型），SWE-Bench 达 77.6%，开源编程新王者',
+    summary:
+      '4 月 29 日法国 Mistral AI 发布旗舰模型 Mistral Medium 3.5：128B 稠密架构、256K 上下文窗口，SWE-Bench Verified 得分 77.6%，仅次于 Claude 4.7 Opus。采用修改版 MIT 许可开源权重。同步推出 Vibe 云端远程编码 Agent，支持异步长任务执行，对标 Cursor/Devin 模式。',
+    source: 'Mistral AI / Hugging Face',
+    sourceUrl: 'https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5',
+    date: '2026-04-29',
+    tags: ['Mistral', 'Medium 3.5', '128B', '开源', 'Vibe'],
+    importance: '重磅',
+    category: '模型发布'
+  },
+  {
+    id: 36,
+    title: 'Google Cloud Next 2026：发布第八代 TPU + Gemini Enterprise Agent Platform',
+    summary:
+      '4 月 22 日谷歌在 Cloud Next 2026 大会发布第八代 TPU（TPU 8t 训练 + TPU 8i 推理），首次按训练/推理拆分两款专用芯片。同步推出 Gemini Enterprise Agent Platform（Vertex AI 进化版），整合模型、DevOps、编排与企业安全，支持 A2A 协议多 Agent 互通。Pichai 透露谷歌内部 75% 新代码由 AI 生成。',
+    source: 'Google Cloud / TechNews',
+    sourceUrl: 'https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/next-2026/',
+    date: '2026-04-25',
+    tags: ['Google', 'TPU 8', 'Gemini Enterprise', 'Agent Platform', 'A2A'],
+    importance: '重磅',
+    category: '产品发布'
+  },
+  {
+    id: 37,
+    title: 'Microsoft Agent 365 正式上线（GA），企业 AI Agent 治理进入产品化时代',
+    summary:
+      '5 月 2 日微软宣布 Agent 365 正式商用（GA），为企业环境中的 AI Agent 提供身份验证、安全治理、权限控制和审计工具。Agent 365 深度集成 Copilot Studio 和 Azure OpenAI Service，支持跨部门多 Agent 编排和统一生命周期管理，直接对标 Google Gemini Enterprise Agent Platform。',
+    source: 'Microsoft / AI Tools Recap',
+    sourceUrl: 'https://www.microsoft.com/en-us/microsoft-365',
+    date: '2026-05-02',
+    tags: ['微软', 'Agent 365', '企业治理', 'Copilot'],
+    importance: '重要',
+    category: 'Agent 生态'
+  },
+  {
+    id: 38,
+    title: 'Gemini 3.1 Ultra 发布：200 万 Token 上下文窗口，基础设施级突破',
+    summary:
+      '5 月初 Google DeepMind 正式发布 Gemini 3.1 Ultra，将上下文窗口提升至 200 万 Token，为当前商用模型中最长。原生支持文本/图像/音频/视频统一处理，无需转录中介。附带沙盒化代码执行工具，模型可在对话中编写并运行代码。标志着超长上下文从"实验"进入"可商用"阶段。',
+    source: 'Google DeepMind / AI Tools Recap',
+    sourceUrl: 'https://deepmind.google/',
+    date: '2026-05-01',
+    tags: ['Google', 'Gemini 3.1', '200万Token', '超长上下文'],
+    importance: '重磅',
+    category: '模型发布'
+  },
+  {
+    id: 39,
+    title: '工信部联合国家数据局启动"模数共振"行动，AI 赋能制造业 20 个关键领域',
+    summary:
+      '工信部与国家数据局联合发布通知，正式启动 2026 年"模数共振"行动。聚焦制造业 20 个关键领域，在全国遴选重点城市，突破场景应用、模型开发、智能体构建、数据集建设等核心环节，旨在通过 AI 技术深度赋能新型工业化进程。标志着国家层面 AI 产业政策从"鼓励创新"转向"规模落地"。',
+    source: '工信部 / MSN',
+    sourceUrl: 'https://www.msn.cn',
+    date: '2026-05-05',
+    tags: ['工信部', '模数共振', '制造业', '产业政策'],
+    importance: '重要',
+    category: '政策&生态'
+  },
   {
     id: 13,
     title: 'DeepSeek 首次启动外部融资，估值冲击 100 亿美元，联手华为昇腾摆脱英伟达',
@@ -102,7 +212,7 @@ export const aiNews: NewsItem[] = [
     importance: '重要',
     category: '行业投资'
   },
-  // ======= 最新新增（4.22-4.24） =======
+  // --- 4.22-4.24 ---
   {
     id: 20,
     title: 'OpenAI GPT-5.5 集成 GB300 推出原生 3D 游戏生成能力',
@@ -388,7 +498,86 @@ export interface CloudVendorNews extends NewsItem {
 }
 
 export const cloudNews: CloudVendorNews[] = [
-  // ======= 本周新增（4.18-4.24） =======
+  // ======= 本周新增（4.25-5.9） =======
+  {
+    id: 124,
+    vendor: '谷歌云',
+    title: 'Google Cloud Next 2026 发布第八代 TPU（8t/8i）+ Gemini Enterprise Agent Platform',
+    summary:
+      '4 月 22-25 日谷歌在 Cloud Next 2026 大会重磅发布：第八代 TPU 首次拆分为 TPU 8t（训练）和 TPU 8i（推理）两款专用芯片，性能对标 B200；同步推出 Gemini Enterprise Agent Platform 作为 Vertex AI 进化版，整合 Agent 建立/部署/治理/优化全链路。A2A 协议发布，实现多 Agent 跨厂商互通。',
+    source: 'Google Cloud / TechNews',
+    sourceUrl: 'https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/next-2026/',
+    date: '2026-04-25',
+    tags: ['TPU 8', 'Gemini Enterprise', 'Agent Platform', 'A2A'],
+    importance: '重磅',
+    category: '产品发布'
+  },
+  {
+    id: 125,
+    vendor: '微软云',
+    title: '微软与 OpenAI 重构合作协议：结束独家授权，OpenAI 模型可上架竞品云平台',
+    summary:
+      '4 月 27 日微软与 OpenAI 联合宣布修订合作协议：OpenAI 模型不再独家绑定 Azure，可上架 AWS、谷歌云等竞品；收入分成设 2030 年到期日；微软仍持 27% 股权、仍为首选云合作方。此举打破云 AI 独占格局，AWS/谷歌云有望直接上架 GPT-5.5 等模型，云 AI 市场竞争进入新阶段。',
+    source: 'Microsoft Blog / CNBC',
+    sourceUrl: 'https://blogs.microsoft.com/blog/2026/04/27/the-next-phase-of-the-microsoft-openai-partnership/',
+    date: '2026-04-27',
+    tags: ['微软', 'OpenAI', '非独家', '合作重组'],
+    importance: '重磅',
+    category: '市场表现'
+  },
+  {
+    id: 126,
+    vendor: '微软云',
+    title: 'Microsoft Agent 365 正式商用（GA），企业级 AI Agent 治理产品化',
+    summary:
+      '5 月 2 日微软宣布 Agent 365 正式上线（GA），为企业 AI Agent 提供身份验证、安全治理、权限控制和审计全套工具。深度集成 Copilot Studio 和 Azure OpenAI Service，支持跨部门多 Agent 编排、统一生命周期管理。面向 Microsoft 365 E5 企业客户开放，定价含于现有订阅。',
+    source: 'Microsoft / AI Tools Recap',
+    sourceUrl: 'https://www.microsoft.com/en-us/microsoft-365',
+    date: '2026-05-02',
+    tags: ['Agent 365', '企业治理', 'Copilot Studio'],
+    importance: '重磅',
+    category: '产品发布'
+  },
+  {
+    id: 127,
+    vendor: '谷歌云',
+    title: 'Gemini 3.1 Ultra 发布，上下文窗口突破 200 万 Token，Vertex AI 全面开放',
+    summary:
+      'Google DeepMind 5 月初正式发布 Gemini 3.1 Ultra，上下文窗口提升至 200 万 Token（当前商用最长），原生支持文本/图像/音频/视频无中介处理。谷歌云 Vertex AI 同步全面开放 Gemini 3.1 Ultra API，附带沙盒化代码执行工具。定价按输入/输出 Token 分计，Flash-Lite 版低至 $0.25/百万 Token。',
+    source: 'Google DeepMind / Google Cloud',
+    sourceUrl: 'https://deepmind.google/',
+    date: '2026-05-01',
+    tags: ['Gemini 3.1', '200万Token', 'Vertex AI'],
+    importance: '重磅',
+    category: '产品发布'
+  },
+  {
+    id: 128,
+    vendor: '阿里云',
+    title: '阿里云百炼 HappyHorse 视频 API 正式开放邀测，首轮企业客户接入',
+    summary:
+      '4 月 27 日阿里云百炼平台如期开放 HappyHorse-1.0 视频生成 API 企业级邀测。首批接入企业涵盖短视频、电商、游戏三大行业，单次最长生成 60 秒视频，按 Token 消耗计费。百炼同步上线视频专用资源池，支持多区域部署。HappyHorse 商用版预计 5 月中旬推出正式版定价。',
+    source: '阿里云百炼 / IT之家',
+    sourceUrl: 'https://bailian.console.aliyun.com',
+    date: '2026-04-27',
+    tags: ['百炼', 'HappyHorse', '视频API', '正式邀测'],
+    importance: '重要',
+    category: '产品发布'
+  },
+  {
+    id: 129,
+    vendor: '腾讯云',
+    title: '腾讯云 5 月 9 日 AI 算力/容器/EMR 涨价正式生效，企业客户批量续约锁价',
+    summary:
+      '5 月 9 日，腾讯云此前公告的 AI 算力（GPU 云服务器）、容器服务 TKE 原生节点、弹性 MapReduce（EMR）三大类产品统一 5% 涨价正式生效。据了解，涨价生效前最后一周腾讯云企业客户批量完成预留续约锁价，部分大客户通过签署 2-3 年长约获得约 15% 额外折扣。',
+    source: '腾讯云官方公告',
+    sourceUrl: 'https://cloud.tencent.com/announce',
+    date: '2026-05-09',
+    tags: ['AI算力', 'TKE', 'EMR', '涨价生效'],
+    importance: '重要',
+    category: '市场表现'
+  },
+  // ======= 历史存量（4.18-4.24） =======
   {
     id: 118,
     vendor: '阿里云',
@@ -711,6 +900,123 @@ export interface PriceChangeItem {
 }
 
 export const priceChangeNews: PriceChangeItem[] = [
+  // ======= 本周新增（4.29-5.9） =======
+  // —— 海外云厂商 ——
+  {
+    id: 216,
+    vendor: 'OpenAI',
+    region: '海外',
+    title: 'OpenAI GPT-Realtime 语音 API 定价公布：推理 + 翻译 + 转录三款模型上线',
+    summary:
+      '5 月 8 日 OpenAI 正式公布 GPT-Realtime 系列 API 定价：旗舰语音模型 GPT-Realtime-2 音频输入 $32/百万 token、输出 $64/百万 token；实时翻译 GPT-Realtime-Translate $0.034/分钟（约 2 毛人民币）；流式转录 GPT-Realtime-Whisper $0.017/分钟。定价即日起生效，全面开放开发者调用。',
+    rangeText: '新定价',
+    effectiveDate: '2026-05-08',
+    products: ['GPT-Realtime-2', 'GPT-Realtime-Translate', 'GPT-Realtime-Whisper', 'Realtime API'],
+    reason: '新品发布配套定价；语音 Agent 场景规模化落地需求',
+    source: 'OpenAI / 钛媒体',
+    sourceUrl: 'https://platform.openai.com/docs/guides/realtime',
+    date: '2026-05-08',
+    importance: '重磅'
+  },
+  {
+    id: 217,
+    vendor: 'OpenAI',
+    region: '海外',
+    title: 'GPT-5.5 隐性涨价：标价涨 100%，短 Prompt 实际成本涨幅高达 92%',
+    summary:
+      '5 月 8 日独立分析显示，GPT-5.5 虽然标价仅翻倍（输入 $2.50→$5.00、输出 $15→$30），但因 completion token 生成机制改变，长 prompt（>10K token）实际涨幅约 49%，短 prompt（<2K token）实际涨幅高达 92%。OpenRouter 数据揭示"相同文本、不同使用模式成本差异超 30%"。',
+    rangeText: '+49% ~ +92%（隐性）',
+    effectiveDate: '2026-05-08',
+    products: ['GPT-5.5', 'GPT-5.5 Pro', 'OpenAI API'],
+    reason: '多模态 Token 计费重构；completion 生成机制改变导致实际成本上升',
+    source: 'Pasquale Pillitteri / OpenRouter',
+    sourceUrl: 'https://pasqualepillitteri.it/zh/news/2109/ai-chengben-shangzhang-claude-opus-gpt-2026',
+    date: '2026-05-08',
+    importance: '重磅'
+  },
+  {
+    id: 218,
+    vendor: '微软云',
+    region: '海外',
+    title: 'Claude Opus 4.7 隐性涨价：标价不变，分词器改变导致 Token 数增加 32%-45%',
+    summary:
+      '5 月 8 日独立分析揭示，Anthropic Claude Opus 4.7 虽然声明"每百万 token 价格与 Opus 4.6 相同"，但通过更换分词器，相同文本产生的 token 数增加 32%-45%（官方承认 1.0x-1.35x，OpenRouter 实测上限 1.45x）。中等长度 prompt（10K-25K token）受影响最大，实际成本上涨 12%-27%。',
+    rangeText: '+12% ~ +27%（隐性）',
+    effectiveDate: '2026-05-08',
+    products: ['Claude Opus 4.7', 'Claude API', 'Azure OpenAI Service（Claude）'],
+    reason: '分词器（Tokenizer）更换导致相同文本计费 Token 数增加',
+    source: 'OpenRouter / Pasquale Pillitteri',
+    sourceUrl: 'https://pasqualepillitteri.it/zh/news/2109/ai-chengben-shangzhang-claude-opus-gpt-2026',
+    date: '2026-05-08',
+    importance: '重磅'
+  },
+  {
+    id: 219,
+    vendor: '微软云',
+    region: '海外',
+    title: 'Mistral Medium 3.5 定价公布：$1.50/M 输入 + $7.50/M 输出，开源权重可自托管',
+    summary:
+      '4 月 29 日 Mistral AI 发布 128B 稠密模型 Mistral Medium 3.5，同步公布 API 定价：输入 $1.50/百万 token，输出 $7.50/百万 token。采用修改版 MIT 许可开源权重，高收入公司需付费。Le Chat Pro/Team/Enterprise 用户可直接使用，自托管仅需 4 张 GPU。',
+    rangeText: '$1.50/M + $7.50/M',
+    effectiveDate: '2026-04-29',
+    products: ['Mistral Medium 3.5', 'Mistral API', 'Le Chat', 'Vibe'],
+    reason: '新品发布定价；开源路线下的商业化探索',
+    source: 'Mistral AI',
+    sourceUrl: 'https://mistral.ai/pricing',
+    date: '2026-04-29',
+    importance: '重要'
+  },
+  // —— 国内云厂商 ——
+  {
+    id: 220,
+    vendor: '火山引擎',
+    region: '国内',
+    title: '字节豆包 App 测试付费订阅：68/200/500 元三档，3.45 亿月活迈向商业化',
+    summary:
+      '5 月 4 日字节豆包在 App Store 页面披露付费版本：标准版 68 元/月（年费 688 元）、加强版 200 元/月（年费 2,048 元）、专业版 500 元/月（年费 5,088 元）。官方回应"免费服务继续提供，付费版聚焦 PPT 生成、数据分析等高算力场景"。作为国内 C 端 AI 用户规模第一的应用，此举标志着国内大模型进入"分层收费"时代。',
+    rangeText: '68/200/500 元/月',
+    effectiveDate: '测试中',
+    products: ['豆包 App', '豆包标准版', '豆包加强版', '豆包专业版'],
+    reason: '3.45 亿月活算力成本压力；对标 ChatGPT Plus/Pro 商业模式',
+    source: '新浪财经 / 虎嗅',
+    sourceUrl: 'https://finance.sina.com.cn/wm/2026-05-04/doc-inhwtewm0016011.shtml',
+    date: '2026-05-04',
+    importance: '重磅'
+  },
+  {
+    id: 221,
+    vendor: '腾讯云',
+    region: '国内',
+    title: '腾讯云 5 月 9 日 AI 算力/TKE/EMR 涨价正式生效，大客户批量续约锁价',
+    summary:
+      '5 月 9 日，腾讯云此前公告的 AI 算力（GPU 云服务器）、容器服务 TKE 原生节点、弹性 MapReduce（EMR）三大类产品统一 5% 涨价正式生效。据了解，涨价生效前最后一周企业客户批量完成预留续约锁价，部分签署 2-3 年长约的大客户获得约 15% 额外折扣。',
+    rangeText: '+5%（生效）',
+    effectiveDate: '2026-05-09',
+    products: ['AI 算力（GPU 云服务器）', 'TKE 原生节点', 'EMR'],
+    reason: '全球 AI 算力需求持续激增；核心硬件供应链成本大幅上涨',
+    source: '腾讯云官方公告',
+    sourceUrl: 'https://cloud.tencent.com/announce',
+    date: '2026-05-09',
+    importance: '重要'
+  },
+  // —— DeepSeek 专项（降价） ——
+  {
+    id: 222,
+    vendor: '智谱AI',
+    region: '国内',
+    title: 'DeepSeek V4 Pro 限时 2.5 折优惠延长至 5 月 31 日，输入缓存再降至 1/10',
+    summary:
+      '4 月 28 日 DeepSeek 宣布 V4-Pro 模型 API 2.5 折优惠从 5 月 5 日延长至 5 月 31 日；4 月 26 日深夜全系 API 输入缓存命中价格降至原价的 1/10。叠加优惠后，V4-Pro 输入（缓存命中）仅 0.025 元/百万 token，V4-Flash 缓存命中低至 0.02 元/百万 token，刷新国内最低价。',
+    rangeText: '-75%（2.5折）+ 缓存再降 90%',
+    effectiveDate: '2026-05-31（优惠截止）',
+    products: ['DeepSeek-V4-Pro', 'DeepSeek-V4-Flash', 'DeepSeek API'],
+    reason: '开源路线激进定价策略；冲击国内 API 市场份额',
+    source: 'DeepSeek 官方 / 新浪财经',
+    sourceUrl: 'https://finance.sina.com.cn/tech/roll/2026-04-28/doc-inhvzwqc1673700.shtml',
+    date: '2026-04-28',
+    importance: '重磅'
+  },
+  // ======= 历史存量 =======
   // —— 海外云厂商 ——
   {
     id: 201,
@@ -973,9 +1279,29 @@ export const priceStrategyInsights: PriceStrategyInsight[] = [
     ]
   },
   {
+    title: '隐性涨价成新常态：分词器 + 计费重构',
+    icon: '🔍',
+    color: '#dc2626',
+    points: [
+      '5 月 8 日独立分析揭示：GPT-5.5 标价涨 100%，但短 prompt 实际涨幅高达 92%，长 prompt 约 49%——同一模型因使用模式差异成本差超 30%',
+      'Claude Opus 4.7"标价不变"却通过更换分词器使相同文本 token 数增加 32%-45%，中等 prompt（10K-25K）实际涨 12%-27%',
+      '隐性涨价手段：计费单位改为多模态 Token、分词器更换、completion 机制调整、缓存折扣收紧——单看标价已无法反映真实成本'
+    ]
+  },
+  {
+    title: '国内 C 端进入付费时代：豆包打响第一枪',
+    icon: '💰',
+    color: '#f59e0b',
+    points: [
+      '5 月 4 日字节豆包（3.45 亿月活）披露 68/200/500 元三档付费订阅，标志国内大模型从"免费引流"正式迈向"分层收费"',
+      '付费聚焦 PPT 生成、数据分析等高算力场景——算力成本压力是核心驱动，免费模式难以为继',
+      '对标 ChatGPT Plus（$20/月约 145 元），豆包 68 元标准版定价策略为"低价抢占习惯"，预计将引发国内 AI 应用付费潮'
+    ]
+  },
+  {
     title: '驱动因素：Token 爆炸 + GPU 紧缺双重挤压',
     icon: '⚡',
-    color: '#f59e0b',
+    color: '#6366f1',
     points: [
       '中国日均 Token 调用量从 2024 年初约 1,000 亿飙升至 2026 年 3 月约 140 万亿，两年增长超 1,000 倍',
       'H100 一年期租赁合同价从 2025 年 10 月 1.70 美元/小时涨到 2026 年 3 月 2.35 美元/小时，涨幅近 40%',
@@ -985,43 +1311,43 @@ export const priceStrategyInsights: PriceStrategyInsight[] = [
   {
     title: '节奏差异：海外更早更狠，国内跟进更稳',
     icon: '🌍',
-    color: '#6366f1',
+    color: '#10b981',
     points: [
-      '海外节奏：1 月 AWS → 2 月 Azure → 3 月谷歌云 → 4 月 OpenAI，呈梯次传导，幅度集中在 8%-15%',
-      '国内节奏：3 月 11 日腾讯云 → 3 月 13 日 MiniMax/Kimi 结束公测 → 3 月 18 日阿里云 → 3 月 31 日科大讯飞 → 4 月 7 日百度云 → 4 月 8 日智谱AI → 4 月 9 日腾讯云二次调价 → 4 月 10 日商汤，从模型 API 扩散到算力/存储',
-      '国内单项最大涨幅达到 463%（腾讯云混元 HY 2.0 Instruct 输入 Token），远超海外，反映 2025 年以来国内"最高降幅 60%"的价格战已基本退出'
+      '海外节奏：1 月 AWS → 2 月 Azure → 3 月谷歌云 → 4 月 OpenAI → 5 月隐性涨价波，幅度集中在 8%-15%（隐性可达 92%）',
+      '国内节奏：3 月 11 日腾讯云混元 → 3 月 13 日 MiniMax/Kimi → 4 月 9 日腾讯云二次调价 → 5 月 4 日豆包付费订阅 → 5 月 9 日腾讯云涨价生效',
+      '例外：DeepSeek V4 Pro 逆势 2.5 折 + 缓存再降 90%，刷新国内最低价（0.025 元/百万 token），开源路线持续搅局'
     ]
   },
   {
     title: '涨价类型：直接提价 + 隐性涨价并存',
     icon: '🧮',
-    color: '#10b981',
+    color: '#8b5cf6',
     points: [
       '直接提价：AWS +15%、Azure +8%~12%、阿里云最高 +50%、腾讯云混元最高 +463%、百度智能云 +5%~30%、智谱AI +22.5%、Kimi +20%、MiniMax +15%、商汤 +12%、科大讯飞 +8%',
-      '隐性涨价：GPT-5.5 Omni 计费单位改为"多模态 Token"；AWS 预留窗口延长至 2 年；谷歌云 CUD 折扣从 55% 降到 45%；阿里云预留折扣缩 8 个百分点；智谱取消首购优惠',
-      'SLA 打包化：火山引擎引入 18 个月 SLA 包年、华为云昇腾最低 64 卡起订、商汤推出 12 个月算力包锁价，降低单客折扣空间'
+      '隐性涨价：GPT-5.5 短 prompt +92%；Claude 4.7 分词器 +32%-45% token；AWS 预留窗口延长至 2 年；谷歌云 CUD 折扣从 55% 降到 45%',
+      '订阅化趋势：豆包 68-500 元/月、火山引擎 18 个月 SLA 包年、华为云昇腾最低 64 卡起订——将一次性调价转化为持续性收入'
     ]
   },
   {
     title: '对客户影响：分层明显，中小客户压力最大',
     icon: '🎯',
-    color: '#8b5cf6',
+    color: '#0ea5e9',
     points: [
       '大客户（年支出 1 亿+）：通过多云与战略协议谈判可对冲 60%-80% 涨幅；部分获得"价格锁定 12 个月"条款',
       '中型客户（年支出千万级）：面临 API + 算力双涨叠加，综合云成本上升 15%-25%，需加速自建/半自建策略',
       '中小开发者：免费额度取消、Token 单价上调冲击最大；DeepSeek V4 等开源低价路径成为首选替代',
-      '策略建议：Q2 内完成预留续费锁价、启用多模型路由（开源 + 闭源混合）、推动架构 Token 节流（Prompt 压缩、缓存、RAG）'
+      '策略建议：利用缓存（Anthropic 缓存 token 90% 折扣）、部署模型路由器、避免 2K-10K token 中等 prompt、控制输出（JSON Schema 约束）'
     ]
   },
   {
     title: '未来走势：价格将持续分化，软硬一体是关键',
     icon: '🔮',
-    color: '#0ea5e9',
+    color: '#a855f7',
     points: [
-      '拥有自研芯片的云商（AWS Trainium 3、谷歌 TPU v7、华为昇腾、阿里平头哥）在价格谈判中话语权更强，中期有望"通过自研摊薄涨幅"',
+      '拥有自研芯片的云商（AWS Trainium 3、谷歌 TPU v8、华为昇腾、阿里平头哥）在价格谈判中话语权更强，中期有望"通过自研摊薄涨幅"',
       '纯依赖 NVIDIA GPU 的二线云商将承受最大涨价压力，预计 2026 H2 会出现一轮"二线云商退出高端算力市场"的洗牌',
       '开源模型 + 推理专用芯片（Groq、Cerebras、Etched Sohu）将成为成本最优解，可能促使云商在 2026 年底推出"免费基础模型 + 算力捆绑"反制策略',
-      '预计 2026 Q3 海外还将出现一轮 5%-10% 跟进涨价；国内会在"5 月 1 日 / 5 月 9 日"批次生效后再出现 1-2 轮微调'
+      '预计 2026 Q3 海外还将出现一轮 5%-10% 跟进涨价；国内将在豆包付费测试后引发通义/文心/Kimi 等跟进'
     ]
   }
 ]

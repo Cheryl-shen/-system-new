@@ -17,7 +17,7 @@
       </div>
     </nav>
     <div class="sidebar-footer">
-      战略客户部 · 华南拓展中心<br>数据&文档汇总平台
+      华南智策<br>数据&文档汇总平台
     </div>
   </div>
 </template>

@@ -1,40 +1,47 @@
 # 内容更新 SOP
 > 战略客户部 · 华南拓展中心 · 数据&文档汇总平台
-> 最后更新：2026-04-24
+> 最后更新：2026-05-08
 
 ---
 
 ## 一、项目更新路径总览
 
 ```
-本地修改 → git push → EdgeOne 自动部署 → 线上生效
+本地修改 → 构建 → 部署到 CVM 服务器 → 线上生效
    ↓
-GitHub（源站）→ EdgeOne Pages（strategic 项目）→ tencent south.top（生产域名）
+GitHub（源码）→ 本地 npm run build → 部署脚本上传 → strategicsouth.woa.com（生产域名）
 ```
 
 ### 关键配置
 | 项目 | 值 |
 |------|-----|
 | GitHub 仓库 | `Cheryl-shen/strategic-platform` |
-| EdgeOne 项目 | `strategic`（ID: `pages-uhblopsidn4y`）|
-| 生产域名 | `tencentsouth.top` |
-| 部署方式 | GitHub Push → EdgeOne 自动触发 |
+| 服务器地址 | `21.214.41.205`（CVM） |
+| 生产域名 | `strategicsouth.woa.com` |
+| 部署方式 | 一键部署脚本 / Git 拉取更新 |
+| 后端服务 | Node.js + Express + SQLite |
+| Web 服务器 | Nginx（反代 + 静态文件） |
+| 认证方式 | TOF + JWT |
 
 ---
 
-## 二、自动更新机制说明
+## 二、部署架构说明
 
-### ✅ 目前「自动」更新的内容
+```
+内网服务器 (21.214.41.205)
+├── Nginx:80
+│   ├── /           → Vue 静态文件 (/opt/strategic-platform/dist/)
+│   └── /api/*      → 反代到 Node.js:3000
+└── Node.js:3000
+    └── Express API 服务 (/opt/strategic-platform/server/)
+        └── SQLite 数据库 (server/data/strategic.db)
+```
 
-| 内容 | 更新方式 | 频率 | 说明 |
-|--------|----------|------|------|
-| `.github/last-build.txt` | GitHub Actions 自动更新时间戳 | 每日 09:00（北京时间）| 触发 EdgeOne 重新构建，但**不更新任何业务数据** |
-
-### ❌ 目前「手动」更新的内容（全部数据文件需手动维护）
+### ❌ 需要手动更新的内容
 
 所有业务数据（AI 动态、售卖弹药、客户战略、成本变化、产品指引、官网上新）**均为硬编码在文件中**，不会自动抓取或更新。
 
-> ⚠️ **重要**：GitHub Actions 的每日构建**只刷新构建时间**，不会自动更新新闻/报价/成本等数据。每次更新数据后，需手动 `git push` 触发部署。
+> ⚠️ **重要**：每次更新数据后，需手动构建并部署才会在线上生效。
 
 ---
 
@@ -215,11 +222,11 @@ reason: '涨价原因说明'
 
 ## 四、更新发布流程
 
-### 标准流程（推荐）
+### 方式一：一键部署脚本（推荐）
 
 ```bash
 # 1. 拉取最新代码
-cd "/Users/cherylshen/CodeBuddy/战略客户部 · 华南拓展中心 · 数据&文档汇总平台"
+cd /Users/cherylshen/Desktop/platform
 git pull origin main
 
 # 2. 修改对应的数据文件（按第三章指引）
@@ -227,16 +234,60 @@ git pull origin main
 # 3. 提交代码
 git add -A
 git commit -m "更新：描述本次更新内容"
-
-# 4. 推送到 GitHub（自动触发 EdgeOne 部署）
 git push origin main
+
+# 4. 执行一键部署脚本
+bash deploy/deploy.sh root@21.214.41.205
+```
+
+> 部署脚本会自动完成：本地构建 → 上传文件 → 安装依赖 → 重启服务
+
+### 方式二：仅前端更新（数据修改后快速部署）
+
+```bash
+# 1. 本地构建
+cd /Users/cherylshen/Desktop/platform
+npm run build
+
+# 2. 打包并上传
+tar -czf dist-update.tar.gz dist/
+scp dist-update.tar.gz root@21.214.41.205:/tmp/
+
+# 3. SSH 到服务器解压部署
+ssh root@21.214.41.205
+cd /tmp && tar -xzf dist-update.tar.gz
+cp -r dist/* /opt/strategic-platform/dist/
+systemctl reload nginx
+```
+
+### 方式三：Git 拉取更新（服务器已克隆仓库）
+
+```bash
+ssh root@21.214.41.205
+cd /opt/strategic-platform-src
+git pull origin main
+npm run build
+cp -r dist/* /opt/strategic-platform/dist/
+cp deploy/server/*.js /opt/strategic-platform/server/
+cd /opt/strategic-platform/server && npm install --production
+systemctl restart strategic-platform && systemctl reload nginx
 ```
 
 ### 部署状态检查
 
-推送后，可在以下位置查看部署状态：
-- EdgeOne 控制台：https://console.cloud.tencent.com/edgeone/pages/project/pages-uhblopsidn4y/deployments
-- 部署成功后约 1-2 分钟，`tencentsouth.top` 生效
+部署后，可通过以下方式验证：
+```bash
+# 检查 API 服务状态
+curl -s http://strategicsouth.woa.com/api/health
+
+# 检查 systemd 服务状态
+ssh root@21.214.41.205 "systemctl status strategic-platform"
+
+# 查看实时日志
+ssh root@21.214.41.205 "journalctl -u strategic-platform -f --lines=20"
+```
+
+> 部署成功后，访问 `strategicsouth.woa.com` 即可看到更新内容。
 
 ---
 
@@ -244,33 +295,60 @@ git push origin main
 
 ```bash
 # 启动本地开发服务器
-cd "/Users/cherylshen/CodeBuddy/战略客户部 · 华南拓展中心 · 数据&文档汇总平台"
+cd /Users/cherylshen/Desktop/platform
 npm run dev
 
 # 浏览器访问
-open http://localhost:3000
+open http://localhost:5173
 ```
 
-> ⚠️ **注意**：本地预览无法使用 EdgeOne Functions（登录/认证功能），但可以看到页面内容和数据更新效果。
+> ⚠️ **注意**：本地预览时后端 API 请求会代理到开发环境（如已配置 vite proxy），登录/认证功能可能受限，但可以看到页面内容和数据更新效果。
 
 ---
 
 ## 六、常见问题
 
-### Q1：为什么自动部署后数据没有更新？
-**A**：GitHub Actions 每日构建**只更新时间戳**，不会自动更新业务数据。必须手动修改数据文件并 `git push` 才会生效。
+### Q1：修改了数据文件，为什么线上没有更新？
+**A**：修改数据文件后，需要**重新构建并部署**。建议使用一键部署脚本 `bash deploy/deploy.sh root@21.214.41.205` 完成部署。
 
 ### Q2：如何快速找到要修改的文件？
 **A**：参考第三章的「数据文件」路径，或直接搜索关键词（如产品名称）定位。
 
-### Q3：推送代码后多久上线？
-**A**：EdgeOne 部署通常需要 2-5 分钟。部署完成后 CDN 缓存可能需要 1-2 分钟刷新。
+### Q3：部署后多久能上线？
+**A**：使用一键脚本部署，从执行到生效通常需要 1-3 分钟（含构建、上传、重启服务）。
 
 ### Q4：如何回滚到上一个版本？
-**A**：在 EdgeOne 控制台找到上一个部署记录，点击「回滚」即可。
+**A**：
+```bash
+# 方法一：回退 Git 版本后重新部署
+git log --oneline -5           # 查看最近提交
+git revert HEAD                # 回退最近一次提交
+bash deploy/deploy.sh root@21.214.41.205
+
+# 方法二：在服务器直接回退（如果使用 Git 方式部署）
+ssh root@21.214.41.205
+cd /opt/strategic-platform-src
+git log --oneline -5
+git checkout <commit-hash>
+npm run build && cp -r dist/* /opt/strategic-platform/dist/
+systemctl reload nginx
+```
 
 ### Q5：Cost.vue 的背景说明文字在哪里修改？
 **A**：在 `src/views/Cost.vue` 第 23-30 行，更新账期信息和涨幅说明。
+
+### Q6：服务挂了怎么办？
+**A**：
+```bash
+# 检查服务状态
+ssh root@21.214.41.205 "systemctl status strategic-platform"
+
+# 重启服务
+ssh root@21.214.41.205 "systemctl restart strategic-platform"
+
+# 查看错误日志
+ssh root@21.214.41.205 "journalctl -u strategic-platform --since '10 min ago'"
+```
 
 ---
 
@@ -284,7 +362,24 @@ open http://localhost:3000
 | 成本变化 | `src/data/costData.ts` | `src/views/Cost.vue` | 手动 |
 | 产品售卖指引 | — | `src/views/ProductGuide.vue` | 手动（内嵌）|
 | 官网上新 | `src/data/newProductsData.ts` | `src/views/NewProducts.vue` | 手动 |
-| 自动构建触发 | `.github/workflows/daily-update.yml` | — | 自动（仅时间戳）|
+| 部署脚本 | `deploy/deploy.sh` | — | 一键部署 |
+| 后端服务 | `deploy/server/` | — | 随部署更新 |
+| Nginx 配置 | `deploy/nginx.conf` | — | 随部署更新 |
+
+---
+
+## 八、常用运维命令速查
+
+| 操作 | 命令 |
+|------|------|
+| 查看 API 服务状态 | `systemctl status strategic-platform` |
+| 查看 API 实时日志 | `journalctl -u strategic-platform -f` |
+| 重启 API 服务 | `systemctl restart strategic-platform` |
+| 健康检查 | `curl -s http://localhost/api/health` |
+| 查看 Nginx 状态 | `systemctl status nginx` |
+| Nginx 配置测试 | `nginx -t` |
+| 重载 Nginx | `systemctl reload nginx` |
+| 查看磁盘空间 | `df -h /opt/strategic-platform/` |
 
 ---
 

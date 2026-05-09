@@ -2,8 +2,8 @@
   <div class="home-page">
     <!-- Hero Section -->
     <div class="home-hero">
-      <h1>战略客户部 · 华南拓展中心</h1>
-      <p>数据 & 文档汇总 — 团队日常工作所需数据和文档的统一入口</p>
+      <h1>华南智策</h1>
+      <p>AI 售卖弹药 · 客户战略情报 · 云商竞争动态 — 战略客户部华南拓展中心一站式作战平台</p>
       <div class="home-stats">
         <div class="home-stat">
           <div class="num">{{ stats.categoryCount }}</div>
