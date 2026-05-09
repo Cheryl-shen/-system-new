@@ -17,7 +17,7 @@
       </div>
     </nav>
     <div class="sidebar-footer">
-      华南智策<br>数据&文档汇总平台
+      华南智策
     </div>
   </div>
 </template>
