@@ -2,7 +2,7 @@
   <div class="home-page">
     <!-- Hero Section -->
     <div class="home-hero">
-      <h1>华南智策</h1>
+      <h1>华南AI智策</h1>
       <div class="home-stats">
         <div class="home-stat">
           <div class="num">{{ stats.categoryCount }}</div>

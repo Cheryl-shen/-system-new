@@ -465,7 +465,7 @@ app.get('/api/health', (req, res) => {
 
 // 启动服务
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[Server] 战略客户部数据平台 API 服务已启动`);
+  console.log(`[Server] 华南AI智策 API 服务已启动`);
   console.log(`[Server] 端口: ${PORT}`);
   console.log(`[Server] TOF: ${tofConfig.enabled ? '已启用' + (tofConfig.safeMode ? ' (安全模式)' : ' (兼容模式)') : '未启用'}`);
   console.log(`[Server] 环境: ${process.env.NODE_ENV || 'production'}`);

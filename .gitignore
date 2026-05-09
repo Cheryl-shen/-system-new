@@ -28,19 +28,24 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment files
+# Environment files (keep .env.example)
 .env
 .env.local
 .env.*.local
+.env.development
+.env.production
 
 # Codebuddy
 .codebuddy
 
 # Tencent Cloud EdgeOne
-.env
 .edgeone/*
 .tef_dist/*
 
 # Deploy archives
 *.tar.gz
+
+# SQLite database
+*.db
+*.db-journal
   

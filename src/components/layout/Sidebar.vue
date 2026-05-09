@@ -17,7 +17,7 @@
       </div>
     </nav>
     <div class="sidebar-footer">
-      华南智策
+      华南AI智策
     </div>
   </div>
 </template>
@@ -38,6 +38,7 @@ const menuItems = [
   { path: '/product-guide', label: '产品售卖指引', icon: '&#128230;' },
   { path: '/strategy', label: '客户战略分析', icon: '&#127919;' },
   { path: '/news', label: 'AI 与云商动态', icon: '&#128240;', badge: 'HOT', badgeClass: '' },
+  { path: '/supply-chain', label: '供应链情报', icon: '&#128279;', badge: 'NEW' },
   { path: '/new-products', label: '官网上新', icon: '&#127381;', badge: 'NEW' },
   { path: '/model-price', label: '模型商价格动态', icon: '&#128176;' },
   { path: '/model-ranking', label: '全球模型能力排名', icon: '&#127942;', badge: 'NEW' }

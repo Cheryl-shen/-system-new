@@ -1,6 +1,10 @@
-# 战略客户部 · 华南拓展中心 · 数据&文档汇总平台
+# 华南AI智策
 
-基于 Vue 3 + TypeScript + Vite 构建的内部数据平台，部署于内网服务器，通过太湖/TOF 统一登录认证，用于团队日常工作所需数据和文档的统一管理。
+**战略客户部·华南拓展中心**打造的一站式AI商机情报平台。
+
+平台整合全球模型能力排名、国内外云商与供应链动态、客户AI战略分析、AI产品售卖弹药四大模块，帮助一线商务快速洞悉市场格局、精准对接客户需求、高效输出售卖方案。
+
+技术上基于 Vue 3 + Express 构建，通过太湖 TOF 统一认证实现安全可控的访问管理。
 
 **线上地址**: https://strategicsouth.woa.com
 
@@ -22,28 +26,63 @@
 
 ```
 strategic-platform/
-├── src/                    # 前端源码 (Vue 3 SPA)
-│   ├── api/                # API 接口封装
-│   ├── assets/styles/      # 样式文件
-│   ├── components/         # 组件（layout / common）
-│   ├── stores/             # Pinia 状态管理
-│   ├── views/              # 页面视图
-│   ├── router/             # Vue Router 配置
-│   └── main.ts             # 入口
-├── deploy/                 # 部署相关
-│   ├── server/             # Express 后端代码
-│   │   ├── server.js       # 主服务（认证 + 管理 + API）
-│   │   ├── db.js           # SQLite 数据层
-│   │   ├── tof.js          # TOF JWE 解密模块
-│   │   └── package.json    # 后端依赖
-│   ├── nginx.conf          # Nginx 站点配置
-│   ├── deploy.sh           # 一键部署脚本
-│   └── README.md           # 部署详细文档
-├── package.json            # 前端依赖
-├── vite.config.ts          # Vite 配置
-├── tsconfig.json           # TypeScript 配置
-└── .env.example            # 环境变量模板
+├── src/                        # 前端源码 (Vue 3 SPA)
+│   ├── api/                    # API 接口封装
+│   │   ├── auth.ts             # 认证相关 API
+│   │   └── http.ts             # HTTP 请求封装
+│   ├── assets/styles/          # 样式文件
+│   │   ├── base.css            # 基础样式
+│   │   ├── components.css      # 组件样式
+│   │   ├── main.css            # 入口样式
+│   │   └── variables.css       # CSS 变量
+│   ├── components/             # 组件
+│   │   ├── common/             # 通用组件（DataTable、Loading 等）
+│   │   └── layout/             # 布局组件（Sidebar、Topbar 等）
+│   ├── data/                   # 静态数据文件
+│   │   ├── newsData.ts         # AI 与云商动态数据
+│   │   ├── salesGuideData.ts   # 售卖弹药数据
+│   │   ├── strategyData.ts     # 客户战略数据
+│   │   ├── costData.ts         # 成本变化数据
+│   │   └── ...                 # 其他数据文件
+│   ├── stores/                 # Pinia 状态管理
+│   │   └── auth.ts             # 认证状态
+│   ├── views/                  # 页面视图
+│   ├── router/                 # Vue Router 配置
+│   └── main.ts                 # 入口文件
+│
+├── deploy/                     # 部署相关
+│   ├── server/                 # Express 后端代码
+│   │   ├── server.js           # 主服务（认证 + 管理 + API）
+│   │   ├── db.js               # SQLite 数据层
+│   │   ├── tof.js              # TOF JWE 解密模块
+│   │   └── package.json        # 后端依赖
+│   ├── nginx.conf              # Nginx 站点配置
+│   ├── deploy.sh               # 一键部署脚本
+│   └── *.md                    # 部署指南文档
+│
+├── docs/                       # 操作文档
+│   ├── 内容更新SOP.md          # 数据更新操作指南
+│   ├── 开发模式登录SOP.md       # 本地开发登录指南
+│   └── 正式环境部署SOP.md       # 生产环境部署指南
+│
+├── .env.example                # 服务端环境变量模板
+├── .env.development            # 开发环境配置（不提交 Git）
+├── package.json                # 前端依赖
+├── vite.config.ts              # Vite 配置
+└── tsconfig.json               # TypeScript 配置
 ```
+
+---
+
+## 📚 文档索引
+
+| 文档 | 说明 |
+|------|------|
+| [内容更新 SOP](./docs/内容更新SOP.md) | 各模块数据更新操作指南 |
+| [开发模式登录 SOP](./docs/开发模式登录SOP.md) | 本地开发环境登录方法 |
+| [正式环境部署 SOP](./docs/正式环境部署SOP.md) | 生产服务器部署与更新流程 |
+| [Git 部署指南](./deploy/GIT-DEPLOY-GUIDE.md) | 通过 Git 克隆方式首次部署 |
+| [WebShell 部署指南](./deploy/WEBSHELL-DEPLOY-GUIDE.md) | DevCloud WebShell 手动部署 |
 
 ---
 
@@ -139,10 +178,15 @@ curl -s http://localhost/api/health
 
 ## 页面功能
 
-- **首页** — 工作台入口
-- **售卖弹药** — 销售资料与话术
-- **AI与云商动态** — 行业动态追踪
-- **成本变化** — 产品成本信息
-- **产品售卖指引** — 产品方案推荐
-- **汇报管理** — 结构化汇报编写与导出
-- **管理后台** — 用户/角色/日志管理（管理员）
+| 页面 | 路由 | 数据文件 | 说明 |
+|------|------|----------|------|
+| 首页 | `/` | - | 工作台入口 |
+| AI与云商动态 | `/news` | `newsData.ts` | AI 行业动态、云商动态、涨价追踪 |
+| 售卖弹药 | `/sales-guide` | `salesGuideData.ts` | 产品销售资料与话术 |
+| 客户战略分析 | `/strategy` | `strategyData.ts` | 战略客户经营与 AI 规划 |
+| 成本变化 | `/cost` | `costData.ts` | 产品成本信息 |
+| 产品售卖指引 | `/product-guide` | 内嵌 | 产品方案与行业指引 |
+| 官网上新 | `/new-products` | `newProductsData.ts` | 官网产品更新追踪 |
+| 模型价格 | `/model-price` | `modelPriceData.ts` | 各厂商模型定价对比 |
+| 模型排名 | `/model-ranking` | `modelRankingData.ts` | 全球模型能力排名 |
+| 登录 | `/login` | - | 登录认证页面 |

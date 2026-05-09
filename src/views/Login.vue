@@ -15,10 +15,10 @@
       <div class="login-bg"></div>
       <div class="login-card">
         <div class="login-brand">
-          <div class="login-logo">战</div>
+          <div class="login-logo">AI</div>
           <div class="login-brand-text">
-            <h1>华南智策</h1>
-            <p>数据 &amp; 文档汇总平台</p>
+            <h1>华南AI智策</h1>
+            <p>AI 驱动的数据智策平台</p>
           </div>
         </div>
 

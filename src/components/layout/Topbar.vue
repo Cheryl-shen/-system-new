@@ -2,9 +2,9 @@
   <div class="topbar">
     <button class="mobile-menu-btn" @click="toggleSidebar">☰</button>
     <div class="topbar-brand">
-      <div class="topbar-logo">战</div>
+      <div class="topbar-logo">AI</div>
       <div class="topbar-title">
-        华南智策
+        华南AI智策
       </div>
     </div>
     <div class="topbar-right">
