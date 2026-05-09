@@ -64,31 +64,23 @@ export const useAuthStore = defineStore('auth', {
     },
     /**
      * 初始化认证状态
-     * 检查 TOF 认证或开发模式
+     * TOF 模式：太湖鉴权通过后直接放行，不做二次检查
      */
     async bootstrap() {
       if (this.bootstrapped) return;
       
       try {
-        // 检查 TOF 认证
-        const tofCheck = await authApi.checkTofAuth();
-        if (tofCheck.authenticated) {
-          // 已通过 TOF 认证，获取用户信息
-          const user = await authApi.me();
-          this.updateUser(user, 'tof');
-        } else if (this.authMode === 'dev' && this.token) {
-          // 开发模式，尝试恢复会话
-          try {
-            const user = await authApi.me();
-            this.updateUser(user, 'dev');
-          } catch {
-            this.clear();
-          }
-        } else {
-          this.clear();
+        // 直接尝试获取用户信息
+        // 如果 TOF 认证通过，后端会返回用户；否则返回 401
+        const user = await authApi.me();
+        this.updateUser(user, user.authMode === 'dev' ? 'dev' : 'tof');
+        // 设置一个标识 token（TOF 模式下不需要真正的 JWT）
+        if (!this.token) {
+          this.token = 'tof-session';
+          localStorage.setItem(TOKEN_KEY, 'tof-session');
         }
-      } catch (e) {
-        console.error('认证初始化失败:', e);
+      } catch (e: any) {
+        // 401 表示未登录，清空状态
         this.clear();
       } finally {
         this.bootstrapped = true;

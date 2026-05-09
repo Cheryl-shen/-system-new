@@ -103,37 +103,26 @@ function safeNext(): string {
 
 /**
  * 检查 TOF 认证状态
+ * 简化版：直接尝试获取用户信息，成功则跳转
  */
 async function checkTofAuth() {
   tofChecking.value = true;
   errorMsg.value = '';
   
   try {
-    const result = await authApi.checkTofAuth();
-    if (result.authenticated) {
-      // 已通过 TOF 认证，检查是否需要登录确认
-      const authStatus = await authApi.checkAuthStatus();
-      
-      if (authStatus.authenticated) {
-        if (authStatus.sessionValid) {
-          // 已有有效会话，直接进入系统
-          const user = await authApi.me();
-          auth.updateUser(user, 'tof');
-          router.replace(safeNext());
-          return;
-        } else {
-          // 需要登录确认，跳转到确认页面
-          const returnUrl = encodeURIComponent(safeNext());
-          router.replace(`/login/confirm?return=${returnUrl}`);
-          return;
-        }
-      }
-    } else {
-      errorMsg.value = '未检测到登录信息，请通过公司内网访问';
+    // 直接获取用户信息，TOF 认证通过后端会自动识别
+    const user = await authApi.me();
+    auth.updateUser(user, 'tof');
+    // 设置 token 标识
+    if (!auth.token) {
+      auth.setAuth('tof-session', user, 'tof');
     }
+    router.replace(safeNext());
+    return;
   } catch (e: any) {
-    console.error('TOF 认证检查失败:', e);
-    errorMsg.value = '登录状态检查失败，请重试';
+    // 401 = 未认证，显示提示
+    console.log('TOF 认证检查:', e?.response?.status || e);
+    errorMsg.value = '未检测到登录信息，请通过公司内网访问';
   } finally {
     tofChecking.value = false;
   }

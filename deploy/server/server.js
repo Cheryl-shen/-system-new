@@ -141,27 +141,39 @@ app.post('/api/auth/login', async (req, res) => {
 // GET /api/auth/me — 获取当前用户
 app.get('/api/auth/me', async (req, res) => {
   try {
-    // 优先 TOF
+    // 优先 TOF - 太湖鉴权通过直接放行，不做二次检查
     if (tofConfig.enabled && isTofAuthenticated(req)) {
       const tofUser = await getTofUser(req, tofConfig);
       if (tofUser) {
-        const session = db.getSession(tofUser.staffName);
-        if (session) {
-          const dbUser = db.getUser(tofUser.staffName);
-          return res.json({
-            ok: true, data: {
-              username: tofUser.staffName,
-              displayName: dbUser?.displayName || tofUser.displayName,
-              role: dbUser?.role || 'manager',
-              customerIds: dbUser?.customerIds || [],
-              authMode: 'tof'
-            }
-          });
+        // 自动创建/更新用户记录
+        let dbUser = db.getUser(tofUser.staffName);
+        if (!dbUser) {
+          dbUser = {
+            username: tofUser.staffName,
+            displayName: tofUser.chineseName || tofUser.displayName,
+            role: 'manager',
+            status: 'active',
+            customerIds: [],
+            staffId: tofUser.staffId
+          };
+          db.createUser(dbUser);
+          dbUser = db.getUser(tofUser.staffName);
         }
+        db.updateLastLogin(tofUser.staffName);
+        
+        return res.json({
+          ok: true, data: {
+            username: tofUser.staffName,
+            displayName: dbUser?.displayName || tofUser.displayName,
+            role: dbUser?.role || 'manager',
+            customerIds: dbUser?.customerIds || [],
+            authMode: 'tof'
+          }
+        });
       }
     }
 
-    // JWT 模式
+    // JWT 模式（备用）
     const token = extractToken(req);
     if (token) {
       const payload = await verifyToken(token);
