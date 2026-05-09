@@ -161,6 +161,7 @@ export const chipNews: ChipNews[] = [
     impact: 'negative',
     tags: ['H20', '抽成税', '成本上升', '供应链风险'],
     source: 'SemiAnalysis / 财联社',
+    sourceUrl: 'https://www.cls.cn/detail/1617830',
     importance: '重磅'
   },
   {
@@ -173,6 +174,7 @@ export const chipNews: ChipNews[] = [
     impact: 'negative',
     tags: ['B200', '发货延迟', '出口管制', 'H200'],
     source: 'The Information / 路透社',
+    sourceUrl: 'https://www.theinformation.com',
     importance: '重要'
   },
   {
@@ -185,6 +187,7 @@ export const chipNews: ChipNews[] = [
     impact: 'positive',
     tags: ['MI350X', 'HBM3E', '推理芯片', 'ROCm'],
     source: 'AMD官方 / AnandTech',
+    sourceUrl: 'https://www.amd.com/en/products/accelerators/instinct/mi300/mi350x.html',
     importance: '重要'
   },
   {
@@ -197,6 +200,7 @@ export const chipNews: ChipNews[] = [
     impact: 'positive',
     tags: ['TPU 8', '训练推理分离', 'Vertex AI', '谷歌云'],
     source: 'Google Cloud / TechCrunch',
+    sourceUrl: 'https://blog.google/innovation-and-ai/infrastructure-and-cloud/google-cloud/next-2026/',
     importance: '重磅'
   },
   {
@@ -209,6 +213,7 @@ export const chipNews: ChipNews[] = [
     impact: 'positive',
     tags: ['思元590', 'H20替代', '国产芯片', '7nm'],
     source: '寒武纪官方 / 36氪',
+    sourceUrl: 'https://www.cambricon.com/index.php?m=content&c=index&a=lists&catid=57',
     importance: '重要'
   },
   {
@@ -221,6 +226,7 @@ export const chipNews: ChipNews[] = [
     impact: 'positive',
     tags: ['深算二号', 'x86', '国产替代', 'AI推理'],
     source: '海光信息 / 证券时报',
+    sourceUrl: 'https://www.hygon.cn',
     importance: '重要'
   },
   {
@@ -233,6 +239,7 @@ export const chipNews: ChipNews[] = [
     impact: 'positive',
     tags: ['Trainium 3', 'Anthropic', '自研芯片', 'AWS'],
     source: 'AWS Blog / CNBC',
+    sourceUrl: 'https://aws.amazon.com/machine-learning/trainium',
     importance: '重磅'
   }
 ]
@@ -263,6 +270,7 @@ export const storageNews: StorageNews[] = [
     priceTrend: 'up',
     tags: ['HBM4', 'SK海力士', '英伟达', '供应集中'],
     source: 'DigiTimes / 韩国经济日报',
+    sourceUrl: 'https://www.digitimes.com',
     importance: '重磅'
   },
   {
@@ -275,6 +283,7 @@ export const storageNews: StorageNews[] = [
     priceTrend: 'stable',
     tags: ['HBM3', '长鑫存储', '12层堆叠', '国产突破'],
     source: '长鑫存储 / 集微网',
+    sourceUrl: 'https://www.jemitech.com',
     importance: '重磅'
   },
   {
@@ -287,6 +296,7 @@ export const storageNews: StorageNews[] = [
     priceTrend: 'stable',
     tags: ['HBM3E', '三星', '良率提升', '英伟达认证'],
     source: '韩国先驱报 / 路透社',
+    sourceUrl: 'https://www.reuters.com/technology',
     importance: '重要'
   },
   {
@@ -299,6 +309,7 @@ export const storageNews: StorageNews[] = [
     priceTrend: 'up',
     tags: ['NAND', '涨价', '企业级SSD', 'AI服务器'],
     source: 'TrendForce / 集邦咨询',
+    sourceUrl: 'https://www.trendforce.com',
     importance: '重要'
   },
   {
@@ -311,6 +322,7 @@ export const storageNews: StorageNews[] = [
     priceTrend: 'up',
     tags: ['HBM3E', '美光', '英伟达认证', '产能紧张'],
     source: 'Micron官方 / AnandTech',
+    sourceUrl: 'https://www.micron.com/products/memory/hbm',
     importance: '重要'
   },
   {
@@ -323,6 +335,7 @@ export const storageNews: StorageNews[] = [
     priceTrend: 'stable',
     tags: ['232层', '长江存储', '企业级SSD', '国产替代'],
     source: '长江存储 / 芯智讯',
+    sourceUrl: 'https://www.ymtc.com',
     importance: '重要'
   }
 ]
@@ -353,6 +366,7 @@ export const networkNews: NetworkNews[] = [
     localizationRate: 60,
     tags: ['800G光模块', '中际旭创', '国产替代', '出货第一'],
     source: '中际旭创财报 / C114',
+    sourceUrl: 'https://www.c114.com.cn',
     importance: '重磅'
   },
   {
@@ -365,6 +379,7 @@ export const networkNews: NetworkNews[] = [
     localizationRate: 95,
     tags: ['CloudEngine', '华为', '数据中心交换机', 'AI调度'],
     source: '华为官方 / 通信世界',
+    sourceUrl: 'https://e.huawei.com/cn/products/enterprise-networking/switches/data-center-switches',
     importance: '重要'
   },
   {
@@ -377,6 +392,7 @@ export const networkNews: NetworkNews[] = [
     localizationRate: 0,
     tags: ['ConnectX-8', 'DPU', '400G网卡', '英伟达'],
     source: 'NVIDIA官方 / The Next Platform',
+    sourceUrl: 'https://www.nvidia.com/en-us/networking',
     importance: '重要'
   },
   {
@@ -389,6 +405,7 @@ export const networkNews: NetworkNews[] = [
     localizationRate: 100,
     tags: ['神盾DPU', '中兴', '国产DPU', '量产'],
     source: '中兴通讯 / C114',
+    sourceUrl: 'https://www.zte.com.cn',
     importance: '重磅'
   },
   {
@@ -401,6 +418,7 @@ export const networkNews: NetworkNews[] = [
     localizationRate: 100,
     tags: ['新华三', 'AI网络', '零丢包', '数据中心'],
     source: '新华三 / IT168',
+    sourceUrl: 'https://www.h3c.com',
     importance: '重要'
   }
 ]
@@ -429,6 +447,7 @@ export const infraNews: InfraNews[] = [
     region: '全国',
     tags: ['PUE政策', '强制标准', '数据中心', '节能'],
     source: '工信部 / 各省发改委',
+    sourceUrl: 'https://www.miit.gov.cn',
     importance: '重磅'
   },
   {
@@ -440,6 +459,7 @@ export const infraNews: InfraNews[] = [
     region: '全国',
     tags: ['液冷', '渗透率', 'AI数据中心', 'PUE'],
     source: 'IDC / 中国信通院',
+    sourceUrl: 'https://www.idc.com',
     importance: '重磅'
   },
   {
@@ -451,6 +471,7 @@ export const infraNews: InfraNews[] = [
     region: '广东清远',
     tags: ['腾讯云', '清远智算', '液冷', '亚洲第一'],
     source: '腾讯云官方 / 21财经',
+    sourceUrl: 'https://cloud.tencent.com',
     importance: '重磅'
   },
   {
@@ -462,6 +483,7 @@ export const infraNews: InfraNews[] = [
     region: '河北张北',
     tags: ['阿里云', '张北', '绿电', '风光互补'],
     source: '阿里云 / 中国能源报',
+    sourceUrl: 'https://www.aliyun.com',
     importance: '重要'
   },
   {
@@ -473,6 +495,7 @@ export const infraNews: InfraNews[] = [
     region: '内蒙古乌兰察布',
     tags: ['华为', 'FusionCol', '液冷', '能效提升'],
     source: '华为官方 / C114',
+    sourceUrl: 'https://e.huawei.com/cn/solutions/data-center',
     importance: '重要'
   },
   {
@@ -484,6 +507,7 @@ export const infraNews: InfraNews[] = [
     region: '上海',
     tags: ['字节跳动', '上海', 'AI数据中心', '200亿投资'],
     source: '上海发改委 / 36氪',
+    sourceUrl: 'https://www.36kr.com',
     importance: '重要'
   }
 ]

@@ -171,7 +171,8 @@
             <div class="news-tags">
               <span v-for="(t, i) in item.tags" :key="i" class="tag">#{{ t }}</span>
             </div>
-            <span class="source-text">{{ item.source }}</span>
+            <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener" class="source-link">{{ item.source }}</a>
+            <span v-else class="source-text">{{ item.source }}</span>
           </div>
         </div>
       </div>
@@ -226,13 +227,17 @@
             </span>
             <span class="news-date">{{ item.date }}</span>
           </div>
-          <h3 class="news-title">{{ item.title }}</h3>
+          <h3 class="news-title">
+            <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener">{{ item.title }}</a>
+            <span v-else>{{ item.title }}</span>
+          </h3>
           <p class="news-summary">{{ item.summary }}</p>
           <div class="news-footer">
             <div class="news-tags">
               <span v-for="(t, i) in item.tags" :key="i" class="tag">#{{ t }}</span>
             </div>
-            <span class="source-text">{{ item.source }}</span>
+            <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener" class="source-link">{{ item.source }}</a>
+            <span v-else class="source-text">{{ item.source }}</span>
           </div>
         </div>
       </div>
@@ -282,13 +287,17 @@
             <span class="local-tag">国产化 {{ item.localizationRate }}%</span>
             <span class="news-date">{{ item.date }}</span>
           </div>
-          <h3 class="news-title">{{ item.title }}</h3>
+          <h3 class="news-title">
+            <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener">{{ item.title }}</a>
+            <span v-else>{{ item.title }}</span>
+          </h3>
           <p class="news-summary">{{ item.summary }}</p>
           <div class="news-footer">
             <div class="news-tags">
               <span v-for="(t, i) in item.tags" :key="i" class="tag">#{{ t }}</span>
             </div>
-            <span class="source-text">{{ item.source }}</span>
+            <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener" class="source-link">{{ item.source }}</a>
+            <span v-else class="source-text">{{ item.source }}</span>
           </div>
         </div>
       </div>
@@ -337,13 +346,17 @@
             <span class="region-tag">📍 {{ item.region }}</span>
             <span class="news-date">{{ item.date }}</span>
           </div>
-          <h3 class="news-title">{{ item.title }}</h3>
+          <h3 class="news-title">
+            <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener">{{ item.title }}</a>
+            <span v-else>{{ item.title }}</span>
+          </h3>
           <p class="news-summary">{{ item.summary }}</p>
           <div class="news-footer">
             <div class="news-tags">
               <span v-for="(t, i) in item.tags" :key="i" class="tag">#{{ t }}</span>
             </div>
-            <span class="source-text">{{ item.source }}</span>
+            <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener" class="source-link">{{ item.source }}</a>
+            <span v-else class="source-text">{{ item.source }}</span>
           </div>
         </div>
       </div>
@@ -1174,6 +1187,19 @@ const alertStats = computed(() => ({
   font-size: 11px;
   color: var(--text-light);
   white-space: nowrap;
+}
+
+.source-link {
+  font-size: 11px;
+  color: var(--primary);
+  white-space: nowrap;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.source-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
 }
 
 /* 风险预警 */
