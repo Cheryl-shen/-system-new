@@ -182,6 +182,7 @@ curl -s http://localhost/api/health
 |------|------|----------|------|
 | 首页 | `/` | - | 工作台入口 |
 | AI与云商动态 | `/news` | `newsData.ts` | AI 行业动态、云商动态、涨价追踪 |
+| 供应链情报 | `/supply-chain` | `supplyChainData.ts` | AI算力供应链全景：产业链地图、芯片/存储/网络/基础设施动态、风险预警 |
 | 售卖弹药 | `/sales-guide` | `salesGuideData.ts` | 产品销售资料与话术 |
 | 客户战略分析 | `/strategy` | `strategyData.ts` | 战略客户经营与 AI 规划 |
 | 成本变化 | `/cost` | `costData.ts` | 产品成本信息 |
@@ -190,3 +191,32 @@ curl -s http://localhost/api/health
 | 模型价格 | `/model-price` | `modelPriceData.ts` | 各厂商模型定价对比 |
 | 模型排名 | `/model-ranking` | `modelRankingData.ts` | 全球模型能力排名 |
 | 登录 | `/login` | - | 登录认证页面 |
+
+---
+
+## 供应链情报模块说明
+
+**路由**：`/supply-chain`
+**数据文件**：`src/data/supplyChainData.ts`
+**更新周期**：每周手动更新
+**数据范围**：2026-04-01 ~ 2026-05-09（持续扩展）
+
+### 模块结构
+
+| 子模块 | 数据接口 | 说明 |
+|--------|----------|------|
+| 产业链全景图 | `SupplyChainNode` | 6层产业链节点（设计→制造→芯片→存储→网络→基础设施），含国产化率与风险等级 |
+| 行业总评 | `IndustrySummary` | 整体态势概述 + 4个核心指标（国产算力/进口成本/HBM供应/液冷渗透） |
+| 芯片前线动态 | `ChipNews` | 英伟达/AMD/华为昇腾/寒武纪等厂商动态，含来源链接 |
+| 存储与内存动态 | `StorageNews` | HBM/NAND/DRAM/SSD 价格趋势与供应格局 |
+| 网络设备动态 | `NetworkNews` | 光模块/交换机/DPU/路由器国产化进展 |
+| 基础设施动态 | `InfraNews` | 液冷/PUE政策/数据中心/电力 |
+| 供应链风险预警 | `SupplyChainAlert` | 出口管制/供应短缺/价格波动/技术封锁/地缘政治 5类风险 |
+
+### 数据来源
+
+每条数据均标注 `source` 字段，来源包括：
+- 海外权威媒体：路透社、The Information、TechCrunch、AnandTech
+- 行业分析机构：TrendForce（集邦咨询）、SemiAnalysis、IDC、DigiTimes
+- 厂商官方公告：华为、英伟达、AMD、寒武纪、长鑫存储等
+- 国内媒体：财联社、新浪财经、C114通信网、36氪、集微网

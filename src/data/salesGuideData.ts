@@ -1,5 +1,5 @@
-// 售卖弹药 · AI 产品报价知识库
-// 整合所有 AI 相关产品（大模型 / MaaS / SaaS / 智能体平台 / AI 基础能力）的报价信息
+// TokenHub+GPU+Agent弹药库
+// 整合 TokenHub、GPU 云服务器、WorkBuddy、ClawPro、ADP 全线 Agent 产品的报价信息
 // 每个产品卡片包含：官方介绍、产品定义、售卖策略、内部报价资料（腾讯文档链接）
 
 export interface OfficialLink {
@@ -57,131 +57,7 @@ export interface AmmoProduct {
 
 export const salesGuideData: AmmoProduct[] = [
   // ============================================================
-  // 1. 混元大模型
-  // ============================================================
-  {
-    id: 1,
-    productName: '腾讯混元大模型',
-    productCode: 'Tencent Hunyuan',
-    category: 'AI 大模型',
-    subCategory: '通用大模型 / 多模态',
-    tag: '战略',
-    priority: '高',
-    logo: '🧠',
-    oneLiner: '腾讯自研通用大模型家族，覆盖文本 / 图像 / 视频 / 3D 全模态，MoE 架构国产旗舰',
-    officialDesc: `腾讯混元大模型是由腾讯全链路自研的万亿级参数通用大模型，采用 MoE（混合专家）架构，具备强大的中文创作、逻辑推理、多轮对话、多模态理解与生成能力。产品矩阵包括：混元 Turbo / Lite / Standard / Pro / T1 等文本模型，混元文生图、混元文生视频、混元 3D 等多模态模型，覆盖对话、创作、代码、推理、内容生成等典型场景，并通过腾讯云 TokenHub、云智能体开发平台（ADP）对外提供 API 与企业级能力。`,
-    officialLinks: [
-      { label: '混元大模型官网', url: 'https://cloud.tencent.com/product/hunyuan' },
-      { label: '混元大模型开发文档', url: 'https://cloud.tencent.com/document/product/1729' },
-      { label: '混元大模型 API 调用说明', url: 'https://cloud.tencent.com/document/product/1729/97732' },
-      { label: '混元文生图', url: 'https://cloud.tencent.com/product/hunyuan-image' },
-      { label: '混元文生视频', url: 'https://cloud.tencent.com/product/hunyuan-video' },
-      { label: '混元 3D', url: 'https://cloud.tencent.com/product/hunyuan3d' }
-    ],
-    definition: `## 一、产品定义
-**腾讯混元大模型（Tencent Hunyuan）** 是腾讯自研的通用大语言模型家族，基于 **MoE 混合专家架构** 训练，参数规模达 **万亿级**，是腾讯 AI 战略的**底层模型底座**，支撑腾讯所有 To B / To C / 内部产品的 AI 能力。
-
-## 二、产品矩阵（2026 年版）
-- **文本模型**：混元 Turbo（旗舰）/ Pro / Standard / Lite / T1（推理增强）
-- **多模态**：混元文生图（HY-Image V3.0）、混元文生视频（HY-Video 1.5 / 2.0）、混元 3D（HY-3D 3.0 / 3.1）
-- **专项模型**：混元 Code（代码）、混元 Role（角色扮演）、混元 Instruct（指令）、混元 Think（深度思考）
-- **行业模型**：金融 / 医疗 / 政务 / 教育 / 传媒 / 文旅 等 10 + 行业精调版本
-
-## 三、核心定位
-在腾讯 **Agent 产品全景图** 中，混元大模型是"第零层 - 模型底座"，向上通过 **TokenHub** 输出 API、通过 **ADP（云智能体开发平台）** 输出 Agent 构建能力、通过 **ClawPro / CodeBuddy / WorkBuddy** 输出场景化应用。`,
-    capabilities: [
-      '通用文本生成：对话、创作、改写、翻译、总结，中文效果国产 TOP 水平',
-      '复杂推理：混元 T1 在数学、代码、逻辑推理等 Benchmark 领先',
-      '多模态理解与生成：文 + 图 + 视频 + 3D 全模态一站式',
-      '超长上下文：支持 256K tokens，可处理长文档、长对话场景',
-      '行业精调：金融 / 医疗 / 政务 / 教育等 10+ 行业精调模型',
-      'Agent 原生能力：Function Calling、Tool Use、Multi-Agent 协同',
-      '信创合规：国产自主可控，数据不出境，过等保三级',
-      'RAG 增强：联网搜索 API + 向量检索，降低幻觉'
-    ],
-    architecture: 'MoE 混合专家架构 · 万亿级参数 · 256K 超长上下文 · 全模态一体化训练',
-    strategy: {
-      positioning: '国产旗舰通用大模型，面向信创合规强需求客户（金融 / 政务 / 央国企）+ 追求中文效果与性价比的互联网 / 企业客户',
-      pricingModel: 'API 按 Token 计费（输入 / 输出分别计费）+ 月度套餐订阅（走 TokenHub Token Plan）+ 企业专属部署（一事一议）',
-      priceAnchor: '混元 Lite 输入 0.001 元/千 tokens，输出 0.002 元/千 tokens；混元 Turbo 输入 0.015 元/千 tokens，输出 0.06 元/千 tokens（远低于 GPT-4 Turbo）',
-      discountPolicy: '新客户赠送百万 Tokens 体验额度；年付 8 折；千万级 Token 采购可申请战略折扣；通过 TokenHub Token Plan 订阅比按量便宜 50%+',
-      comboStrategy: '标准联卖："混元模型底座 + TokenHub（Token 锁价层）+ ClawPro（管控层）+ CodeBuddy/WorkBuddy（场景应用）" 四件套，集团级 AI 成本可预测、可管控、可审计',
-      keyScenes: [
-        '企业智能客服 / 智能问答（替代传统 NLP 方案）',
-        '内容创作辅助（传媒 / 营销 / 电商文案）',
-        '代码辅助（配合 CodeBuddy）',
-        '多模态营销素材生成（文生图 / 文生视频）',
-        '金融 / 政务等合规强需求场景（信创合规）',
-        '长文档分析与知识问答（RAG 场景）'
-      ],
-      battleCard: [
-        '对标 GPT-4 / Claude：中文效果领先、价格低 60%+、数据不出境',
-        '对标 阿里通义千问 / 百度文心：MoE 架构更先进、多模态矩阵更全、腾讯生态协同优势',
-        '对标 DeepSeek / Kimi：行业精调版本更全、企业级合规资质完整、服务 SLA 更强'
-      ]
-    },
-    pricingDocs: [
-      {
-        name: '【官方】混元大模型购买指南与价格总览',
-        url: 'https://cloud.tencent.com/document/product/1729/97731',
-        type: '报价表',
-        owner: '官方文档',
-        updatedAt: '2026-04'
-      },
-      {
-        name: '【官方】混元大模型产品定价',
-        url: 'https://cloud.tencent.com/document/product/1729/97731',
-        type: '套餐说明',
-        owner: '官方文档',
-        updatedAt: '2026-04'
-      },
-      {
-        name: '【待补充】混元大模型报价一览表（2026 Q2）',
-        url: '',
-        type: '报价表',
-        owner: 'AI 产品部',
-        restricted: true,
-        placeholder: true
-      },
-      {
-        name: '【待补充】混元大模型战略客户折扣政策（2026 版）',
-        url: '',
-        type: '折扣政策',
-        owner: '战略客户部',
-        restricted: true,
-        placeholder: true
-      },
-      {
-        name: '【待补充】混元 vs GPT-4 / Claude / 通义 竞品价格对标',
-        url: '',
-        type: '销售策略',
-        owner: '战略客户部',
-        restricted: true,
-        placeholder: true
-      },
-      {
-        name: '【待补充】混元大模型成本结构与底价线',
-        url: '',
-        type: '成本资料',
-        owner: '财经 BP',
-        restricted: true,
-        placeholder: true
-      },
-      {
-        name: '【待补充】混元行业精调版报价（金融 / 政务 / 医疗）',
-        url: '',
-        type: '报价表',
-        owner: '行业 BD',
-        restricted: true,
-        placeholder: true
-      }
-    ],
-    contact: 'hunyuan-bd',
-    lastUpdate: '2026-04-20'
-  },
-
-  // ============================================================
-  // 2. TokenHub（原 MaaS 升级版）
+  // 1. TokenHub（原 MaaS 升级版）
   // ============================================================
   {
     id: 2,
@@ -336,7 +212,7 @@ export const salesGuideData: AmmoProduct[] = [
   },
 
   // ============================================================
-  // 3. ClawPro
+  // 2. ClawPro
   // ============================================================
   {
     id: 3,
@@ -486,7 +362,7 @@ export const salesGuideData: AmmoProduct[] = [
   },
 
   // ============================================================
-  // 4. GPU 云服务器（AI 算力底座）
+  // 3. GPU 云服务器（AI 算力底座）
   // ============================================================
   {
     id: 4,
@@ -648,6 +524,260 @@ export const salesGuideData: AmmoProduct[] = [
     ],
     contact: 'gpu-bd',
     lastUpdate: '2026-04-20'
+  },
+
+  // ============================================================
+  // 4. WorkBuddy（AI 效率智能体）
+  // ============================================================
+  {
+    id: 5,
+    productName: '腾讯云 WorkBuddy',
+    productCode: 'WorkBuddy',
+    category: '智能体平台',
+    subCategory: 'AI 效率智能体 / 办公 AI 助手',
+    tag: '主推',
+    priority: '高',
+    logo: '🤖',
+    oneLiner: '国内最受欢迎的 AI 效率智能体，深度集成企微/飞书/钉钉/Slack，让一人拥有整个数字团队',
+    officialDesc: `WorkBuddy 是腾讯云面向企业员工推出的 AI 效率智能体产品，帮助员工在日常办公协作中借助 AI 完成行业趋势分析、报告生成、数据整理、会议纪要、知识问答等复杂工作。产品深度集成企微、飞书、钉钉等国内主流协作平台，以及 Slack、Telegram、Discord 等海外平台（国际版），用户通过手机即可便捷操控。国内版已覆盖百万级用户，2026年5月28日于香港正式发布国际版。`,
+    officialLinks: [
+      { label: 'WorkBuddy 官方产品页', url: 'https://cloud.tencent.com/product/workbuddy' },
+      { label: 'WorkBuddy 产品文档', url: 'https://cloud.tencent.com/document/product/workbuddy' },
+      { label: 'WorkBuddy 国际版介绍', url: 'https://cloud.tencent.com/product/workbuddy-intl' }
+    ],
+    definition: `## 一、产品定义
+**WorkBuddy** 是腾讯云推出的 **AI 效率智能体**，定位为"企业员工的数字同事"。在办公 IM 中以对话方式完成复杂任务，覆盖从行业趋势分析、竞品研究、报告撰写到数据整理、会议纪要、知识检索的全流程工作。
+
+## 二、产品矩阵
+- **WorkBuddy 企业版（国内）**：深度集成企微、飞书、钉钉，面向国内企业客户
+- **WorkBuddy 国际版**：深度集成 Slack、Telegram、Discord，面向海外企业客户（2026.05.28 香港发布）
+- **WorkBuddy 个人版**：面向个人效率用户，轻量体验
+
+## 三、核心定位
+在腾讯 Agent 产品全景图中，WorkBuddy 是 **"场景应用层 - 办公效率"** 的核心产品：
+- 底层调用 TokenHub 模型服务
+- 由 ClawPro 统一管控 Token 消耗与合规
+- 与 CodeBuddy（研发 AI）形成"办公 + 研发"双引擎覆盖`,
+    capabilities: [
+      '行业趋势分析与研报生成：一句话生成行业分析报告，覆盖竞品、市场、政策',
+      '深度集成 IM 协作平台：企微/飞书/钉钉（国内）+ Slack/Telegram/Discord（国际）',
+      '多模态内容创作：PPT 生成、文案撰写、数据可视化图表',
+      '会议智能助手：实时会议纪要、待办提取、后续跟进提醒',
+      '知识问答与 RAG：连接企业内部知识库，精准检索回答',
+      '手机端便捷操控：在手机 IM 中直接@使用，随时随地',
+      '百万级用户验证：国内版已覆盖百万级企业用户',
+      '多语言支持：国际版支持 20+ 语言，全球化部署'
+    ],
+    architecture: '办公 IM 接入层 + Agent 编排引擎 + TokenHub 模型服务 + 知识库检索 + 工具生态',
+    strategy: {
+      positioning: '面向中大型企业办公场景（1000+ 人），企业 AI 办公统一入口，与 ClawPro（管控）+ CodeBuddy（研发）形成全员 AI 覆盖三件套',
+      pricingModel: '席位费（月/年） + Token 消耗（超出套餐部分按量计费）',
+      priceAnchor: '企业版起步 29 元/席/月（含基础 Token 额度）；旗舰版 99 元/席/月（无限量）；千席以上一事一议',
+      discountPolicy: '年付 8 折；千席以上 7 折；万席级战略客户一事一议；与 ClawPro/CodeBuddy/TokenHub 联卖组合优惠',
+      comboStrategy: '**核心联卖**：WorkBuddy（办公 AI）+ CodeBuddy（研发 AI）+ ClawPro（管控层）+ TokenHub（Token 锁价层）四件套，全员 AI 覆盖，统一管控统一成本',
+      keyScenes: [
+        '企业全员 AI 办公助手部署（在企微/飞书中@WorkBuddy 即用）',
+        '行业研究与竞品分析（一句话出研报）',
+        '会议纪要与待办管理（自动提取 Action Items）',
+        '数据分析与可视化（连接企业数据源）',
+        '知识管理与问答（接入企业知识库 RAG）',
+        '海外团队协作（国际版 Slack/Telegram 集成）',
+        '销售辅助（客户信息整理、方案生成）',
+        'HR/行政辅助（制度问答、流程办理）'
+      ],
+      battleCard: [
+        '对标 微软 M365 Copilot：价格低 70%+、数据不出境、支持国内 IM（企微/飞书/钉钉）',
+        '对标 字节 Coze/豆包：百万级用户验证、企业级管控、与 ClawPro 联动',
+        '对标 钉钉 AI / 飞书 AI：不锁定平台，同时支持企微+飞书+钉钉+Slack',
+        '对标 Notion AI / Jasper AI：深度中文理解、企业级合规、IM 原生体验'
+      ]
+    },
+    pricingDocs: [
+      {
+        name: '【官方】WorkBuddy 产品定价',
+        url: 'https://cloud.tencent.com/document/product/workbuddy/pricing',
+        type: '套餐说明',
+        owner: '官方文档',
+        updatedAt: '2026-05'
+      },
+      {
+        name: '【待补充】WorkBuddy 企业版报价一览表（2026 Q2）',
+        url: '',
+        type: '报价表',
+        owner: 'WorkBuddy BD',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】WorkBuddy 战略客户折扣政策',
+        url: '',
+        type: '折扣政策',
+        owner: '战略客户部',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】WorkBuddy + ClawPro + CodeBuddy 三件套联卖方案',
+        url: '',
+        type: '销售策略',
+        owner: '战略客户部',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】WorkBuddy vs Copilot / 豆包 / 飞书AI 竞品价格对标',
+        url: '',
+        type: '销售策略',
+        owner: '战略客户部',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】WorkBuddy 国际版定价与出海策略',
+        url: '',
+        type: '报价表',
+        owner: 'WorkBuddy 产品',
+        restricted: true,
+        placeholder: true
+      }
+    ],
+    contact: 'workbuddy-bd',
+    lastUpdate: '2026-05-28'
+  },
+
+  // ============================================================
+  // 5. ADP 云智能体开发平台
+  // ============================================================
+  {
+    id: 6,
+    productName: '腾讯云 ADP 智能体开发平台',
+    productCode: 'ADP（Agent Development Platform）',
+    category: '智能体平台',
+    subCategory: '智能体开发平台 / Agent Factory',
+    tag: '战略',
+    priority: '高',
+    logo: '🏭',
+    oneLiner: '企业级智能体工厂：自然语言一句话生成 Agent 应用，支持 Bot/Flow/Multi-Agent/Claw 四种模式',
+    officialDesc: `腾讯云智能体开发平台 ADP（Agent Development Platform）是面向企业和开发者的一站式智能体构建工具，支持 Bot（对话式）、Flow（工作流）、Multi-Agent（多智能体协同）、Claw（代码执行）四种应用模式。提供可视化编排、智能工作台（自然语言建 Agent）、Agent Portal（统一门户）、Agentic RAG（智能检索）、连接器与工具生态等核心能力。与 ClawPro 共同打造"智能体工厂 + 应用商店"闭环，是腾讯 Agent 战略的开发基础设施。`,
+    officialLinks: [
+      { label: 'ADP 官方产品页', url: 'https://cloud.tencent.com/product/adp' },
+      { label: 'ADP 产品文档', url: 'https://cloud.tencent.com/document/product/adp' },
+      { label: 'ADP 智能体开发平台控制台', url: 'https://console.cloud.tencent.com/adp' },
+      { label: 'ADP Agent Portal 介绍', url: 'https://adp.tencentcloud.com/zh/blog/adp-agent-portal' }
+    ],
+    definition: `## 一、产品定义
+**ADP（Agent Development Platform）** 是腾讯云面向企业的 **一站式智能体开发平台**，定位为"Agent 时代的应用工厂"。让企业无需深厚 AI 背景，通过可视化编排或自然语言即可快速构建、发布、管理企业级 Agent 应用。
+
+## 二、四种应用模式
+- **Bot 模式**：对话式智能体，适合客服、知识问答等场景
+- **Flow 模式**：工作流编排，适合复杂业务流程自动化
+- **Multi-Agent 模式**：多智能体协同，适合跨领域复杂任务
+- **Claw 模式（第四种，2026.05新增）**：独立工作空间，自主编写运行代码完成复杂任务
+
+## 三、核心产品能力（2026年最新）
+- **智能工作台**：自然语言一句话生成完整工作流和可运行的 Agent 应用
+- **Agent Portal**：跨平台智能体统一门户，提供智能路由和可观测治理
+- **Agentic RAG**：基于 Agent Loop 框架的智能检索，自主反思、策略切换、多轮迭代
+- **连接器与工具**：接入第三方 SaaS/企业系统/生态产品，支持内置与自定义
+- **多渠道发布**：官网/企微/飞书/钉钉机器人/API 等
+
+## 四、在腾讯 Agent 战略中的位置
+ADP 是 **"第二层 - 应用开发层"**，向下承接 TokenHub 模型服务与 Agent Runtime 运行底座，向上为 ClawPro 管控平台输出智能体应用，与 ClawPro 共同构成"智能体工厂 + 应用商店"闭环。`,
+    capabilities: [
+      '四种应用模式：Bot / Flow / Multi-Agent / Claw，覆盖从简单问答到复杂代码执行全场景',
+      '智能工作台：自然语言一句话生成企业级 Agent 应用，无需编码',
+      'Agent Portal：跨平台智能体统一入口、智能路由、可观测治理',
+      'Agentic RAG：智能体自主反思 + 策略切换 + 多轮迭代检索',
+      'Claw 模式沙箱：独立工作空间，自主编写运行代码（限时免费体验）',
+      '连接器与工具生态：接入企业 SaaS / IM / CRM 等系统',
+      '多渠道一键发布：官网/企微/飞书/钉钉机器人/API/小程序',
+      'Agent Memory 集成：跨会话长期记忆，越用越懂业务',
+      'Agent Runtime 底座：含 SandBox/CBS/Bucket/Gateway/Memory 五大组件'
+    ],
+    architecture: '模型层(TokenHub) + 运行层(Agent Runtime) + 开发层(ADP 四种模式) + 管控层(ClawPro) + 应用层(WorkBuddy/CodeBuddy)',
+    strategy: {
+      positioning: '面向 AI 应用开发者 / 企业 IT 部门 / ISV（独立软件商） / AI SaaS 创业公司，是"智能体批量生产工厂"',
+      pricingModel: 'Agent 调用次数计费 + 模型 Token 消耗 + 专属资源（可选）；专业版/企业版分级',
+      priceAnchor: '免费版：每月 1000 次 Agent 调用；专业版 999 元/月起；企业版一事一议；Claw 沙箱限时免费体验',
+      discountPolicy: '年付 8 折；企业版千 Agent 以上一事一议；与 ClawPro 联卖组合优惠；ISV 合作伙伴专属折扣',
+      comboStrategy: '**核心闭环**：ADP（开发） + ClawPro（管控） + TokenHub（模型服务） + Agent Runtime（运行底座）形成"开发-运行-管控-模型"四位一体的 Agent 产品全景',
+      keyScenes: [
+        '企业智能客服/知识问答系统（Bot 模式 + RAG）',
+        '业务流程自动化（Flow 模式 + 连接器）',
+        '多部门协同 Agent（Multi-Agent 模式）',
+        '数据分析与报告生成（Claw 模式，自主编码执行）',
+        'ISV 快速开发 AI SaaS 应用（ADP 作为开发底座）',
+        '企业内部 Agent 门户统一管理（Agent Portal）',
+        '金融/政务合规场景 Agent（ClawPro 专有云 + ADP）',
+        '海外智能体应用出海（Agent Runtime 全球发布）'
+      ],
+      battleCard: [
+        '对标 字节 Coze：四种应用模式更全（Claw 独家）、企业级管控联动 ClawPro、不锁模型',
+        '对标 阿里百炼：智能工作台+自然语言建 Agent、Agent Portal 统一门户独家、Agentic RAG 更先进',
+        '对标 百度千帆 AgentBuilder：与 ClawPro "工厂+商店"闭环、Multi-Agent 协同、Agent Runtime 底座完善',
+        '对标 Dify / FastGPT（开源）：企业级 SLA + 安全合规 + Agent Portal 统一治理 + 原生多渠道发布',
+        '对标 AWS Bedrock Agent / Azure AI Agent Service：国产信创合规 + 价格低 50%+ + IM 生态'
+      ]
+    },
+    pricingDocs: [
+      {
+        name: '【官方】ADP 智能体开发平台计费说明',
+        url: 'https://cloud.tencent.com/document/product/adp/pricing',
+        type: '套餐说明',
+        owner: '官方文档',
+        updatedAt: '2026-05'
+      },
+      {
+        name: '【待补充】ADP 企业版报价一览表（2026 Q2）',
+        url: '',
+        type: '报价表',
+        owner: 'ADP BD',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】ADP 战略客户折扣与 ISV 合作政策',
+        url: '',
+        type: '折扣政策',
+        owner: '战略客户部',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】ADP + ClawPro + TokenHub 全栈 Agent 联卖方案',
+        url: '',
+        type: '销售策略',
+        owner: '战略客户部',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】ADP vs Coze / 百炼 / 千帆 / Dify 竞品价格对标',
+        url: '',
+        type: '销售策略',
+        owner: '战略客户部',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】ADP Claw 模式沙箱资源定价与免费额度策略',
+        url: '',
+        type: '套餐说明',
+        owner: 'ADP 产品',
+        restricted: true,
+        placeholder: true
+      },
+      {
+        name: '【待补充】Agent Runtime 五大组件定价明细',
+        url: '',
+        type: '报价表',
+        owner: 'ADP 产品',
+        restricted: true,
+        placeholder: true
+      }
+    ],
+    contact: 'adp-bd',
+    lastUpdate: '2026-05-28'
   }
 ]
 

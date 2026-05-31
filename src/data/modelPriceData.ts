@@ -2,7 +2,7 @@
  * 模型商价格动态数据
  * 覆盖：DeepSeek、Kimi（月之暗面）、MiniMax、GLM（智谱AI）
  * 数据来源：各厂商官方定价页（每周一自动更新）
- * 最后更新：2026-04-27
+ * 最后更新：2026-05-31
  */
 
 /** 单模型定价 */
@@ -66,7 +66,7 @@ export const vendorData: VendorPriceData[] = [
     logoIcon: '🧠',
     websiteUrl: 'https://www.deepseek.com',
     pricingUrl: 'https://api-docs.deepseek.com/zh-cn/quick_start/pricing/',
-    lastChecked: '2026-04-27',
+    lastChecked: '2026-05-31',
     models: [
       {
         modelName: 'deepseek-v4-flash',
@@ -82,12 +82,12 @@ export const vendorData: VendorPriceData[] = [
       {
         modelName: 'deepseek-v4-pro',
         displayName: 'DeepSeek V4-Pro',
-        inputPrice: 3,           // 限时2.5折，原价 12
-        outputPrice: 6,          // 限时2.5折，原价 24
-        cacheHitPrice: 0.025,   // 限时2.5折，原价 0.1
+        inputPrice: 3,           // 5/31 起永久降价为原定价的1/4（原价 12）
+        outputPrice: 6,          // 5/31 起永久降价为原定价的1/4（原价 24）
+        cacheHitPrice: 0.025,    // 5/31 起永久降价为原定价的1/4（原价 0.1）
         contextLength: '128K',
         capabilities: ['文本', '代码', '推理', '思考模式'],
-        lastUpdated: '2026-04-01',
+        lastUpdated: '2026-05-31',
         officialUrl: 'https://api-docs.deepseek.com/zh-cn/quick_start/pricing/'
       }
     ],
@@ -98,8 +98,8 @@ export const vendorData: VendorPriceData[] = [
         oldValue: 12,
         newValue: 3,
         direction: 'down',
-        changeDate: '2026-04-01',
-        note: '限时2.5折优惠，有效期至 2026-05-05'
+        changeDate: '2026-05-31',
+        note: '永久降价75%！2.5折优惠转为常态价，刷新全球主流大模型价格新低'
       },
       {
         modelName: 'deepseek-v4-pro',
@@ -107,14 +107,20 @@ export const vendorData: VendorPriceData[] = [
         oldValue: 24,
         newValue: 6,
         direction: 'down',
-        changeDate: '2026-04-01',
-        note: '限时2.5折优惠，有效期至 2026-05-05'
+        changeDate: '2026-05-31',
+        note: '永久降价75%，输出价仅为原定价的1/4'
       }
     ],
     announcements: [
       {
+        date: '2026-05-23',
+        title: 'DeepSeek-V4-Pro 永久降价75%：5/31优惠期结束后正式调整为原价1/4，创全球主流大模型价格新低',
+        url: 'https://news.qq.com/rain/a/20260525A06W6300',
+        type: '价格调整'
+      },
+      {
         date: '2026-04-01',
-        title: 'DeepSeek V4-Pro 开启限时2.5折优惠',
+        title: 'DeepSeek V4-Pro 开启限时2.5折优惠（已转为永久价格）',
         url: 'https://api-docs.deepseek.com/zh-cn/quick_start/pricing/',
         type: '价格调整'
       }
@@ -133,7 +139,7 @@ export const vendorData: VendorPriceData[] = [
     logoIcon: '🌙',
     websiteUrl: 'https://www.kimi.com',
     pricingUrl: 'https://platform.kimi.com/docs/pricing/chat',
-    lastChecked: '2026-04-27',
+    lastChecked: '2026-05-31',
     models: [
       {
         modelName: 'kimi-k2.6',
@@ -148,17 +154,26 @@ export const vendorData: VendorPriceData[] = [
       },
       {
         modelName: 'kimi-k2.5',
-        displayName: 'Kimi K2.5',
+        displayName: 'Kimi K2.5（已下线）',
         inputPrice: 4,          // $0.60 ≈ ¥4.32，取整 4
         outputPrice: 22,         // $3.00 ≈ ¥21.6，取整 22
         cacheHitPrice: 0.7,     // $0.10 ≈ ¥0.72，取整 0.7
         contextLength: '256K',
-        capabilities: ['文本', '代码', '多模态', 'Agent'],
-        lastUpdated: '2026-01-27',
+        capabilities: ['已下线', '建议迁移至 K2.6'],
+        lastUpdated: '2026-05-25',
         officialUrl: 'https://platform.kimi.com/docs/pricing/chat-k25'
       }
     ],
     priceChanges: [
+      {
+        modelName: 'kimi-k2.5',
+        field: 'input',
+        oldValue: 4,
+        newValue: 0,
+        direction: 'down',
+        changeDate: '2026-05-25',
+        note: 'K2 系列 API 于 5/25 正式下线，停止维护和支持，需迁移至 K2.6'
+      },
       {
         modelName: 'kimi-k2.6',
         field: 'input',
@@ -167,28 +182,25 @@ export const vendorData: VendorPriceData[] = [
         direction: 'up',
         changeDate: '2026-04-20',
         note: 'K2.6 发布，缓存未命中输入涨价约58%，输出涨价约32%'
-      },
-      {
-        modelName: 'kimi-k2.6',
-        field: 'output',
-        oldValue: 22,
-        newValue: 29,
-        direction: 'up',
-        changeDate: '2026-04-20',
-        note: 'K2.6 输出价格较 K2.5 上涨约32%'
       }
     ],
     announcements: [
       {
+        date: '2026-05-26',
+        title: 'Kimi K2 系列 API 于 5/25 正式下线，建议切换至最新模型 Kimi K2.6',
+        url: 'https://news.qq.com/rain/a/20260526A02VQC00',
+        type: '其他'
+      },
+      {
+        date: '2026-05-07',
+        title: '月之暗面 Kimi 完成约 20 亿美元新一轮融资，投后估值超 200 亿美元，国资入场',
+        url: 'https://ai.zol.com.cn/1176/11768526.html',
+        type: '其他'
+      },
+      {
         date: '2026-04-20',
         title: 'Kimi K2.6 发布并开源，代码能力对标 GPT-5.4，定价上涨 58~60%',
         url: 'https://news.qq.com/rain/a/20260421A05U7F00',
-        type: '新模型'
-      },
-      {
-        date: '2026-01-27',
-        title: 'Kimi K2.5 发布，原生多模态大规模 MoE 架构',
-        url: 'https://platform.kimi.com/docs',
         type: '新模型'
       }
     ]
@@ -204,7 +216,7 @@ export const vendorData: VendorPriceData[] = [
     logoIcon: '🔮',
     websiteUrl: 'https://www.minimaxi.com',
     pricingUrl: 'https://platform.minimaxi.com/docs/guides/pricing-paygo',
-    lastChecked: '2026-04-27',
+    lastChecked: '2026-05-31',
     models: [
       {
         modelName: 'MiniMax-M2.7',
@@ -243,8 +255,20 @@ export const vendorData: VendorPriceData[] = [
     priceChanges: [],
     announcements: [
       {
+        date: '2026-05-29',
+        title: 'MiniMax 与中信证券签署辅导协议，正式启动 A 股 IPO 进程',
+        url: 'https://stock.10jqka.com.cn/20260530/c677098186.shtml',
+        type: '其他'
+      },
+      {
+        date: '2026-04-28',
+        title: '大摩研报：MiniMax 在 M3 模型升级后或将调价（OpenRouter 中国模型份额已从 5% 升至 32%）',
+        url: 'https://finance.sina.com.cn/roll/2026-04-28/doc-inhwaawe7251807.shtml',
+        type: '价格调整'
+      },
+      {
         date: '2026-01-15',
-        title: 'MiniMax 发布 M2.7 / M2.5 系列，输入低至 1元/百万 tokens',
+        title: 'MiniMax 发布 M2.7 / M2.5 系列，输入低至 ¥2.1/百万 tokens',
         url: 'https://finance.sina.com.cn/jjxw/2025-01-15/doc-ineezssx7929108.shtml',
         type: '新模型'
       }
@@ -263,8 +287,19 @@ export const vendorData: VendorPriceData[] = [
     logoIcon: '🤖',
     websiteUrl: 'https://www.zhipuai.cn',
     pricingUrl: 'https://open.bigmodel.cn/pricing',
-    lastChecked: '2026-04-27',
+    lastChecked: '2026-05-31',
     models: [
+      {
+        modelName: 'glm-5.1-highspeed',
+        displayName: 'GLM-5.1-HighSpeed 🆕',
+        inputPrice: 6,       // 与 GLM-5.1 同价，[0,32K) 档；高速版主打速度，价格不变
+        outputPrice: 24,
+        cacheHitPrice: 1.3,
+        contextLength: '200K',
+        capabilities: ['文本', '代码', '高速推理（400 tok/s）', '智能体'],
+        lastUpdated: '2026-05-22',
+        officialUrl: 'https://docs.bigmodel.cn/cn/guide/models/text/glm-5.1-highspeed'
+      },
       {
         modelName: 'glm-5.1',
         displayName: 'GLM-5.1',
@@ -301,6 +336,15 @@ export const vendorData: VendorPriceData[] = [
     ],
     priceChanges: [
       {
+        modelName: 'glm-5.1-highspeed',
+        field: 'input',
+        oldValue: 0,
+        newValue: 6,
+        direction: 'unchanged',
+        changeDate: '2026-05-22',
+        note: '新模型上线：GLM-5.1 高速版，400 tokens/s 刷新全球大模型 API 速度上限，价格与标准版一致'
+      },
+      {
         modelName: 'glm-5.1',
         field: 'input',
         oldValue: 5.5,       // 涨价10%前原价（≈6 ÷ 1.1）
@@ -308,18 +352,15 @@ export const vendorData: VendorPriceData[] = [
         direction: 'up',
         changeDate: '2026-04-09',
         note: 'GLM-5.1 发布，全线涨价10%'
-      },
-      {
-        modelName: 'glm-5.1',
-        field: 'output',
-        oldValue: 22,        // 涨价10%前原价（≈24 ÷ 1.1）
-        newValue: 24,
-        direction: 'up',
-        changeDate: '2026-04-09',
-        note: 'GLM-5.1 发布，全线涨价10%'
       }
     ],
     announcements: [
+      {
+        date: '2026-05-22',
+        title: 'GLM-5.1 高速版 API 上线，输出速度达 400 tokens/s，刷新全球大模型 API 速度上限；智谱港股早盘涨超 13%',
+        url: 'https://finance.sina.com.cn/stock/hkstock/marketalerts/2026-05-22/doc-inhytqkw6283967.shtml',
+        type: '新模型'
+      },
       {
         date: '2026-04-09',
         title: 'GLM-5.1 发布并开源，支持长程8小时连续任务，全线涨价10%',

@@ -2,10 +2,10 @@
   <div class="sales-guide-page">
     <div class="page-header">
       <div class="breadcrumb">
-        <a @click="router.push('/')">首页</a> / 售卖弹药
+        <a @click="router.push('/')">首页</a> / TokenHub+GPU+Agent弹药库
       </div>
-      <h2>🎯 售卖弹药 · AI 产品报价知识库</h2>
-      <p>整合腾讯云全部 AI 相关产品（大模型 / MaaS / AI SaaS / 智能体平台 / AI 基础能力 / <b>AI 算力 GPU</b>）的报价信息。每张卡片包含：<b>官方介绍</b>、<b>产品介绍和定义</b>、<b>售卖策略</b>、<b>内部报价资料</b>。</p>
+      <h2>🎯 TokenHub+GPU+Agent弹药库</h2>
+      <p>整合腾讯云 <b>TokenHub</b>、<b>GPU 云服务器</b>、<b>WorkBuddy</b>、<b>ClawPro</b>、<b>ADP 智能体开发平台</b> 全线 Agent 产品的报价信息。每张卡片包含：<b>官方介绍</b>、<b>产品介绍和定义</b>、<b>售卖策略</b>、<b>内部报价资料</b>。</p>
       <p class="page-subtip">⚠️ 内部报价资料仅展示<b>真实可跳转</b>的官方 / 企微 / 腾讯文档链接；尚未收集到真实链接的文档条目会标注「⏳ 待补充」并禁用点击，由对应 owner（BD / 产品 / 财经 BP）后续补全。</p>
     </div>
 

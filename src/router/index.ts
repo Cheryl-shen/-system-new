@@ -39,8 +39,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/product-guide',
-    name: 'ProductGuide',
-    component: () => import('@/views/ProductGuide.vue')
+    redirect: '/strategy?tab=product-guide'
   },
   {
     path: '/strategy',
@@ -53,6 +52,15 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/News.vue')
   },
   {
+    path: '/ai-global',
+    name: 'AIGlobal',
+    component: () => import('@/views/AIGlobal.vue')
+  },
+  {
+    path: '/model-ranking',
+    redirect: '/ai-global?tab=ranking'
+  },
+  {
     path: '/new-products',
     name: 'NewProducts',
     component: () => import('@/views/NewProducts.vue')
@@ -61,11 +69,6 @@ const routes: RouteRecordRaw[] = [
     path: '/model-price',
     name: 'ModelPrice',
     component: () => import('@/views/ModelPrice.vue')
-  },
-  {
-    path: '/model-ranking',
-    name: 'ModelRanking',
-    component: () => import('@/views/ModelRanking.vue')
   },
   {
     path: '/supply-chain',

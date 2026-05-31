@@ -2,25 +2,14 @@
   <div class="news-page">
     <div class="page-header">
       <div class="breadcrumb">
-        <a @click="router.push('/')">首页</a> / AI 与云商动态
+        <a @click="router.push('/')">首页</a> / 云商动态
       </div>
-      <h2>AI 与云商动态</h2>
-      <p>每日更新 AI 领域大事件与阿里云/火山/华为云/AWS/谷歌云等行业动态</p>
+      <h2>☁️ 云商动态</h2>
+      <p class="page-desc">跟踪 6 家核心云厂商动态：<span class="desc-highlight domestic">腾讯云 · 阿里云 · 百度云 · 火山引擎</span> + <span class="desc-highlight overseas">AWS · 谷歌云</span></p>
     </div>
 
     <!-- 顶部 Tab 切换 -->
     <div class="main-tabs">
-      <div
-        class="main-tab"
-        :class="{ active: mainTab === 'ai' }"
-        @click="mainTab = 'ai'"
-      >
-        <span class="mt-icon">🤖</span>
-        <div>
-          <div class="mt-title">AI 大事件</div>
-          <div class="mt-sub">{{ aiNews.length }} 条资讯 · 数据参考 ai.hubtoday.app</div>
-        </div>
-      </div>
       <div
         class="main-tab"
         :class="{ active: mainTab === 'cloud' }"
@@ -29,7 +18,7 @@
         <span class="mt-icon">☁️</span>
         <div>
           <div class="mt-title">云商动态</div>
-          <div class="mt-sub">{{ cloudNews.length }} 条资讯 · 阿里/火山/华为/AWS/谷歌</div>
+          <div class="mt-sub">{{ cloudNews.length }} 条资讯 · 国内 4 家 + 海外 2 家</div>
         </div>
       </div>
       <div
@@ -43,91 +32,9 @@
             云商异动预警
             <span class="new-tag">NEW</span>
           </div>
-          <div class="mt-sub">{{ priceChangeNews.length }} 条涨价 · {{ deprecatedProducts.length }} 条产品下线 · 15 家头部云商横向对比</div>
+          <div class="mt-sub">{{ priceChangeNews.length }} 条涨价 · {{ deprecatedProducts.length }} 条下线 · 6 家横向对比</div>
         </div>
       </div>
-    </div>
-
-    <!-- AI 大事件 -->
-    <div v-if="mainTab === 'ai'" class="content-section">
-      <!-- 筛选 -->
-      <div class="filter-bar">
-        <div class="filter-group">
-          <label>分类：</label>
-          <div class="filter-btns">
-            <button
-              v-for="cat in aiCategories"
-              :key="cat"
-              class="filter-btn"
-              :class="{ active: aiCategory === cat }"
-              @click="aiCategory = cat"
-            >
-              {{ cat }}
-            </button>
-          </div>
-        </div>
-        <div class="filter-group">
-          <label>重要性：</label>
-          <div class="filter-btns">
-            <button
-              v-for="imp in importances"
-              :key="imp"
-              class="filter-btn"
-              :class="{ active: aiImportance === imp }"
-              @click="aiImportance = imp"
-            >
-              <span v-if="imp !== '全部'" class="imp-icon">{{ importanceConfig[imp as keyof typeof importanceConfig].icon }}</span>
-              {{ imp }}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="news-source-tip">
-        <span class="tip-icon">💡</span>
-        AI 大事件参考来源：<a href="https://ai.hubtoday.app/" target="_blank" rel="noopener">ai.hubtoday.app</a>
-        + 各 AI 厂商官方博客 · <strong>每日更新</strong>
-      </div>
-
-      <div class="news-list">
-        <div v-for="item in filteredAiNews" :key="item.id" class="news-card">
-          <div class="news-top">
-            <span
-              class="imp-tag"
-              :style="{
-                background: importanceConfig[item.importance].bg,
-                color: importanceConfig[item.importance].color
-              }"
-            >
-              {{ importanceConfig[item.importance].icon }} {{ item.importance }}
-            </span>
-            <span class="cat-tag">{{ item.category }}</span>
-            <span class="news-date">{{ item.date }}</span>
-          </div>
-          <h3 class="news-title">
-            <a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener">{{ item.title }}</a>
-            <span v-else>{{ item.title }}</span>
-          </h3>
-          <p class="news-summary">{{ item.summary }}</p>
-          <div class="news-footer">
-            <div class="news-tags">
-              <span v-for="(t, i) in item.tags" :key="i" class="tag">#{{ t }}</span>
-            </div>
-            <a
-              v-if="item.sourceUrl"
-              class="source-link"
-              :href="item.sourceUrl"
-              target="_blank"
-              rel="noopener"
-            >
-              {{ item.source }} →
-            </a>
-            <span v-else class="source-text">{{ item.source }}</span>
-          </div>
-        </div>
-      </div>
-
-      <EmptyState v-if="filteredAiNews.length === 0" title="暂无匹配资讯" description="请调整筛选条件" />
     </div>
 
     <!-- 云商动态 -->
@@ -157,7 +64,7 @@
 
       <div class="news-source-tip">
         <span class="tip-icon">💡</span>
-        云商动态来源：阿里云/火山引擎/华为云/AWS/谷歌云/腾讯云等官方博客及主流科技媒体 · <strong>每日更新</strong>
+        数据来源：腾讯云/阿里云/百度云/火山引擎/AWS/谷歌云官方博客及主流科技媒体 · <strong>每周更新</strong>
       </div>
 
       <div class="news-list">
@@ -226,10 +133,10 @@
           <div class="aec-icon">📈</div>
           <div class="aec-content">
             <h4 class="aec-title">云厂商涨价动态</h4>
-            <p class="aec-desc">{{ priceChangeNews.length }} 条涨价 · 15 家云商策略对比</p>
+            <p class="aec-desc">{{ priceChangeNews.length }} 条涨价 · 6 家核心云商策略对比</p>
             <div class="aec-highlights">
               <span class="aec-tag hot">🔥 最高 +463%</span>
-              <span class="aec-tag new">本周新增 7 条</span>
+              <span class="aec-tag new">5月最新</span>
             </div>
           </div>
           <span class="aec-arrow">{{ activeAlertModal === 'price' ? '收起 ▲' : '展开 ▼' }}</span>
@@ -260,7 +167,7 @@
           <div class="aec-icon">📊</div>
           <div class="aec-content">
             <h4 class="aec-title">云商横向对比表</h4>
-            <p class="aec-desc">15 家头部云商涨价策略一览</p>
+            <p class="aec-desc">6 家核心云商涨价策略一览</p>
             <div class="aec-highlights">
               <span class="aec-tag overseas">🌍 海外 {{ overseasCount }} 条</span>
               <span class="aec-tag domestic">🇨🇳 国内 {{ domesticCount }} 条</span>
@@ -280,46 +187,46 @@
         <div class="weekly-alert-section">
           <div class="weekly-alert-head">
             <span class="wa-icon">🔔</span>
-            <h3 class="wa-title">云厂商涨价动态 | 本周新增（4月29日-5月9日）</h3>
+            <h3 class="wa-title">云厂商涨价动态 | 最新一周（5月19日-5月31日）</h3>
           </div>
-          <p class="wa-intro">本周数据已同步更新，重点关注以下新增动态：</p>
+          <p class="wa-intro">最新动态已同步更新，重点关注以下核心变化：</p>
           <div class="wa-body">
             <div class="wa-vendor-block">
               <div class="wa-vendor-title">
-                <span class="wa-vt-icon" style="background:#ecfdf5;color:#10a37f">🤖</span>
-                <strong>OpenAI GPT-Realtime 语音 API（新增重磅）</strong>
-              </div>
-              <ul class="wa-list">
-                <li><strong>5月8日</strong>：GPT-Realtime-2 音频输入 $32/百万 token、输出 $64/百万 token；实时翻译 $0.034/分钟；流式转录 $0.017/分钟</li>
-                <li><strong>5月8日分析</strong>：GPT-5.5 隐性涨价 —— 短 Prompt 实际涨幅高达 <strong>92%</strong>，长 Prompt 约 <strong>49%</strong></li>
-              </ul>
-            </div>
-            <div class="wa-vendor-block">
-              <div class="wa-vendor-title">
-                <span class="wa-vt-icon" style="background:#f3e8ff;color:#8b5cf6">💜</span>
-                <strong>Claude Opus 4.7 隐性涨价（新增重磅）</strong>
-              </div>
-              <ul class="wa-list">
-                <li><strong>5月8日分析</strong>：标价不变但分词器改变导致 Token 数增加 <strong>32%-45%</strong>，实际成本上涨 <strong>12%-27%</strong></li>
-              </ul>
-            </div>
-            <div class="wa-vendor-block">
-              <div class="wa-vendor-title">
                 <span class="wa-vt-icon" style="background:#fef2f2;color:#dc2626">🌋</span>
-                <strong>字节豆包付费订阅（新增重磅）</strong>
+                <strong>火山引擎：DeepSeek V4 Pro 永久降价 75%</strong>
               </div>
               <ul class="wa-list">
-                <li><strong>5月4日</strong>：豆包 App 测试付费订阅 <strong>68/200/500 元/月</strong> 三档，3.45 亿月活迈向商业化</li>
+                <li><strong>5月22日</strong>：DeepSeek V4 Pro API 永久降价 75%，输入缓存命中仅 <strong>0.025 元/百万 Token</strong>，全球最低价</li>
+                <li><strong>5月28日</strong>：Doubao Agent Studio 企业版发布，预装 DeepSeek V4 双模型，京东/美团首批签约</li>
               </ul>
             </div>
             <div class="wa-vendor-block">
               <div class="wa-vendor-title">
-                <span class="wa-vt-icon" style="background:#e0f2fe;color:#00a4ff">🐧</span>
-                <strong>腾讯云涨价生效 + DeepSeek 逆势降价</strong>
+                <span class="wa-vt-icon" style="background:#fff7ed;color:#ff6a00">🟠</span>
+                <strong>阿里云峰会三大重磅</strong>
               </div>
               <ul class="wa-list">
-                <li><strong>5月9日生效</strong>：AI 算力、TKE 原生节点、EMR 三类产品统一上调 <strong>5%</strong></li>
-                <li><strong>4月28日</strong>：DeepSeek V4 Pro <strong>2.5 折优惠延长至5月31日</strong>，输入缓存再降至 <strong>1/10</strong></li>
+                <li><strong>5月20日</strong>：真武 M890 AI 芯片量产 + Qwen3.7-Max 旗舰模型 + "千问云"独立品牌发布</li>
+                <li>MaaS Token 收入过去 5 个月增长 <strong>15 倍</strong></li>
+              </ul>
+            </div>
+            <div class="wa-vendor-block">
+              <div class="wa-vendor-title">
+                <span class="wa-vt-icon" style="background:#eff6ff;color:#4285f4">🔵</span>
+                <strong>谷歌云：I/O 2026 + Gemini 3.5 Flash</strong>
+              </div>
+              <ul class="wa-list">
+                <li><strong>5月19日</strong>：Google I/O 发布 Gemini 3.5 Flash（原生 1M 上下文）、Spark Agent、Antigravity 2.0</li>
+              </ul>
+            </div>
+            <div class="wa-vendor-block">
+              <div class="wa-vendor-title">
+                <span class="wa-vt-icon" style="background:#fffbeb;color:#f59e0b">🟡</span>
+                <strong>AWS Bedrock 扩容</strong>
+              </div>
+              <ul class="wa-list">
+                <li><strong>5月27日</strong>：Bedrock 上架 DeepSeek V4 系列 + Agents 2.0 GA，月活企业客户超 10 万</li>
               </ul>
             </div>
           </div>
@@ -519,6 +426,7 @@
               </tr>
             </thead>
             <tbody>
+              <!-- 国内云厂商 -->
               <tr>
                 <td>
                   <span class="pa-cell-vendor" style="background:#e0f2fe;color:#00a4ff">
@@ -527,11 +435,11 @@
                 </td>
                 <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
                 <td><span class="range-cell" style="background:#fee2e2;color:#dc2626"><strong>+5% ~ +463%</strong><span class="highest-flag">🔥 最高</span></span></td>
-                <td><span class="mini-tag">混元 HY 2.0 Instruct</span><span class="mini-tag">AI 算力</span><span class="mini-tag">TKE 原生节点</span><span class="mini-tag">EMR</span><span class="mini-tag">GLM5/MiniMax/Kimi 代理</span></td>
+                <td><span class="mini-tag">混元 HY 2.0 Instruct</span><span class="mini-tag">AI 算力</span><span class="mini-tag">TKE 原生节点</span><span class="mini-tag">EMR</span></td>
                 <td class="date-cell">2026-03-13 / 05-09</td>
                 <td class="strategy-impact-cell">
                   <span class="strategy-chip" style="background:#dc262622;color:#dc2626;border-color:#dc262655">Token 重定价 · 双轮推进</span>
-                  <p class="impact-text">混元输入 Token 单项涨 463%（0.0008→0.004505 元/千tokens）；AI 算力/容器/EMR 再统一 +5%</p>
+                  <p class="impact-text">混元输入 Token 单项涨 463%；AI 算力/容器/EMR 统一 +5%</p>
                 </td>
               </tr>
               <tr>
@@ -542,7 +450,7 @@
                 </td>
                 <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
                 <td><span class="range-cell" style="background:#fee2e2;color:#dc2626"><strong>+2% ~ +50%</strong></span></td>
-                <td><span class="mini-tag">GPU 云服务器</span><span class="mini-tag">OSS 归档</span><span class="mini-tag">Qwen3-Max/VL</span><span class="mini-tag">DDoS高防</span><span class="mini-tag">MU</span></td>
+                <td><span class="mini-tag">GPU 云服务器</span><span class="mini-tag">OSS 归档</span><span class="mini-tag">Qwen3-Max/VL</span><span class="mini-tag">DDoS高防</span></td>
                 <td class="date-cell">2026-04-20 / 07-15</td>
                 <td class="strategy-impact-cell">
                   <span class="strategy-chip" style="background:#ea580c22;color:#ea580c;border-color:#ea580c55">双轮驱动 · 全面提价</span>
@@ -566,19 +474,20 @@
               </tr>
               <tr>
                 <td>
-                  <span class="pa-cell-vendor" style="background:#eff6ff;color:#3b82f6">
-                    <span>🔷</span>智谱 AI
+                  <span class="pa-cell-vendor" style="background:#fef2f2;color:#dc2626">
+                    <span>🌋</span>火山引擎
                   </span>
                 </td>
                 <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
-                <td><span class="range-cell" style="background:#fee2e2;color:#dc2626"><strong>+8% ~ +22.5%</strong></span></td>
-                <td><span class="mini-tag">GLM-5.1 API</span><span class="mini-tag">GLM Coding Plan</span><span class="mini-tag">GLM-5-Turbo</span></td>
-                <td class="date-cell">2026-04-08</td>
+                <td><span class="range-cell" style="background:#fef3c7;color:#b45309"><strong>+8% ~ +12%</strong></span></td>
+                <td><span class="mini-tag">豆包 Pro 企业版</span><span class="mini-tag">SLA 套餐</span></td>
+                <td class="date-cell">2026-04-14</td>
                 <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#f59e0b22;color:#f59e0b;border-color:#f59e0b55">三次调价 · 逼近 Claude</span>
-                  <p class="impact-text">Coding Plan 取消首购优惠，海外版定价对标国际</p>
+                  <span class="strategy-chip" style="background:#eab30822;color:#eab308;border-color:#eab30855">规模领跑 · 优化结构</span>
+                  <p class="impact-text">首次涨价，引入 18 个月 SLA 包年锁客</p>
                 </td>
               </tr>
+              <!-- 海外云厂商 -->
               <tr>
                 <td>
                   <span class="pa-cell-vendor" style="background:#fffbeb;color:#f59e0b">
@@ -596,96 +505,6 @@
               </tr>
               <tr>
                 <td>
-                  <span class="pa-cell-vendor" style="background:#ecfdf5;color:#10b981">
-                    <span>🌙</span>Kimi
-                  </span>
-                </td>
-                <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
-                <td><span class="range-cell" style="background:#fef3c7;color:#b45309"><strong>+20%</strong></span></td>
-                <td><span class="mini-tag">Kimi 2.5 API</span><span class="mini-tag">Kimi 3 API</span><span class="mini-tag">Kimi 开发者联盟</span></td>
-                <td class="date-cell">2026-03-13</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#f59e0b22;color:#f59e0b;border-color:#f59e0b55">长文本领先 · 结束补贴</span>
-                  <p class="impact-text">200万上下文算力成本高，正式商业定价</p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="pa-cell-vendor" style="background:#f3e8ff;color:#8b5cf6">
-                    <span>💜</span>MiniMax
-                  </span>
-                </td>
-                <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
-                <td><span class="range-cell" style="background:#fef3c7;color:#b45309"><strong>+12% ~ +15%</strong></span></td>
-                <td><span class="mini-tag">MiniMax 2.5 Text API</span><span class="mini-tag">MiniMax 2.5 Voice API</span></td>
-                <td class="date-cell">2026-03-13</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#f59e0b22;color:#f59e0b;border-color:#f59e0b55">公测结束 · 正式计费</span>
-                  <p class="impact-text">结束公测补贴，推出开发者扶持返点计划</p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="pa-cell-vendor" style="background:#fef2f2;color:#c74634">
-                    <span>🟥</span>Oracle云
-                  </span>
-                </td>
-                <td><span class="region-tag overseas-tag">🌍 海外</span></td>
-                <td><span class="range-cell" style="background:#fef3c7;color:#b45309"><strong>+12%</strong></span></td>
-                <td><span class="mini-tag">OCI GPU BM 实例</span><span class="mini-tag">H100</span><span class="mini-tag">B200</span></td>
-                <td class="date-cell">2026-04-10</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#eab30822;color:#eab308;border-color:#eab30855">独家芯片 · 差异化溢价</span>
-                  <p class="impact-text">与 NVIDIA 5 年独家，B200 订阅起售</p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="pa-cell-vendor" style="background:#ecfeff;color:#06b6d4">
-                    <span>👁️</span>商汤科技
-                  </span>
-                </td>
-                <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
-                <td><span class="range-cell" style="background:#fef3c7;color:#b45309"><strong>平均 +12%</strong></span></td>
-                <td><span class="mini-tag">SenseCore 推理服务</span><span class="mini-tag">日日新 5.5 API</span><span class="mini-tag">企业算力包</span></td>
-                <td class="date-cell">近期</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#eab30822;color:#eab308;border-color:#eab30855">算力包锁价 · 长约换稳</span>
-                  <p class="impact-text">推出企业算力包，12个月锁价换更长合约</p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="pa-cell-vendor" style="background:#e0f2fe;color:#0078d4">
-                    <span>🪟</span>微软 Azure
-                  </span>
-                </td>
-                <td><span class="region-tag overseas-tag">🌍 海外</span></td>
-                <td><span class="range-cell" style="background:#fef3c7;color:#b45309"><strong>+8% ~ +12%</strong></span></td>
-                <td><span class="mini-tag">Azure OpenAI</span><span class="mini-tag">GPT-5.5</span><span class="mini-tag">o4</span><span class="mini-tag">Fine-tuning</span></td>
-                <td class="date-cell">2026-04-15</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#eab30822;color:#eab308;border-color:#eab30855">Token 提价 · 取消免费</span>
-                  <p class="impact-text">训练 +15%、免费额度取消，新用户门槛提升</p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="pa-cell-vendor" style="background:#fef2f2;color:#dc2626">
-                    <span>🌋</span>火山引擎
-                  </span>
-                </td>
-                <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
-                <td><span class="range-cell" style="background:#fef3c7;color:#b45309"><strong>+8% ~ +12%</strong></span></td>
-                <td><span class="mini-tag">豆包 Pro 企业版</span><span class="mini-tag">SLA 套餐</span></td>
-                <td class="date-cell">2026-04-14</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#eab30822;color:#eab308;border-color:#eab30855">规模领跑 · 优化结构</span>
-                  <p class="impact-text">首次涨价，引入 18 个月 SLA 包年锁客</p>
-                </td>
-              </tr>
-              <tr>
-                <td>
                   <span class="pa-cell-vendor" style="background:#eff6ff;color:#4285f4">
                     <span>🔵</span>谷歌云
                   </span>
@@ -699,51 +518,6 @@
                   <p class="impact-text">1 年 CUD 折扣 55%→45%，长约客户受冲击</p>
                 </td>
               </tr>
-              <tr>
-                <td>
-                  <span class="pa-cell-vendor" style="background:#ecfdf5;color:#10a37f">
-                    <span>🤖</span>OpenAI
-                  </span>
-                </td>
-                <td><span class="region-tag overseas-tag">🌍 海外</span></td>
-                <td><span class="range-cell" style="background:#fef9c3;color:#a16207"><strong>+6% ~ +10%（隐性）</strong></span></td>
-                <td><span class="mini-tag">GPT-5 API</span><span class="mini-tag">GPT-5-mini</span><span class="mini-tag">Omni 多模态 Token</span></td>
-                <td class="date-cell">2026-04-18</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#eab30822;color:#eab308;border-color:#eab30855">计费重构 · 变相提价</span>
-                  <p class="impact-text">多模态 Token 重定价，综合成本反升</p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="pa-cell-vendor" style="background:#fee2e2;color:#e11d48">
-                    <span>🔴</span>华为云
-                  </span>
-                </td>
-                <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
-                <td><span class="range-cell" style="background:#fef9c3;color:#a16207"><strong>+6% ~ +10%</strong></span></td>
-                <td><span class="mini-tag">盘古行业大模型</span><span class="mini-tag">昇腾 910D</span></td>
-                <td class="date-cell">2026-04-16</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#eab30822;color:#eab308;border-color:#eab30855">国产算力 · 稳健提价</span>
-                  <p class="impact-text">盘古 6.0 升级定价，昇腾预留 64 卡起订</p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="pa-cell-vendor" style="background:#fff7ed;color:#f97316">
-                    <span>🎙️</span>科大讯飞
-                  </span>
-                </td>
-                <td><span class="region-tag domestic-tag">🇨🇳 国内</span></td>
-                <td><span class="range-cell" style="background:#dcfce7;color:#15803d"><strong>+8%</strong></span></td>
-                <td><span class="mini-tag">讯飞智算平台</span><span class="mini-tag">星火大模型 API</span><span class="mini-tag">智算中心租赁</span></td>
-                <td class="date-cell">2026-03-31</td>
-                <td class="strategy-impact-cell">
-                  <span class="strategy-chip" style="background:#10b98122;color:#10b981;border-color:#10b98155">国产算力 · 首次调价</span>
-                  <p class="impact-text">年内首次调价，国产芯片供应紧张</p>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -752,7 +526,7 @@
           <span class="fn-item"><strong style="color:#ef4444;">🔥 标红行</strong>：本轮涨价潮单项涨幅最高的厂商</span>
           <span class="fn-item"><strong>涨幅颜色深度</strong>：颜色越深代表涨幅越大，便于快速识别压力点</span>
           <span class="fn-item"><strong>策略定位</strong>：基于涨价幅度、产品范围、配套政策综合判定</span>
-          <span class="fn-item"><strong>新增厂商</strong>：智谱AI、MiniMax、Kimi、商汤、科大讯飞已纳入本轮汇总</span>
+          <span class="fn-item"><strong>跟踪范围</strong>：国内（腾讯云、阿里云、百度云、火山引擎）+ 海外（AWS、谷歌云）</span>
         </div>
         </div>
       </div>
@@ -764,7 +538,7 @@
           <div class="ov-content">
             <div class="ov-label">海外云厂商</div>
             <div class="ov-value">{{ overseasCount }} 条</div>
-            <div class="ov-sub">平均涨幅 8% ~ 15%</div>
+            <div class="ov-sub">AWS + 谷歌云</div>
           </div>
         </div>
         <div class="ov-card domestic">
@@ -772,23 +546,23 @@
           <div class="ov-content">
             <div class="ov-label">国内云厂商</div>
             <div class="ov-value">{{ domesticCount }} 条</div>
-            <div class="ov-sub">最高单项涨幅 +463%</div>
+            <div class="ov-sub">腾讯云 + 阿里云 + 百度云 + 火山引擎</div>
           </div>
         </div>
         <div class="ov-card range">
           <div class="ov-icon">📊</div>
           <div class="ov-content">
             <div class="ov-label">统计周期</div>
-            <div class="ov-value">本轮全周期</div>
-            <div class="ov-sub">2026.03.01 ~ 2026.04.21</div>
+            <div class="ov-value">2026 Q2</div>
+            <div class="ov-sub">2026.03.01 ~ 2026.05.31</div>
           </div>
         </div>
         <div class="ov-card insight">
           <div class="ov-icon">🔥</div>
           <div class="ov-content">
             <div class="ov-label">核心结论</div>
-            <div class="ov-value">20 年降价史终结</div>
-            <div class="ov-sub">Token 爆炸 + GPU 紧缺双驱</div>
+            <div class="ov-value">分化加剧</div>
+            <div class="ov-sub">头部降价抢量 · 中小涨价保利</div>
           </div>
         </div>
       </div>
@@ -809,7 +583,7 @@
 
       <div class="news-source-tip">
         <span class="tip-icon">💡</span>
-        涨价动态来源：各云厂商官方定价页/公告、AWS/Azure/GCP 官方博客、证券日报、财联社、SemiAnalysis、IT时报、36氪 · <strong>统计周期 2026.03.01 - 2026.04.21（本轮涨价全周期汇总）</strong>
+        涨价动态来源：各云厂商官方定价页/公告、AWS/GCP 官方博客、证券日报、财联社、36氪 · <strong>统计周期 2026.03.01 - 2026.05.31</strong>
       </div>
 
       <!-- 涨价清单 -->
@@ -925,11 +699,11 @@
             <span class="cc-title">一句话总结</span>
           </div>
           <p class="cc-body">
-            2026 年 4 月的这半个月，是全球云计算从"以价换量"向"以价换 Token 定价权"转型的关键节点：
-            <strong>海外以 AWS、Azure、GCP 为代表梯次提价 8%-15%</strong>，
-            <strong>国内以腾讯云混元（单项 +463%）、阿里云、百度云为代表开启本轮涨价潮</strong>，
-            <strong>拥有自研芯片 + Agent 生态闭环的厂商将率先获得下一轮议价主动权</strong>，
-            中小客户需在 Q2 内完成预留续费、多模型路由和 Token 节流架构改造，以对冲未来 2-3 轮跟进涨价。
+            2026 年上半年，全球云计算市场进入"AI 重定价"新阶段：
+            <strong>海外以 AWS、谷歌云为代表，通过折扣收紧和算力预留涨价 8%-15%</strong>，
+            <strong>国内以腾讯云（AI 算力 +5%）、阿里云（全面提价）、百度云（文心重定价）为代表完成本轮调价</strong>，
+            <strong>火山引擎/DeepSeek 逆势降价抢夺开发者生态</strong>。
+            拥有自研芯片 + Agent 生态闭环的厂商将率先获得下一轮议价主动权。
           </p>
         </div>
       </div>
@@ -937,9 +711,9 @@
 
     <!-- 更新时间 -->
     <div class="page-footer">
-      📅 最后更新：{{ lastUpdate }} <span class="update-badge">每日更新</span> | 数据参考：
+      📅 最后更新：{{ lastUpdate }} <span class="update-badge">每周更新</span> | 数据参考：
       <a href="https://ai.hubtoday.app/" target="_blank" rel="noopener">ai.hubtoday.app</a>
-      + 各云厂商官方博客
+      + 6 家核心云厂商官方博客
     </div>
   </div>
 </template>
@@ -948,7 +722,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import EmptyState from '@/components/common/EmptyState.vue'
-import { aiNews, cloudNews, vendorConfig, importanceConfig, priceChangeNews, priceStrategyInsights } from '@/data/newsData'
+import { cloudNews, vendorConfig, importanceConfig, priceChangeNews, priceStrategyInsights } from '@/data/newsData'
 
 const router = useRouter()
 
@@ -960,7 +734,7 @@ const lastUpdate = ref(
     day: '2-digit'
   }).replace(/\//g, '-')
 )
-const mainTab = ref<'ai' | 'cloud' | 'price'>('ai')
+const mainTab = ref<'cloud' | 'price'>('cloud')
 
 // 云商异动预警弹窗控制
 const activeAlertModal = ref<'price' | 'deprecated' | 'compare' | null>(null)
@@ -972,23 +746,6 @@ function toggleAlertModal(type: 'price' | 'deprecated' | 'compare') {
     activeAlertModal.value = type
   }
 }
-
-// AI 筛选
-const aiCategories = ['全部', '模型发布', '国产模型', 'Agent 生态', '行业投资']
-const aiCategory = ref('全部')
-const importances = ['全部', '重磅', '重要', '一般']
-const aiImportance = ref('全部')
-
-const filteredAiNews = computed(() => {
-  let data = [...aiNews]
-  if (aiCategory.value !== '全部') {
-    data = data.filter(n => n.category === aiCategory.value)
-  }
-  if (aiImportance.value !== '全部') {
-    data = data.filter(n => n.importance === aiImportance.value)
-  }
-  return data
-})
 
 // 云商筛选
 const vendorFilter = ref<string>('全部')
@@ -1063,17 +820,6 @@ const compareRows: CompareRow[] = [
     impact: '年内多次调价，压力传导至全线客户'
   },
   {
-    vendor: '智谱AI',
-    region: '国内',
-    rangeText: '+8% ~ +22.5%',
-    maxPct: 22.5,
-    products: ['GLM-5.1 API', 'GLM Coding Plan', 'GLM-5-Turbo'],
-    effectiveDate: '2026-04-08',
-    strategyLabel: '三次调价 · 逼近 Claude',
-    strategyColor: '#f59e0b',
-    impact: 'Coding Plan 取消首购优惠，海外版定价对标国际'
-  },
-  {
     vendor: 'AWS',
     region: '海外',
     rangeText: '+15%',
@@ -1083,61 +829,6 @@ const compareRows: CompareRow[] = [
     strategyLabel: '锁定算力 · 延长周期',
     strategyColor: '#f59e0b',
     impact: '预留窗口 1 年→2 年，捆绑性更强'
-  },
-  {
-    vendor: 'Kimi',
-    region: '国内',
-    rangeText: '+20%',
-    maxPct: 20,
-    products: ['Kimi 2.5 API', 'Kimi 3 API', 'Kimi 开发者联盟'],
-    effectiveDate: '2026-03-13',
-    strategyLabel: '长文本领先 · 结束补贴',
-    strategyColor: '#f59e0b',
-    impact: '200万上下文算力成本高，正式商业定价'
-  },
-  {
-    vendor: 'MiniMax',
-    region: '国内',
-    rangeText: '+12% ~ +15%',
-    maxPct: 15,
-    products: ['MiniMax 2.5 Text API', 'MiniMax 2.5 Voice API'],
-    effectiveDate: '2026-03-13',
-    strategyLabel: '公测结束 · 正式计费',
-    strategyColor: '#f59e0b',
-    impact: '结束公测补贴，推出开发者扶持返点计划'
-  },
-  {
-    vendor: 'Oracle云',
-    region: '海外',
-    rangeText: '+12%',
-    maxPct: 12,
-    products: ['OCI GPU BM 实例', 'H100', 'B200'],
-    effectiveDate: '2026-04-10',
-    strategyLabel: '独家芯片 · 差异化溢价',
-    strategyColor: '#eab308',
-    impact: '与 NVIDIA 5 年独家，B200 订阅起售'
-  },
-  {
-    vendor: '商汤科技',
-    region: '国内',
-    rangeText: '平均 +12%',
-    maxPct: 12,
-    products: ['SenseCore 推理服务', '日日新 5.5 API', '企业算力包'],
-    effectiveDate: '近期',
-    strategyLabel: '算力包锁价 · 长约换稳',
-    strategyColor: '#eab308',
-    impact: '推出企业算力包，12个月锁价换更长合约'
-  },
-  {
-    vendor: '微软云',
-    region: '海外',
-    rangeText: '+8% ~ +12%',
-    maxPct: 12,
-    products: ['Azure OpenAI', 'GPT-5.5', 'o4', 'Fine-tuning'],
-    effectiveDate: '2026-04-15',
-    strategyLabel: 'Token 提价 · 取消免费',
-    strategyColor: '#eab308',
-    impact: '训练 +15%、免费额度取消，新用户门槛提升'
   },
   {
     vendor: '火山引擎',
@@ -1160,39 +851,6 @@ const compareRows: CompareRow[] = [
     strategyLabel: '折扣收紧 · 隐性涨价',
     strategyColor: '#eab308',
     impact: '1 年 CUD 折扣 55%→45%，长约客户受冲击'
-  },
-  {
-    vendor: 'OpenAI',
-    region: '海外',
-    rangeText: '+6% ~ +10%（隐性）',
-    maxPct: 10,
-    products: ['GPT-5 API', 'GPT-5-mini', 'Omni 多模态 Token'],
-    effectiveDate: '2026-04-18',
-    strategyLabel: '计费重构 · 变相提价',
-    strategyColor: '#eab308',
-    impact: '多模态 Token 重定价，综合成本反升'
-  },
-  {
-    vendor: '华为云',
-    region: '国内',
-    rangeText: '+6% ~ +10%',
-    maxPct: 10,
-    products: ['盘古行业大模型', '昇腾 910D'],
-    effectiveDate: '2026-04-16',
-    strategyLabel: '国产算力 · 稳健提价',
-    strategyColor: '#eab308',
-    impact: '盘古 6.0 升级定价，昇腾预留 64 卡起订'
-  },
-  {
-    vendor: '科大讯飞',
-    region: '国内',
-    rangeText: '+8%',
-    maxPct: 8,
-    products: ['讯飞智算平台', '星火大模型 API', '智算中心租赁'],
-    effectiveDate: '2026-03-31',
-    strategyLabel: '国产算力 · 首次调价',
-    strategyColor: '#10b981',
-    impact: '年内首次调价，国产芯片供应紧张'
   },
   {
     vendor: '腾讯云',
@@ -1331,49 +989,8 @@ const deprecatedProducts: DeprecatedItem[] = [
     affectedCustomers: '搜索业务、内容检索客户',
     tags: ['CloudSearch', '搜索', 'EOL']
   },
-  {
-    id: 7,
-    vendor: '微软云',
-    product: 'Azure Spring Apps 标准版',
-    type: '完全停服',
-    severity: 'critical',
-    announceDate: '2026-04-14',
-    stopSellDate: '2026-05-30',
-    endOfLifeDate: '2027-03-31',
-    reason: '与 VMware 剥离影响，Azure Spring Apps Basic/Standard 版完全退休，仅保留 Enterprise 版。',
-    migration: '升级至 Enterprise 版（价格×3）/ 迁移至 AKS 自建 / 腾讯云 TKE + Spring Cloud',
-    affectedCustomers: 'Java 微服务客户 · 约 3000+ 企业受影响',
-    tags: ['Spring', 'Java', 'Azure', '停服'],
-    sourceUrl: 'https://azure.microsoft.com/updates'
-  },
-  {
-    id: 8,
-    vendor: '微软云',
-    product: 'Azure ML Classic (经典版)',
-    type: '完全停服',
-    severity: 'high',
-    announceDate: '2026-04-07',
-    stopSellDate: '已停止',
-    endOfLifeDate: '2026-08-31',
-    reason: '经典版 ML Studio 8 月底彻底下线，所有工作区和模型将被删除。',
-    migration: '迁移至 Azure Machine Learning v2 / 腾讯云 TI 平台',
-    affectedCustomers: '传统机器学习老客户',
-    tags: ['ML', 'AI', '下线']
-  },
-  {
-    id: 9,
-    vendor: '华为云',
-    product: '区块链服务 BCS（公有云版）',
-    type: '完全停服',
-    severity: 'high',
-    announceDate: '2026-04-11',
-    stopSellDate: '2026-05-20',
-    endOfLifeDate: '2026-10-31',
-    reason: '战略聚焦昇腾与盘古，BCS 公有云版停服，仅保留私有化交付形态。',
-    migration: '迁移至私有化部署 / 腾讯云 TBaaS / 蚂蚁链 BaaS',
-    affectedCustomers: '金融、溯源、政务区块链客户',
-    tags: ['区块链', 'BCS', '战略收缩']
-  },
+
+
   {
     id: 10,
     vendor: '百度云',
@@ -1388,20 +1005,7 @@ const deprecatedProducts: DeprecatedItem[] = [
     affectedCustomers: '早期接入百度文心的 AI 应用开发者',
     tags: ['文心', 'LLM', 'API']
   },
-  {
-    id: 11,
-    vendor: 'Oracle云',
-    product: 'OCI Classic（经典计算域）',
-    type: '地域收缩',
-    severity: 'medium',
-    announceDate: '2026-04-13',
-    stopSellDate: '2026-06-30',
-    endOfLifeDate: '2027-06-30',
-    reason: 'OCI Classic 老架构在亚太区（含东京、悉尼）下线，全面切到第二代 OCI。',
-    migration: '迁移至 OCI Gen 2 / 腾讯云 CVM',
-    affectedCustomers: '日本、澳洲 Oracle 老客户',
-    tags: ['OCI', 'Classic', '地域收缩']
-  },
+
   {
     id: 12,
     vendor: '火山引擎',
@@ -1499,10 +1103,33 @@ function severityLabel(s: Severity): string {
   margin: 0;
 }
 
+.page-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.desc-highlight {
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.desc-highlight.domestic {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.desc-highlight.overseas {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
 /* 顶部大 Tab */
 .main-tabs {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.3fr;
+  grid-template-columns: 1fr 1fr;
   gap: 14px;
   margin-bottom: 20px;
 }
@@ -1837,7 +1464,7 @@ function severityLabel(s: Severity): string {
   .main-tabs { grid-template-columns: 1fr; }
   .news-list { grid-template-columns: 1fr; }
   .mt-icon { width: 40px; height: 40px; font-size: 20px; }
-  .price-overview { grid-template-columns: 1fr 1fr; }
+  .price-overview { grid-template-columns: 1fr; }
   .strategy-grid { grid-template-columns: 1fr; }
 }
 
@@ -3028,7 +2655,7 @@ function severityLabel(s: Severity): string {
 /* 涨价速览卡片 */
 .price-overview {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   margin-bottom: 16px;
 }
@@ -3041,7 +2668,7 @@ function severityLabel(s: Severity): string {
   border: 1px solid var(--border);
   border-left: 4px solid transparent;
   border-radius: 10px;
-  padding: 14px 16px;
+  padding: 16px 18px;
 }
 
 .ov-card.overseas { border-left-color: #6366f1; }

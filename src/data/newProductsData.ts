@@ -25,8 +25,377 @@ export interface WeeklyUpdate {
 // 本周 + 往期数据
 export const weeklyUpdates: WeeklyUpdate[] = [
   {
+    weekKey: '2026-W22',
+    weekLabel: '本周 · 5月26日 – 5月31日',
+    startDate: '2026-05-26',
+    endDate: '2026-05-31',
+    summary: '腾讯云本周双线出击：5月28日香港面向全球发布Agent Runtime升级、Miora/WorkBuddy国际版；5月29日上海「数据库+AI」发布会推出DatabaseClaw、TDSQL-C Branch分支管理、多模态混合检索等十余项AI原生数据库能力。',
+    products: [
+      {
+        id: 401,
+        name: 'Agent Runtime 全面升级',
+        category: 'AI大模型',
+        updateType: '版本升级',
+        date: '2026-05-28',
+        summary: '首次构建覆盖运行、存储、记忆与安全访问的Agent原生运行底座，含5大核心组件',
+        description: '腾讯云Agent Runtime完成系统性升级，首次构建覆盖运行、存储、记忆与安全访问的原生运行底座。包含Agent SandBox（休眠唤醒机制，唤醒延迟低至50ms）、Agent CBS（按用量计费）、Agent Bucket（亿级用户共享空间）、Agent Gateway（安全访问）、Agent Memory（长任务成功率提升30%，Token消耗降低60%）五大组件。',
+        highlights: [
+          'Agent SandBox 休眠唤醒延迟低至 50ms',
+          'Agent Memory 长任务成功率提升 30%',
+          'Token 消耗降低 60%',
+          '首次构建运行+存储+记忆+安全的完整底座'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/adp',
+        isHot: true,
+        tags: ['Agent', '基础设施', '全球发布', '重点推荐']
+      },
+      {
+        id: 402,
+        name: 'Miora 全场景创意智能体工作室',
+        category: 'AI大模型',
+        updateType: '新品发布',
+        date: '2026-05-28',
+        summary: '一句话生成图片、视频、UI/UX设计和3D内容，让一人拥有整个创意工作室',
+        description: 'Miora是腾讯云面向全球发布的全场景创意智能体工作室。能理解并记忆用户的审美偏好与创作风格，仅凭一句需求描述即可自动拆解任务，生成包含图片、视频、UI/UX设计、3D资产的整套视觉方案。搭载全球主流视觉模型，支持节点式自由创作与协同，允许定制和分享专属Skills。',
+        highlights: [
+          '记忆用户审美偏好，越用越懂你',
+          '一句话生成图片/视频/UI/3D 多模态内容',
+          '节点式画布，支持多模态自由创作与协同',
+          '可定制并分享专属 Skills'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/miora',
+        isHot: true,
+        tags: ['Agent', '创意', 'AIGC', '全球首发', '重点推荐']
+      },
+      {
+        id: 403,
+        name: 'WorkBuddy 国际版',
+        category: 'AI大模型',
+        updateType: '新品发布',
+        date: '2026-05-28',
+        summary: '国内最受欢迎的效率智能体正式出海，深度集成Slack/Telegram/Discord',
+        description: 'WorkBuddy国际版是腾讯云效率智能体产品面向海外市场的版本。深度集成Slack、Telegram、Discord等主流国际协作工具，支持从行业趋势分析到报告生成的全流程工作，用户可通过手机便捷操控。',
+        highlights: [
+          '深度集成 Slack/Telegram/Discord',
+          '支持全流程工作：趋势分析→报告生成',
+          '手机端便捷操控',
+          '国内百万级用户验证后正式出海'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/workbuddy',
+        isHot: false,
+        tags: ['Agent', '效率', '出海']
+      },
+      {
+        id: 404,
+        name: 'TokenHub 海外版',
+        category: 'AI大模型',
+        updateType: '新品发布',
+        date: '2026-05-28',
+        summary: '腾讯云大模型服务平台TokenHub正式面向海外用户提供模型服务',
+        description: '腾讯云TokenHub（大模型服务平台）正式面向海外用户提供模型服务，构建"一云多模"的全流程AI引擎，支持海外开发者便捷调用混元及第三方模型能力。',
+        highlights: [
+          '正式面向海外用户开放',
+          '一云多模全流程 AI 引擎',
+          '支持混元及第三方模型调用',
+          '配合 Agent Runtime 形成完整出海方案'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/hunyuan',
+        isHot: false,
+        tags: ['模型服务', '出海']
+      },
+      {
+        id: 405,
+        name: 'DatabaseClaw 数据库智能运维Agent',
+        category: '数据库',
+        updateType: '新品发布',
+        date: '2026-05-29',
+        summary: '基于OpenClaw框架，DBA用自然语言即可执行复杂运维操作',
+        description: 'DatabaseClaw是腾讯云在「数据库+AI」发布会上正式推出的数据库智能运维方案，基于OpenClaw框架开发。DBA只需通过自然语言指令即可执行复杂运维操作，集成大量实战经验可自动化解决常见问题，极大简化跨多个平台和服务的操作流程。',
+        highlights: [
+          '基于 OpenClaw 框架开发',
+          '自然语言驱动，一句话定位故障根因',
+          '集成实战经验，自动化解决常见问题',
+          '越用越懂业务环境'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/tdsql',
+        isHot: true,
+        tags: ['Agent', '数据库', 'DBA', '重点推荐']
+      },
+      {
+        id: 406,
+        name: 'TDSQL-C 数据库分支管理（Branch）',
+        category: '数据库',
+        updateType: '新功能',
+        date: '2026-05-29',
+        summary: 'AI编程场景必备：秒级创建生产环境一致的数据副本，支持回滚与协作',
+        description: 'TDSQL-C新增Branch分支管理功能，允许快速创建独立但与生产环境一致的数据副本，支持秒级创建、回滚及协作。专为AI编程场景设计，满足频繁复制、测试和恢复的需求，同时保持金融级稳定性和秒级弹性伸缩能力。',
+        highlights: [
+          '秒级创建生产环境一致的数据副本',
+          '支持快速回滚与多人协作',
+          '专为 AI 编程频繁测试场景设计',
+          '金融级稳定性 + 秒级弹性伸缩'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/cynosdb',
+        isHot: true,
+        tags: ['数据库', 'AI编程', '重点推荐']
+      },
+      {
+        id: 407,
+        name: 'AgentMemory 升级版（多模态混合检索）',
+        category: '数据库',
+        updateType: '版本升级',
+        date: '2026-05-29',
+        summary: '三层记忆架构升级：短期压缩+长期固化+团队结构化，支持多模态混合检索',
+        description: 'AgentMemory在数据库+AI发布会上发布升级版，通过短期记忆压缩、长期记忆固化、团队记忆结构化三层优化Agent工作效率。新增多模态数据混合检索能力，支持处理上下文记忆、知识库及多媒体内容等多种数据类型的统一检索。',
+        highlights: [
+          '短期记忆压缩 + 长期记忆固化',
+          '团队记忆结构化，支持多 Agent 协作',
+          '多模态数据混合检索',
+          '显著提高任务完成率并降低成本'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/agm',
+        isHot: false,
+        tags: ['Agent', '记忆', '数据库']
+      },
+      {
+        id: 408,
+        name: '电子签海外版',
+        category: '其他',
+        updateType: '新品发布',
+        date: '2026-05-28',
+        summary: '腾讯云电子签正式出海，面向全球用户提供电子签约服务',
+        description: '腾讯云电子签海外版同步上线，面向全球用户提供电子签约服务，配合腾讯云AI全球化战略为海外企业客户提供合规、安全的电子签约解决方案。',
+        highlights: [
+          '正式面向海外用户开放',
+          '合规安全的电子签约方案',
+          '配合腾讯云全球化战略',
+          '支持多语言多地区'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/ess',
+        isHot: false,
+        tags: ['出海', '电子签']
+      }
+    ]
+  },
+  {
+    weekKey: '2026-W21',
+    weekLabel: '往期 · 5月19日 – 5月25日',
+    startDate: '2026-05-19',
+    endDate: '2026-05-25',
+    summary: '5月20日腾讯云融合创新峰会重磅升级"6T"国产软件体系：TencentOS AI增强版发布、TDSQL企业版性能飙升（OLAP提升20倍）、TDSQL基础版全新推出、TBDS升级为智能Agent架构、TI平台全面适配国产AI芯片。',
+    products: [
+      {
+        id: 501,
+        name: 'TencentOS AI 增强版',
+        category: '计算',
+        updateType: '版本升级',
+        date: '2026-05-20',
+        summary: '为AI Agent打造的AI-Ready操作系统，覆盖9大领域24个运维场景，无需命令即可运维',
+        description: 'TencentOS AI增强版是腾讯云在融合创新峰会发布的面向AI Agent智能体的操作系统版本。提供AI Agent部署、AI辅助运维、开箱即得AI开发环境等能力，自带开发与部署核心组件，覆盖9大领域24个真实运维场景，DBA/运维人员无需记忆命令即可完成OS运维。累计装机量已超1000万套。',
+        highlights: [
+          '面向 AI Agent 的 AI-Ready 操作系统',
+          '覆盖 9 大领域 24 个运维场景',
+          '无需记忆命令，自然语言运维',
+          '累计装机量超 1000 万套'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/tencentos',
+        isHot: true,
+        tags: ['操作系统', 'Agent', '融合创新', '重点推荐']
+      },
+      {
+        id: 502,
+        name: 'TDSQL 企业版升级（OLAP性能提升20倍）',
+        category: '数据库',
+        updateType: '版本升级',
+        date: '2026-05-20',
+        summary: '计算引擎深度优化：OLTP性能提升50%、OLAP性能提升20倍，深度适配国产芯片',
+        description: 'TDSQL企业版在融合创新峰会上宣布重大性能升级：计算引擎全面优化，OLTP性能提升50%，OLAP性能提升20倍。深度基于国产芯片调优，性能追平传统架构，连续多年稳居金融行业市场份额第一，覆盖超100家金融机构核心系统，实现四大行主力数据库全覆盖。',
+        highlights: [
+          'OLTP 性能提升 50%',
+          'OLAP 性能提升 20 倍',
+          '深度适配国产芯片，性能追平传统架构',
+          '四大行主力数据库全覆盖'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/tdsql',
+        isHot: true,
+        tags: ['数据库', '性能', '国产化', '重点推荐']
+      },
+      {
+        id: 503,
+        name: 'TDSQL 基础版（全新发布）',
+        category: '数据库',
+        updateType: '新品发布',
+        date: '2026-05-20',
+        summary: '100%兼容MySQL，分钟级部署交付，面向中小企业的轻量级自研数据库',
+        description: 'TDSQL基础版是腾讯云在融合创新峰会上全新发布的轻量级数据库产品，100%兼容MySQL，分钟级部署交付，面向中小企业和快速开发场景，降低自研数据库的使用门槛。',
+        highlights: [
+          '全新发布，100% 兼容 MySQL',
+          '分钟级部署交付',
+          '面向中小企业快速开发场景',
+          '降低自研数据库使用门槛'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/tdsql',
+        isHot: false,
+        tags: ['数据库', 'MySQL兼容', '新品']
+      },
+      {
+        id: 504,
+        name: 'TBDS 大数据平台 Agent 架构升级',
+        category: 'AI大模型',
+        updateType: '版本升级',
+        date: '2026-05-20',
+        summary: '从多模态融合到智能Agent：新增数据分析Agent、智能自治Agent、业务自助Agent',
+        description: 'TBDS大数据平台完成从"多模态融合"到"智能Agent"的架构升级。基础层提供多模态湖仓基座统一支撑全类型数据；智能开发层WeData平台实现DataOps与AIOps一体化；运维层TBDS-Insight提供AIOps自治运维；上层新增数据分析Agent、智能自治Agent、业务自助Agent，让业务人员即问即得。',
+        highlights: [
+          '新增数据分析/智能自治/业务自助三大 Agent',
+          'WeData 实现 DataOps + AIOps 一体化',
+          'TBDS-Insight 提供 AIOps 自治运维',
+          '业务人员即问即得，无需技术背景'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/tbds',
+        isHot: false,
+        tags: ['大数据', 'Agent', '融合创新']
+      },
+      {
+        id: 505,
+        name: 'TI AI平台 全面适配国产AI芯片',
+        category: 'AI大模型',
+        updateType: '版本升级',
+        date: '2026-05-20',
+        summary: '一站式大模型训推平台全面适配国产AI芯片和国产操作系统',
+        description: '腾讯云TI（一站式大模型训推平台）宣布全面适配国产AI芯片，兼容国产操作系统，是"6T"国产软件体系中AI平台层的核心产品，为企业提供国产化环境下的完整AI模型训练和推理能力。',
+        highlights: [
+          '全面适配国产 AI 芯片',
+          '兼容国产操作系统',
+          '一站式大模型训练与推理',
+          '"6T"体系 AI 平台层核心产品'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/ti',
+        isHot: false,
+        tags: ['AI平台', '国产化', '融合创新']
+      },
+      {
+        id: 506,
+        name: 'ClawPro 专有云版正式商用',
+        category: 'AI大模型',
+        updateType: '版本升级',
+        date: '2026-05-20',
+        summary: '公有云百万级用户验证的Agent管控能力完整部署于企业本地，兼容异构算力',
+        description: 'ClawPro专有云版在融合创新峰会宣布正式商用，将公有云经百万级用户验证的核心Agent管控能力完整部署于企业本地环境，兼容主流大模型与异构算力。面向金融、政务、能源等对数据安全有高要求的行业客户。',
+        highlights: [
+          '公有云百万级验证能力落地私有云',
+          '兼容主流大模型与异构算力',
+          '企业级 Agent 管控平台正式商用',
+          '面向金融/政务/能源等行业'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/adp',
+        isHot: false,
+        tags: ['Agent', '私有云', '商用']
+      }
+    ]
+  },
+  {
+    weekKey: '2026-W20',
+    weekLabel: '往期 · 5月10日 – 5月18日',
+    startDate: '2026-05-10',
+    endDate: '2026-05-18',
+    summary: '腾讯云ADP智能体开发平台密集更新：新增Claw模式（第四种应用模式）、Agentic RAG智能检索、连接器与工具架构升级、钉钉机器人发布渠道；云数据库PostgreSQL全面支持PG 18.0并上线智能索引推荐。',
+    products: [
+      {
+        id: 601,
+        name: 'ADP Claw 模式（第四种应用模式）',
+        category: 'AI大模型',
+        updateType: '新功能',
+        date: '2026-05-15',
+        summary: 'ADP第四种智能体应用模式：拥有独立工作空间，自主编写和运行代码完成复杂任务',
+        description: '腾讯云ADP推出第四种应用模式——Claw模式。该应用类型拥有独立工作空间，通过自主编写和运行代码来完成复杂任务，像一位随时在线的数字同事。适用于数据分析、内容生成、自动化处理等面向非技术用户的复杂任务场景，面向专业版和企业版用户，沙箱能力限时免费体验中。',
+        highlights: [
+          'ADP 第四种应用模式，独立工作空间',
+          '自主编写和运行代码完成复杂任务',
+          '适用数据分析/内容生成/自动化处理',
+          '沙箱能力限时免费体验'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/adp',
+        isHot: true,
+        tags: ['Agent', 'ADP', '新模式', '重点推荐']
+      },
+      {
+        id: 602,
+        name: 'ADP Agentic RAG 智能检索',
+        category: 'AI大模型',
+        updateType: '新功能',
+        date: '2026-05-15',
+        summary: '基于Agent Loop框架，智能体自主反思、切换策略、多轮迭代检索，大幅提升知识问答准确度',
+        description: 'Agentic RAG基于Agent Loop框架，实现智能体自主反思、智能切换检索策略、多轮迭代检索，在知识场景中提供更广的回答范围和更高的回答准确度。支持在Claw模式或Multi-Agent模式应用下使用，通过添加知识库问答/AgenticRAGSearch工具实现。',
+        highlights: [
+          '智能体自主反思与策略切换',
+          '多轮迭代检索，覆盖更广',
+          '知识问答准确度大幅提升',
+          '支持 Claw 模式和 Multi-Agent 模式'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/adp',
+        isHot: true,
+        tags: ['RAG', 'Agent', '知识库', '重点推荐']
+      },
+      {
+        id: 603,
+        name: 'ADP 连接器与工具架构升级',
+        category: 'AI大模型',
+        updateType: '版本升级',
+        date: '2026-05-15',
+        summary: '插件广场升级为「连接器与工具」，规范化智能体对外部系统的集成方式',
+        description: 'ADP插件广场升级为「连接器与工具」体系。连接器用于接入第三方SaaS、企业系统或生态产品，完成查询/创建/更新/通知等操作；工具提供独立的通用处理能力，面向具体任务提供原子能力。支持内置与用户自定义两种类型。',
+        highlights: [
+          '插件广场升级为连接器与工具',
+          '连接器：接入 SaaS/企业系统/生态产品',
+          '工具：独立通用原子能力',
+          '支持内置与自定义两种类型'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/adp',
+        isHot: false,
+        tags: ['ADP', '连接器', '生态']
+      },
+      {
+        id: 604,
+        name: 'ADP 应用发布到钉钉机器人',
+        category: 'AI大模型',
+        updateType: '新功能',
+        date: '2026-05-15',
+        summary: '支持将ADP智能体应用发布到钉钉机器人渠道，实现知识问答和业务咨询',
+        description: '腾讯云ADP新增钉钉机器人发布渠道，可将智能体开发平台中的应用发布到钉钉机器人中使用。用户在钉钉中搜索机器人名称即可发起对话，实现知识问答、业务咨询等场景，拓展了智能体的分发触达能力。',
+        highlights: [
+          '新增钉钉机器人发布渠道',
+          '在钉钉中搜索即可对话',
+          '支持知识问答与业务咨询场景',
+          '拓展智能体分发触达能力'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/adp',
+        isHot: false,
+        tags: ['ADP', '钉钉', '分发渠道']
+      },
+      {
+        id: 605,
+        name: '云数据库 PostgreSQL 全面支持 PG 18.0',
+        category: '数据库',
+        updateType: '版本升级',
+        date: '2026-05-15',
+        summary: '腾讯云PostgreSQL全面支持PG 18.0，异步I/O让读取性能翻倍，新增智能索引推荐',
+        description: '腾讯云PostgreSQL全面支持PostgreSQL 18.0版本，带来异步I/O支持（读取密集型场景性能提升2-3倍）、逻辑复制支持等关键升级。同时上线智能索引推荐能力，DBbrain全面接入，通过tencentdb_index_advisor扩展的Hypothetical Index技术，不建真实索引即可评估优化效果。',
+        highlights: [
+          '全面支持 PostgreSQL 18.0',
+          '异步 I/O：读取性能提升 2-3 倍',
+          '新增智能索引推荐（DBbrain 接入）',
+          'Hypothetical Index 技术免真实索引评估'
+        ],
+        officialUrl: 'https://cloud.tencent.com/product/postgres',
+        isHot: false,
+        tags: ['数据库', 'PostgreSQL', '性能提升']
+      }
+    ]
+  },
+  {
     weekKey: '2026-W19',
-    weekLabel: '本周 · 4月27日 – 5月9日',
+    weekLabel: '往期 · 4月27日 – 5月9日',
     startDate: '2026-04-27',
     endDate: '2026-05-09',
     summary: '本周腾讯云重磅升级全栈企业级Agent产品能力：首发ClawPro专有云版、ADP智能工作台、Agent Memory/Storage；混元Hy3 preview正式上线官网，天御Token防刷与AI Agent安全中心能力升级。',

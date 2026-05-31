@@ -105,8 +105,8 @@ const stats = ref({
 const cards = [
   {
     path: '/sales-guide',
-    title: '售卖弹药 · AI 报价知识库',
-    description: '整合 AI 全线产品（大模型 / MaaS / AI SaaS / 智能体平台）的官方介绍、产品定义、售卖策略、内部报价资料（腾讯文档入口）',
+    title: 'TokenHub+GPU+Agent弹药库',
+    description: '整合 TokenHub、GPU 云服务器、WorkBuddy、ClawPro、ADP 全线 Agent 产品的官方介绍、产品定义、售卖策略、内部报价资料',
     icon: '&#127919;',
     iconBg: '#fef2f2',
     iconColor: '#dc2626',
@@ -124,34 +124,34 @@ const cards = [
     badgeClass: 'new'
   },
   {
-    path: '/product-guide',
-    title: '产品售卖指引',
-    description: '各产品线售卖策略、组合方案推荐、客户匹配建议',
-    icon: '&#128230;',
-    iconBg: '#fff7ed',
-    iconColor: '#f97316',
-    badge: '4章',
-    badgeClass: 'warning'
-  },
-  {
     path: '/strategy',
     title: '客户战略分析',
-    description: '重点客户经营情况 · AI 规划 · 出海战略 · 最新财报下载',
+    description: '重点客户经营情况 · AI 规划 · 出海战略 · 财报下载 · AI产品售卖指引',
     icon: '&#127919;',
     iconBg: '#fefce8',
     iconColor: '#ca8a04',
-    badge: '5家',
+    badge: '7家',
     badgeClass: 'info'
   },
   {
-    path: '/news',
-    title: 'AI 与云商动态',
-    description: 'AI 领域大事件 · 阿里/火山/华为/AWS/谷歌等云厂商产业动态',
-    icon: '&#128240;',
+    path: '/ai-global',
+    title: '全球AI与模型动态',
+    description: 'AI 前沿技术 · Agent 生态 · 全球 LLM 用量排名 · 模型发布动态',
+    icon: '&#127760;',
     iconBg: '#f5f3ff',
     iconColor: '#7c3aed',
     badge: 'HOT',
     badgeClass: 'new'
+  },
+  {
+    path: '/news',
+    title: '云商动态',
+    description: '阿里/火山/华为/AWS/谷歌等云厂商产业动态与异动预警',
+    icon: '&#9729;',
+    iconBg: '#ecfeff',
+    iconColor: '#0891b2',
+    badge: '',
+    badgeClass: ''
   },
   {
     path: '/new-products',
@@ -163,31 +163,21 @@ const cards = [
     badge: 'NEW',
     badgeClass: 'new'
   },
-  {
-    path: '/model-ranking',
-    title: '全球模型能力排名',
-    description: '基于 OpenRouter 全球 API 实际调用量排名，覆盖 Kimi、Claude、DeepSeek、GPT 等主流模型',
-    icon: '&#127942;',
-    iconBg: '#fefce8',
-    iconColor: '#ca8a04',
-    badge: 'NEW',
-    badgeClass: 'new'
-  }
 ]
 
 // 最近更新列表（模拟从API获取）
 const recentItems = [
   {
     id: 102,
-    path: '/model-ranking',
-    title: '新增板块：全球模型能力排名 — Kimi K2.6 暴涨 7683% 登顶全球，中国模型占据 Top 10 四席',
-    tag: '排名',
-    tagBg: '#fefce8',
-    tagColor: '#ca8a04',
-    date: '2026-04-28',
-    icon: '&#127942;',
-    iconBg: '#fefce8',
-    iconColor: '#ca8a04'
+    path: '/ai-global',
+    title: '板块合并：「全球AI与模型动态」— AI动态 + 模型排名 + Agent生态趋势三合一',
+    tag: 'AI',
+    tagBg: '#f5f3ff',
+    tagColor: '#7c3aed',
+    date: '2026-05-31',
+    icon: '&#127760;',
+    iconBg: '#f5f3ff',
+    iconColor: '#7c3aed'
   },
   {
     id: 101,
@@ -323,11 +313,11 @@ const recentItems = [
   },
   {
     id: 7,
-    path: '/product-guide',
-    title: '腾讯云AI产品售卖指引 2026年版',
-    tag: '新增',
-    tagBg: '#fff7ed',
-    tagColor: '#f97316',
+    path: '/strategy?tab=product-guide',
+    title: '腾讯云AI产品售卖指引 2026年版（已合并到客户战略分析）',
+    tag: '战略',
+    tagBg: '#fefce8',
+    tagColor: '#ca8a04',
     date: '2026-04-10',
     icon: '&#128230;',
     iconBg: '#fff7ed',

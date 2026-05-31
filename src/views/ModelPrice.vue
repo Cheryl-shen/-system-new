@@ -14,23 +14,23 @@
       <div class="oc-card oc-highlight">
         <div class="oc-icon">💡</div>
         <div class="oc-body">
-          <div class="oc-title">核心洞察（数据截至 2026-04-27）</div>
+          <div class="oc-title">核心洞察（数据截至 2026-05-31）</div>
           <ul class="oc-list">
             <li>
-              <span class="oc-tag up">涨价</span>
-              Kimi K2.6 于 4/20 发布，定价较 K2.5 上涨 <strong>58~60%</strong>（输入 $0.60→$0.95，输出 $3→$4）
+              <span class="oc-tag down">永久降价</span>
+              DeepSeek V4-Pro 于 5/31 优惠期结束后 <strong>永久降价 75%</strong>，2.5折保留为常态价（输入 ¥3、输出 ¥6），创全球主流大模型价格新低
             </li>
             <li>
-              <span class="oc-tag up">涨价</span>
-              GLM-5.1 于 4/8 发布并全线涨价 <strong>10%</strong>，输入 ¥5.5→¥6，输出 ¥22→¥24
+              <span class="oc-tag new">新模型</span>
+              智谱 GLM-5.1 高速版 5/22 上线，输出速度达 <strong>400 tokens/s</strong>，刷新全球大模型 API 速度上限
             </li>
             <li>
-              <span class="oc-tag down">优惠</span>
-              DeepSeek V4-Pro 限时 <strong>2.5 折</strong>（至 5/5），V4 全系缓存命中价降至首发价 1/10
+              <span class="oc-tag warn">下线</span>
+              Kimi K2 系列 API 于 <strong>5/25 正式下线</strong>，停止维护，需迁移至 K2.6（定价较 K2.5 上涨 58~60%）
             </li>
             <li>
-              <span class="oc-tag best">性价比</span>
-              MiniMax M2.7 / M2.5 定价最低，输入 <strong>¥2.1/百万tokens</strong>，适合高并发场景
+              <span class="oc-tag best">资本动向</span>
+              MiniMax 于 5/29 启动 A 股 IPO；月之暗面 5/7 完成约 <strong>20 亿美元</strong>融资，国资入场
             </li>
           </ul>
         </div>
@@ -60,6 +60,16 @@
               <div class="oc-range-label">🔺 最高输出价</div>
               <div class="oc-range-value red">¥29</div>
               <div class="oc-range-vendor">Kimi K2.6（涨 32%）</div>
+            </div>
+            <div class="oc-range-item">
+              <div class="oc-range-label">⚡ 最高速度</div>
+              <div class="oc-range-value blue">400 tok/s</div>
+              <div class="oc-range-vendor">GLM-5.1 HighSpeed 🆕</div>
+            </div>
+            <div class="oc-range-item">
+              <div class="oc-range-label">🎯 旗舰最低价</div>
+              <div class="oc-range-value green">¥3</div>
+              <div class="oc-range-vendor">DeepSeek V4-Pro（永久降75%）</div>
             </div>
           </div>
         </div>
@@ -258,11 +268,14 @@ const activeVendor = ref<string>(vendorData[0].vendorKey)
 
 /** 概览区时间线事件 */
 const timelineEvents = [
-  { date: '2026-04-25', vendor: 'DeepSeek', title: 'V4 正式发布，V4-Pro 限时2.5折（至5/5）', type: 'new-model' },
+  { date: '2026-05-29', vendor: 'MiniMax', title: '与中信证券签署辅导协议，正式启动 A 股 IPO', type: 'new-model' },
+  { date: '2026-05-25', vendor: 'Kimi', title: 'K2 系列 API 正式下线，需迁移至 K2.6', type: 'price-up' },
+  { date: '2026-05-23', vendor: 'DeepSeek', title: 'V4-Pro 永久降价75%（5/31生效），创全球价格新低', type: 'price-down' },
+  { date: '2026-05-22', vendor: 'GLM', title: 'GLM-5.1 高速版上线，400 tok/s 刷新全球速度上限', type: 'new-model' },
+  { date: '2026-05-07', vendor: 'Kimi', title: '月之暗面完成约 20 亿美元融资，国资入场', type: 'new-model' },
+  { date: '2026-04-25', vendor: 'DeepSeek', title: 'V4 正式发布，V4-Pro 限时2.5折', type: 'new-model' },
   { date: '2026-04-20', vendor: 'Kimi', title: 'K2.6 发布并开源，定价上涨58~60%', type: 'price-up' },
   { date: '2026-04-09', vendor: 'GLM', title: 'GLM-5.1 发布并开源，全线涨价10%', type: 'price-up' },
-  { date: '2026-03-18', vendor: 'MiniMax', title: 'M2.7 发布并开源（不可商用，需授权）', type: 'new-model' },
-  { date: '2026-03-16', vendor: 'GLM', title: 'GLM-5-Turbo 涨价20%，专为 Agent 场景优化', type: 'price-up' },
 ]
 
 const currentVendor = computed(() =>
@@ -617,6 +630,7 @@ function trendLabel(t: string) {
 .oc-tag.up { background: #fee2e2; color: #dc2626; }
 .oc-tag.down { background: #dcfce7; color: #16a34a; }
 .oc-tag.new { background: #dbeafe; color: #2563eb; }
+.oc-tag.warn { background: #fef3c7; color: #b45309; }
 .oc-tag.best { background: #fef3c7; color: #92400e; }
 
 /* 价格区间 */
@@ -644,6 +658,7 @@ function trendLabel(t: string) {
 }
 .oc-range-value.green { color: #16a34a; }
 .oc-range-value.red { color: #dc2626; }
+.oc-range-value.blue { color: #2563eb; }
 .oc-range-vendor {
   font-size: 11px;
   color: var(--text-light);

@@ -5,7 +5,7 @@
         <a @click="router.push('/')">首页</a> / 供应链情报
       </div>
       <h2>供应链情报</h2>
-      <p>AI 算力产业链全景追踪 · 芯片/存储/网络/基础设施 · 数据范围 2026.04.01 - 2026.05.09</p>
+      <p>AI 算力产业链全景追踪 · 芯片/存储/网络/基础设施 · 数据范围 2026.05.10 - 2026.05.31</p>
     </div>
 
     <!-- 产业链可视化 -->
@@ -38,6 +38,19 @@
             <div class="node-risk" :style="{ color: riskLevelConfig[node.riskLevel].color }">
               {{ riskLevelConfig[node.riskLevel].label }}
             </div>
+            <div class="node-price-row">
+              <div class="node-price-item">
+                <span>涨幅</span>
+                <strong :class="getChangeClass(node.pastYearChange)">{{ node.pastYearChange }}</strong>
+              </div>
+              <div class="node-price-item">
+                <span>预测</span>
+                <strong :class="'predict-' + node.predictTrend">
+                  {{ node.futurePredict }}{{ node.predictTrend === 'up' ? ' ↑' : node.predictTrend === 'down' ? ' ↓' : ' →' }}
+                </strong>
+              </div>
+            </div>
+            <div class="node-factor" :title="node.keyFactor">影响：{{ node.keyFactor }}</div>
           </div>
           <div v-if="index < supplyChainNodes.length - 1" class="chain-arrow">→</div>
         </div>
@@ -65,6 +78,22 @@
               {{ riskLevelConfig[selectedNode.riskLevel].label }}
             </div>
           </div>
+          <div class="detail-stat">
+            <div class="stat-label">过去一年涨幅</div>
+            <div class="stat-value" :class="getChangeClass(selectedNode.pastYearChange)">
+              {{ selectedNode.pastYearChange }}
+            </div>
+          </div>
+          <div class="detail-stat">
+            <div class="stat-label">未来6月预测</div>
+            <div class="stat-value" :class="'predict-' + selectedNode.predictTrend">
+              {{ selectedNode.futurePredict }}
+            </div>
+          </div>
+          <div class="detail-factor">
+            <div class="players-label">影响因素</div>
+            <div class="detail-factor-text">{{ selectedNode.keyFactor }}</div>
+          </div>
           <div class="detail-players">
             <div class="players-label">核心玩家</div>
             <div class="players-list">
@@ -73,6 +102,7 @@
           </div>
         </div>
       </div>
+
     </div>
 
     <!-- 行业总评 -->
@@ -444,7 +474,8 @@
 
     <!-- 页脚 -->
     <div class="page-footer">
-      📅 最后更新：2026-05-09 <span class="update-badge">每周更新</span> | 
+      📅 最后更新：2026-05-31 <span class="update-badge">每周更新</span> | 
+      统计周期：2026-05-10 ~ 2026-05-31 | 
       数据来源：权威媒体 + 各芯片厂商/云厂商官方公告
     </div>
   </div>
@@ -505,6 +536,20 @@ function getRateColor(rate: number): string {
 function getLayerName(id: string): string {
   const node = supplyChainNodes.find(n => n.id === id)
   return node?.name || id
+}
+
+// 获取涨幅样式类
+function getChangeClass(change: string): string {
+  if (change.includes('风险') || change.includes('紧')) return 'change-high'
+  if (change.includes('+')) {
+    const num = parseInt(change.replace(/[^0-9]/g, ''))
+    if (num >= 50) return 'change-critical'
+    if (num >= 30) return 'change-high'
+    if (num >= 15) return 'change-medium'
+    return 'change-low'
+  }
+  if (change.includes('-')) return 'change-down'
+  return 'change-stable'
 }
 
 // Tab 切换
@@ -632,10 +677,11 @@ const alertStats = computed(() => ({
 .chain-container {
   display: flex;
   align-items: stretch;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: flex-start;
+  gap: 10px;
   overflow-x: auto;
-  padding-bottom: 10px;
+  padding: 2px 2px 12px;
+  scroll-snap-type: x proximity;
 }
 
 .chain-node {
@@ -645,12 +691,14 @@ const alertStats = computed(() => ({
   background: var(--bg-white);
   border: 2px solid var(--border);
   border-radius: 12px;
-  padding: 14px 12px;
-  min-width: 140px;
-  flex: 1;
+  padding: 12px 10px;
+  width: 168px;
+  min-width: 168px;
+  flex: 0 0 168px;
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
+  scroll-snap-align: start;
 }
 
 .chain-node:hover {
@@ -665,14 +713,14 @@ const alertStats = computed(() => ({
 }
 
 .node-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 22px;
+  margin-bottom: 8px;
 }
 
 .node-info {
@@ -682,9 +730,12 @@ const alertStats = computed(() => ({
 
 .node-name {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text);
-  margin-bottom: 8px;
+  margin-bottom: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .node-rate {
@@ -723,16 +774,93 @@ const alertStats = computed(() => ({
 .node-risk {
   font-size: 11px;
   font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.node-price-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.node-price-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  background: #f8fafc;
+  border-radius: 7px;
+  padding: 5px 7px;
+  text-align: left;
+}
+
+.node-price-item span {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.node-price-item strong {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+}
+
+.node-factor {
+  width: 100%;
+  font-size: 10px;
+  color: #64748b;
+  line-height: 1.45;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 5px 6px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
+.change-critical,
+.change-high,
+.predict-up {
+  color: #dc2626;
+}
+
+.change-medium {
+  color: #ea580c;
+}
+
+.change-low,
+.change-down,
+.predict-down {
+  color: #16a34a;
+}
+
+.change-stable,
+.predict-stable {
+  color: #64748b;
 }
 
 .chain-arrow {
   position: absolute;
-  right: -18px;
+  right: -16px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 18px;
+  font-size: 16px;
   color: #cbd5e1;
   z-index: 1;
+  pointer-events: none;
 }
 
 /* 节点详情 */
@@ -816,9 +944,20 @@ const alertStats = computed(() => ({
   font-weight: 700;
 }
 
-.detail-players {
+.detail-players,
+.detail-factor {
   flex: 1;
   min-width: 200px;
+}
+
+.detail-factor-text {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #dc2626;
+  font-weight: 500;
+  background: #fff7ed;
+  border-radius: 6px;
+  padding: 6px 10px;
 }
 
 .players-label {
@@ -840,6 +979,267 @@ const alertStats = computed(() => ({
   border-radius: 16px;
   font-size: 12px;
   color: var(--text-secondary);
+}
+
+/* 成本趋势面板 */
+.cost-trend-panel {
+  background: #f8fafc;
+  border: 0;
+  border-top: 1px solid var(--border-light);
+  border-radius: 0 0 10px 10px;
+  padding: 16px 0 0;
+  margin-top: 16px;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
+.trend-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.trend-icon {
+  font-size: 20px;
+}
+
+.trend-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.trend-subtitle {
+  margin-left: auto;
+  font-size: 11px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.trend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
+  gap: 10px;
+}
+
+.trend-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 11px 12px 10px;
+  position: relative;
+  transition: all 0.18s;
+  overflow: hidden;
+}
+
+.trend-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.trend-card.trend-up {
+  border-left: 3px solid #ef4444;
+}
+
+.trend-card.trend-down {
+  border-left: 3px solid #22c55e;
+}
+
+.trend-card.trend-stable {
+  border-left: 3px solid #64748b;
+}
+
+.trend-card-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 9px;
+  padding-right: 58px;
+}
+
+.trend-card-icon {
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  background: #f8fafc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.trend-card-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.trend-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trend-category {
+  font-size: 10px;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 1px 7px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.trend-card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.trend-stat {
+  text-align: center;
+  min-width: 74px;
+}
+
+.trend-stat-label {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.trend-stat-value {
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.trend-stat-value.change-critical {
+  color: #991b1b;
+}
+
+.trend-stat-value.change-high {
+  color: #dc2626;
+}
+
+.trend-stat-value.change-medium {
+  color: #ea580c;
+}
+
+.trend-stat-value.change-low {
+  color: #16a34a;
+}
+
+.trend-stat-value.change-down {
+  color: #16a34a;
+}
+
+.trend-stat-value.change-stable {
+  color: #64748b;
+}
+
+.trend-stat-value.predict-up {
+  color: #dc2626;
+}
+
+.trend-stat-value.predict-down {
+  color: #16a34a;
+}
+
+.trend-stat-value.predict-stable {
+  color: #64748b;
+}
+
+.predict-icon {
+  font-size: 12px;
+}
+
+.trend-arrow {
+  font-size: 15px;
+  color: #cbd5e1;
+  font-weight: 700;
+  margin: 0 4px;
+}
+
+.trend-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 10.5px;
+}
+
+.trend-factor,
+.trend-local {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+
+.factor-label,
+.local-label {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.factor-value,
+.local-value {
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.factor-value {
+  color: #dc2626;
+}
+
+.local-value {
+  color: #16a34a;
+}
+
+.confidence-badge {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  font-size: 10px;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.confidence-badge.confidence-high {
+  background: #ecfdf5;
+  color: #15803d;
+}
+
+.confidence-badge.confidence-medium {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.confidence-badge.confidence-low {
+  background: #fef2f2;
+  color: #b91c1c;
 }
 
 /* 行业总评 */

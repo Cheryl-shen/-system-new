@@ -33,15 +33,14 @@ const closeSidebar = inject<() => void>('closeSidebar')!
 
 const menuItems = [
   { path: '/', label: '首页概览', icon: '&#127968;' },
-  { path: '/sales-guide', label: '售卖弹药', icon: '&#127919;', badge: 'AI', badgeClass: 'info' },
+  { path: '/sales-guide', label: 'TokenHub+GPU+Agent弹药库', icon: '&#127919;', badge: 'AI', badgeClass: 'info' },
   { path: '/cost', label: '成本变化', icon: '&#128200;', badge: 'NEW' },
-  { path: '/product-guide', label: '产品售卖指引', icon: '&#128230;' },
   { path: '/strategy', label: '客户战略分析', icon: '&#127919;' },
-  { path: '/news', label: 'AI 与云商动态', icon: '&#128240;', badge: 'HOT', badgeClass: '' },
+  { path: '/ai-global', label: '全球AI与模型动态', icon: '&#127760;', badge: 'HOT', badgeClass: '' },
+  { path: '/news', label: '云商动态', icon: '&#9729;' },
   { path: '/supply-chain', label: '供应链情报', icon: '&#128279;', badge: 'NEW' },
   { path: '/new-products', label: '官网上新', icon: '&#127381;', badge: 'NEW' },
-  { path: '/model-price', label: '模型商价格动态', icon: '&#128176;' },
-  { path: '/model-ranking', label: '全球模型能力排名', icon: '&#127942;', badge: 'NEW' }
+  { path: '/model-price', label: '模型商价格动态', icon: '&#128176;' }
 ]
 
 const isActive = (path: string) => {
